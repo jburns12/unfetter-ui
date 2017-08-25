@@ -69,6 +69,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
       } else {
         this.selectedIntrusionSet.push(intrusionSet);
       }
+      this.searchIntrusionSets();
   }
 
   private searchIntrusionSets(): void {

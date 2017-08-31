@@ -1,46 +1,41 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule } from '@angular/material';
-import { AssessmentsComponent } from './assessments.component';
-import { PageHeaderComponent } from '../components/page/page/header.component';
+import { AssessmentsListComponent } from './list/assessments-list.component';
 import { ComponentModule } from '../components';
 import { AssessmentsService } from './assessments.service';
+import { AssessmentsLayoutComponent } from './assessments-layout.component';
 import { AssessmentsDashboardComponent } from './assessments-dashboard/assessments-dashboard.component';
 import { AssessmentsDashboardService } from './assessments-dashboard/assessments-dashboard.service';
 import { GlobalModule } from 'app/global/global.module';
-import { PhaseList } from './phase-list/phase-list.component';
+import { PhaseListComponent } from './phase-list/phase-list.component';
 import { ChartsModule } from 'ng2-charts';
-import { AssessmentsGroup } from './group/group.component';
-import { RiskBreakdown } from './risk-breakdown/risk-breakdown.component';
-
-console.log('`AssessmentsComponent` bundle loaded asynchronously');
-const routes = [
-  { 
-    path: '', 
-    component: AssessmentsComponent, 
-  }, 
-  {
-    path: 'dashboard/:id',
-    component: AssessmentsDashboardComponent,
-  },
-  {
-    path: 'group/:id/:phase',
-    component: AssessmentsGroup,
-  },
-];
+import { AssessmentsGroupComponent } from './group/group.component';
+import { RiskBreakdownComponent } from './risk-breakdown/risk-breakdown.component';
+import { AssessmentsSummaryComponent } from './assessments-summary/assessments-summary.component';
+import { AssessmentsSummaryService } from './assessments-summary/assessments-summary.service';
+import { assessmentsRouting } from './assessments.routing';
+import { AssessmentsCalculationService } from './assessments-summary/assessments-calculation.service';
+import { AssessmentChartComponent } from './assessments-summary/assessment-chart/assessment-chart.component';
+import { SophisticationBreakdownComponent } from './assessments-summary/sophistication-breakdown/sophistication-breakdown.component';
+import { TechniquesChartComponent } from './assessments-summary/techniques-chart/techniques-chart.component';
 
 @NgModule({
   declarations: [
     /**
      * Components / Directives/ Pipes
      */
-    AssessmentsComponent,
+    AssessmentsListComponent,
+    AssessmentsLayoutComponent,
     AssessmentsDashboardComponent,
-    PhaseList,
-    AssessmentsGroup,
-    RiskBreakdown,
+    PhaseListComponent,
+    AssessmentsGroupComponent,
+    RiskBreakdownComponent,
+    AssessmentsSummaryComponent,
+    AssessmentChartComponent,
+    SophisticationBreakdownComponent,
+    TechniquesChartComponent
   ],
   imports: [
     ChartsModule,
@@ -50,15 +45,15 @@ const routes = [
     MdCardModule,
     MdDialogModule,
     MdButtonModule,
-    RouterModule.forChild(routes),
+    assessmentsRouting,
     ComponentModule,
     GlobalModule
   ],
   providers: [
     AssessmentsService,
     AssessmentsDashboardService,
+    AssessmentsSummaryService,
+    AssessmentsCalculationService
   ]
 })
-export class AssessmentsModule {
-  public static routes = routes;
-}
+export class AssessmentsModule {}

@@ -10,6 +10,7 @@ import { StixService } from '../settings/stix.service';
 import { BaseStixService } from '../settings/base-stix.service';
 import { IntrusionSet } from '../models';
 import * as Ps from 'perfect-scrollbar';
+import { GenericApi } from '../global/services/genericapi.service';
 
 @Component({
   selector: 'intrusion-set-dashboard',
@@ -21,26 +22,40 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public intrusionSet: IntrusionSet;
   public results: any[];
   public intrusionSets: any[];
-  public intrusionSetsDashboard: any = {};
+  public intrusionSetsDashboard: any = {
+  };
   public graphMetaData = {ditems: [], killChainPhase: [], themes: []};
   public treeData: any;
-
   private duration = 3000;
+  private groupKillchain: any[];
 
   constructor(
-    protected service: StixService,
-    protected baseService: BaseComponentService,
+    protected genericApi: GenericApi,
     protected snackBar: MdSnackBar) {
   }
 
   public ngOnInit() {
-    this.service.url = Constance.INTRUSION_SET_URL;
-    const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-    const sub = this.service.load(filter)
-      // .delay(2 * 1000)
-      .subscribe(
+    let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+    let url = Constance.INTRUSION_SET_URL + '?' + filter;
+    const sub = this.genericApi.get(url).subscribe(
           (data) => {
-            this.intrusionSets = data;
+              this.intrusionSets = data;
+              filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+              url = Constance.ATTACK_PATTERN_URL + '?' + filter;
+              const subscription =  this.genericApi.get(url).subscribe(
+                  (attackPatterns) => {
+                      this.groupKillchain = this.groupByKillchain(attackPatterns);
+                      this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
+                  }, (error) => {
+                      // handle errors here
+                      console.log('error ' + error);
+                  }, () => {
+                      // prevent memory links
+                      if (subscription) {
+                          subscription.unsubscribe();
+                      }
+                  }
+              );
           }, (error) => {
             // handle errors here
             console.log('error ' + error);
@@ -49,26 +64,75 @@ export class IntrusionSetDashboardComponent implements OnInit {
         );
   }
 
+  public count(attack_patterns: any): number {
+    let count = 0;
+    attack_patterns.forEach(
+      (attack_pattern) => {
+        if ( attack_pattern.back && attack_pattern.back !== '#FFFFFF') {
+          count = count + 1;
+        }
+      }
+    )
+    return count;
+  }
+
+  private groupByKillchain(attackPatterns: any[]): any[] {
+      const killChainAttackPattern = [];
+      const killChainAttackPatternGroup = {};
+      attackPatterns.forEach((attackPattern) => {
+            const killChainPhases = attackPattern.attributes.kill_chain_phases;
+
+            if (killChainPhases) {
+                killChainPhases.forEach( (killChainPhase) => {
+                    const phaseName = killChainPhase.phase_name;
+                    let attackPatternsProxies = killChainAttackPatternGroup[phaseName];
+                    if (attackPatternsProxies === undefined) {
+                        attackPatternsProxies = [];
+                        killChainAttackPatternGroup[phaseName] = attackPatternsProxies;
+                    }
+                    attackPatternsProxies.push({name: attackPattern.attributes.name, back: '#FFFFFF'});
+                });
+            }
+      });
+      Object.keys(killChainAttackPatternGroup).forEach(
+        (key) => {
+            const attackPatterns = killChainAttackPatternGroup[key];
+            const killchain = {name: key, attack_patterns: attackPatterns};
+            killChainAttackPattern.push(killchain);
+        }
+      );
+      return killChainAttackPattern;
+  }
+
   private calPercentage(part: number, whole: number): number {
     return Math.round((part / whole) * 100);
   }
   private select(intrusionSet: IntrusionSet, isAutoComplete?: boolean): void {
-      const found = this.selectedIntrusionSet.find(
-        (i) => {
-          return intrusionSet.id === i.id;
-        }
-      );
-      if (found) {
-        if (!isAutoComplete) {
-          this.selectedIntrusionSet = this.selectedIntrusionSet.filter(
-            (i) => {
-                return intrusionSet.id !== i.id;
-            }
-          );
-        }
-      } else {
-        this.selectedIntrusionSet.push(intrusionSet);
+    console.log('select');
+    const found = this.selectedIntrusionSet.find(
+      (i) => {
+        return intrusionSet.id === i.id;
       }
+    );
+    if (found) {
+      if (!isAutoComplete) {
+        this.selectedIntrusionSet = this.selectedIntrusionSet.filter(
+          (i) => {
+              return intrusionSet.id !== i.id;
+          }
+        );
+      }
+    } else {
+      this.selectedIntrusionSet.push(intrusionSet);
+    }
+    if (this.selectedIntrusionSet.length > 0) {
+      this.searchIntrusionSets();
+    } else {
+      this.intrusionSetsDashboard.intrusionSets = null;
+      this.intrusionSetsDashboard.killChainPhases = this.groupKillchain;
+      this.treeData = null;
+    }
+
   }
 
   private searchIntrusionSets(): void {
@@ -78,11 +142,9 @@ export class IntrusionSetDashboardComponent implements OnInit {
           ids.push(intrusionSet.id);
       }
     );
-
+    this.intrusionSetsDashboard.killChainPhases = null;
     const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
-    const sub = this.service
-        .getByUrl(url)
-        .subscribe(
+    const sub = this.genericApi.get(url).subscribe(
           (data: any) => {
             this.color(data);
             this.intrusionSetsDashboard = data;
@@ -98,14 +160,14 @@ export class IntrusionSetDashboardComponent implements OnInit {
           },
           (err) => console.log(err),
           () => sub ? sub.unsubscribe() : 0
-        );
+    );
   }
 
   private buildTreeData(): void {
       const root = {name: '', type: 'root', children: []};
       this.intrusionSetsDashboard['intrusionSets'].forEach(
         (intrusionSet) => {
-          let child = {name: intrusionSet.name , type: intrusionSet.type, color: intrusionSet.color, description: intrusionSet.description};
+          const child = {name: intrusionSet.name , type: intrusionSet.type, color: intrusionSet.color, description: intrusionSet.description};
           this.intrusionSetsDashboard['killChainPhases'].forEach(
               (killChainPhase) => {
                 let killChainPhaseChild = null;
@@ -115,17 +177,17 @@ export class IntrusionSetDashboardComponent implements OnInit {
                       (intrusion_set) => {
                         if (intrusionSet.name === intrusion_set.name) {
                             killChainPhaseChild = killChainPhaseChild ? killChainPhaseChild : {name: killChainPhase.name , type: 'kill_chain_phase', color: intrusionSet.color, children: []};
-                            let attackPatternChild  = {type: 'attack-pattern', name: attack_pattern.name, color: intrusionSet.color, description: attack_pattern.description};
+                            const attackPatternChild  = {type: 'attack-pattern', name: attack_pattern.name, color: intrusionSet.color, description: attack_pattern.description};
                             killChainPhaseChild.children.push(attackPatternChild);
                             this.intrusionSetsDashboard['coursesOfAction'].forEach(
                               (coursesOfAction) => {
-                                  let found = coursesOfAction.attack_patterns.find(
+                                  const found = coursesOfAction.attack_patterns.find(
                                     (attack) => {
                                       return attack._id === attack_pattern._id;
                                     }
                                   );
                                   if (found) {
-                                    let coursesOfActionChild  = { type: 'course-of-action', name: coursesOfAction.name, description: coursesOfAction.description, color: intrusionSet.color};
+                                    const coursesOfActionChild  = { type: 'course-of-action', name: coursesOfAction.name, description: coursesOfAction.description, color: intrusionSet.color};
                                     if (!attackPatternChild['children']) {
                                       attackPatternChild['children'] = [];
                                     }
@@ -184,13 +246,13 @@ export class IntrusionSetDashboardComponent implements OnInit {
   private buildMetaData(): void {
     this.graphMetaData.ditems = [];
     this.graphMetaData.killChainPhase = [];
-    let ditems = [];
+    const ditems = [];
     let group = 1;
     let count = 0;
     let c = 0;
     this.selectedIntrusionSet.forEach(
       (intrusionSet) => {
-        let links = [];
+        const links = [];
         this.intrusionSetsDashboard['killChainPhases'].forEach (
           (killChainPhase) => {
             if ( (c % 2) === 0 && c > 0 ) {
@@ -203,7 +265,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
                 attack_pattern.intrusion_sets.forEach(
                   (i) => {
                     if (intrusionSet.attributes.name === i.name) {
-                      let found = links.find((name) => {
+                      const found = links.find((name) => {
                           return  name === killChainPhase.name;
                       });
                       if (!found) {
@@ -217,7 +279,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
           }
         );
 
-        let item = {
+        const item = {
                 type: 'ditem',
                 name: intrusionSet.attributes.name,
                 description: intrusionSet.attributes.description,
@@ -253,6 +315,11 @@ export class IntrusionSetDashboardComponent implements OnInit {
          }
        );
        intrusionSet.checked = false;
+       if (this.selectedIntrusionSet.length === 0 ) {
+          this.treeData = null;
+          this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
+       }
+
   }
 
   private removeAll(event): void {
@@ -262,10 +329,11 @@ export class IntrusionSetDashboardComponent implements OnInit {
         this.remove(event, intrusionSet);
       }
     );
+    this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
   }
 
   private onSelect(event): void {
-      let intrusionSet = this.intrusionSets.find(
+      const intrusionSet = this.intrusionSets.find(
         (i) => {
           return i.id === event.id;
         }
@@ -275,7 +343,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   private hexToRgb(hex): any {
-    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
@@ -288,9 +356,9 @@ export class IntrusionSetDashboardComponent implements OnInit {
       (killChainPhase) => {
         killChainPhase.attack_patterns.forEach(
           (attack_pattern) => {
-              let found = data['intrusionSets'].find(
+              const found = data['intrusionSets'].find(
                 (intrusionSet) => {
-                  let f = intrusionSet.attack_patterns.find(
+                  const f = intrusionSet.attack_patterns.find(
                     (pattern) => {
                       let back = '#FFFFFF';
                       let fore = '#000000';
@@ -310,7 +378,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
                         // rgb[2] = Math.round(Math.random() * 255);
 
                         // http://www.w3.org/TR/AERT#color-contrast
-                        let o = Math.round(((parseInt(rgb.r, 10) * 299) +
+                        const o = Math.round(((parseInt(rgb.r, 10) * 299) +
                                             (parseInt(rgb.g, 10) * 587) +
                                             (parseInt(rgb.b, 10) * 114)) / 1000);
                         fore = (o > 125) ? 'black' : 'white';

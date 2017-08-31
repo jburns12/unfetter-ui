@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
 import {
-  MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule,
+  MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule, MdNativeDateModule,
   MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule, MdSlideToggleModule } from '@angular/material';
 
 import { ComponentModule } from '../components/component.module';
@@ -34,17 +34,18 @@ import {
     SightingEditComponent,
     SightingComponent } from './stix-objects/sightings';
 
-    import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
-    import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './stix-objects/threat-actors';
-    import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './stix-objects/intrusion-sets';
-    import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './stix-objects/relationships';
-    import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './stix-objects/indicators';
-    import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './stix-objects/identities';
+import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
+import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './stix-objects/threat-actors';
+import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './stix-objects/intrusion-sets';
+import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './stix-objects/relationships';
+import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './stix-objects/indicators';
+import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './stix-objects/identities';
 
 import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './stix-objects/malwares';
 import { ToolHomeComponent, ToolListComponent, ToolComponent, ToolEditComponent, ToolNewComponent } from './stix-objects/tools';
 import { LinkExplorerComponent } from './link-explorer';
 import { StixHomeComponent } from './stix-home.component';
+import { GlobalModule } from 'app/global/global.module';
 
 @NgModule({
   imports: [
@@ -59,6 +60,7 @@ import { StixHomeComponent } from './stix-home.component';
       MdInputModule,
       MdSelectModule,
       MdAutocompleteModule,
+      MdNativeDateModule,
       MdCheckboxModule,
       MdRadioModule,
       MdSlideToggleModule,
@@ -66,7 +68,8 @@ import { StixHomeComponent } from './stix-home.component';
       CalendarModule,
       AccordionModule,
       DataListModule,
-      StixRoutingModule
+      StixRoutingModule,
+      GlobalModule
   ],
   declarations: [
     // Components / Directives/ Pipes

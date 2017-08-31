@@ -20,6 +20,25 @@ export class AssessmentsService {
                 .catch(this.handleError);
     }
 
+    public save(item: any): Observable<any[]> {
+        return this.http
+            .post(this.url, JSON.stringify(item), {headers: this.headers})
+            .map((response) => {
+                return response.json().data;
+            })
+            .catch(this.handleError);
+    }
+
+    public delete(item: any): Observable<void> {
+        const url = this.url + '/' + item.id;
+        return this.http
+            .delete(url, {headers: this.headers})
+            .map((response) => {
+                return response.json();
+            })
+            .catch(this.handleError);
+    }
+
     private handleError(error: Response | any): Observable<any> {
         let errMsg: string;
         if (error instanceof Response) {

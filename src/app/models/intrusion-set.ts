@@ -39,9 +39,9 @@ export class IntrusionSet {
 
     public formatDate(): void {
        this.attributes.first_seen =  this.attributes.first_seen ?
-            moment(this.attributes.first_seen).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+           this.attributes.first_seen : new Date().toISOString();
        this.attributes.last_seen =  this.attributes.last_seen ?
-            moment(this.attributes.last_seen).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+           this.attributes.last_seen : new Date().toISOString();
     }
 
     private createAttributes(): any {

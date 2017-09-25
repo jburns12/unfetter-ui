@@ -40,6 +40,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
        this.loadAttackPattern();
     }
 
+    trackByFunction(index: number, obj: any): any {
+      return index;
+    }
+
     public editButtonClicked(): void {
         let link = ['../edit', this.attackPattern.id];
         super.gotoView(link);
@@ -51,6 +55,39 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 this.location.back();
             }
         );
+    }
+
+    public addRemovePlatform(platform: string) {
+        if ( this.foundPlatform(platform) ) {
+            this.attackPattern.attributes.x_mitre_platforms = this.attackPattern.attributes.x_mitre_platforms.filter((p) => p !== platform);
+        } else {
+            this.attackPattern.attributes.x_mitre_platforms.push(platform);
+        }
+    }
+
+    public addRemoveDataSource(dataSource: string) {
+        if ( this.foundDataSource(dataSource) ) {
+            this.attackPattern.attributes.x_mitre_data_sources = this.attackPattern.attributes.x_mitre_data_sources.filter((p) => p !== dataSource;
+        } else {
+            this.attackPattern.attributes.x_mitre_data_sources.push(dataSource);
+        }
+    }
+
+    public addRemoveContributor(contributor: string) {
+        if ( this.foundContributor(contributor) ) {
+            this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((p) => p !== contributor);
+        } else {
+            this.attackPattern.attributes.x_mitre_contributors.push(contributor);
+        }
+    }
+
+    public addContributor(): void {
+      let contributorName = '';
+      this.attackPattern.attributes.x_mitre_contributors.unshift(contributorName);
+    }
+
+    public removeContributor(contributor): void {
+      this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((h) => h !== contributor)
     }
 
     public loadAttackPattern(): void {
@@ -95,5 +132,26 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             }
         );
         return sophisticationLevel ? sophisticationLevel.value : '';
+    }
+
+    public foundPlatform(platform: string): boolean {
+        let found = this.attackPattern.attributes.x_mitre_platforms.find((p) => {
+            return p === platform;
+        });
+        return found ? true : false;
+    }
+
+    public foundDataSource(dataSource: string): boolean {
+        let found = this.attackPattern.attributes.x_mitre_data_sources.find((c) => {
+            return c === dataSource;
+        });
+        return found ? true : false;
+    }
+
+    public foundContributor(contributor: string): boolean {
+        let found = this.attackPattern.attributes.x_mitre_contributors.find((c) => {
+            return c === contributor;
+        });
+        return found ? true : false;
     }
 }

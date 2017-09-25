@@ -10,7 +10,7 @@ export class AttackPattern {
     public description: string;
 
     public attributes: {
-        version: string;
+        created_by_ref: string;
         created: Date;
         modified: Date;
         description: string;
@@ -18,7 +18,16 @@ export class AttackPattern {
         labels: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
-        x_unfetter_sophistication_level: number;
+        x_mitre_contributors: string[];
+        x_mitre_data_sources: string[];
+        x_mitre_platforms: string[];
+        x_mitre_system_requirements: string;
+        x_mitre_effective_permissions: string[];
+        x_mitre_defense_bypassed: string;
+        x_mitre_remote_support: boolean;
+        x_mitre_detection: string;
+        x_mitre_permissions_required: string[];
+        x_mitre_requires_network: boolean;
     };
 
     constructor(data?: AttackPattern) {
@@ -41,6 +50,9 @@ export class AttackPattern {
             labels: [],
             external_references: [],
             kill_chain_phases: [],
+            x_mitre_platforms: [],
+            x_mitre_contributors: [],
+            x_mitre_data_sources: [],
             // x_unfetter_sophistication_level: -1
         };
     }

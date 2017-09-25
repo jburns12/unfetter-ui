@@ -29,8 +29,30 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Sophistication</label>
-                                <h6>{{getSophisticationLevel(attackPattern.attributes.x_unfetter_sophistication_level)}}</h6>
+                                <label>System Requirements</label>
+                                <h6>{{attackPattern.attributes.x_mitre_system_requirements}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Platforms:</label>
+                                <md-chip-list>
+                                    <md-chip *ngFor="let platform of attackPattern.attributes.x_mitre_platforms"
+                                        selected="true">
+                                        {{platform}}
+                                    </md-chip>
+                                </md-chip-list>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Contributors:</label>
+                                <md-chip-list>
+                                    <md-chip *ngFor="let contributor of attackPattern.attributes.x_mitre_contributors"
+                                        selected="true">
+                                        {{contributor}}
+                                    </md-chip>
+                                </md-chip-list>
                             </div>
                         </div>
                         <div class="row">
@@ -63,4 +85,3 @@
 
     <relationship-list *ngIf="attackPattern.id" [model]="attackPattern"></relationship-list>
       <div class="pull-right grey-text">{{attackPattern.id}}</div>
-

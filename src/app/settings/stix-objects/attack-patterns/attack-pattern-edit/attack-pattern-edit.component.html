@@ -8,30 +8,51 @@
                             <input mdInput class="form-control" required placeholder="Name" value="{{attackPattern.attributes.name}}"
                                 [(ngModel)]="attackPattern.attributes.name">
                         </md-input-container>
-
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <md-input-container class="full-width">
-                        <textarea mdInput mdTextareaAutosize placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
+                        <textarea mdInput mdTextareaAutosize placeholder="Description" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
                     </md-input-container>
                 </div>
             </div>
-             <div class="row">
-                <div class="col-md-12">
-                    <form>
-                        <md-select name="sophistication-levels" placeholder="How sophisticated would an attacker need to be to leverage this technique?" [(ngModel)]="attackPattern.attributes.x_unfetter_sophistication_level" class="full-width">
-                            <md-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id">
-                                {{ sophistication_levels.value }}
-                            </md-option>
-                        </md-select>
-                    </form>
-                </div>
-             </div>
 
-            <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
+            <kill-chain-phases [(model)]="attackPattern" (onTacticAdd)="tacticChange($event)"></kill-chain-phases>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <md-input-container class="full-width">
+                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_detection"  placeholder="Detection">{{attackPattern.attributes.x_mitre_detection}}</textarea>
+                    </md-input-container>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <md-input-container class="full-width">
+                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_system_requirements"  placeholder="System Requirements">{{attackPattern.attributes.x_mitre_system_requirements}}</textarea>
+                    </md-input-container>
+                </div>
+            </div>
+            <div *ngIf="tacticBools['defEvas']" class="row">
+                <div class="col-md-12">
+                    <md-input-container class="full-width">
+                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_defense_bypassed"  placeholder="Defense Bypassed">{{attackPattern.attributes.x_mitre_defense_bypasseds}}</textarea>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                  <label>Platforms</label>
+                    <div class="row">
+                        <div class="col-md-4" *ngFor="let platform of platforms">
+                                <md-checkbox class="identity-margin" (change)="addRemovePlatform(platform.name)" [checked]="platform.val">{{platform.name}}</md-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div><br>
 
             <external-reference [(model)]="attackPattern"></external-reference>
 

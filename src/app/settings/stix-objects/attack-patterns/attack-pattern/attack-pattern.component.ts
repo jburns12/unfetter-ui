@@ -23,6 +23,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
           { id : 3, value: '3 - Expert' },
           { id : 4, value: '4 - Innovator' }
     ];
+    public permissions_req = ['Administrator', 'root', 'SYSTEM', 'User', 'Remote Desktop Users'];
+    public effective_perms = ['Administrator', 'root', 'SYSTEM', 'User'];
 
     constructor(
         public stixService: StixService,
@@ -55,39 +57,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 this.location.back();
             }
         );
-    }
-
-    public addRemovePlatform(platform: string) {
-        if ( this.foundPlatform(platform) ) {
-            this.attackPattern.attributes.x_mitre_platforms = this.attackPattern.attributes.x_mitre_platforms.filter((p) => p !== platform);
-        } else {
-            this.attackPattern.attributes.x_mitre_platforms.push(platform);
-        }
-    }
-
-    public addRemoveDataSource(dataSource: string) {
-        if ( this.foundDataSource(dataSource) ) {
-            this.attackPattern.attributes.x_mitre_data_sources = this.attackPattern.attributes.x_mitre_data_sources.filter((p) => p !== dataSource;
-        } else {
-            this.attackPattern.attributes.x_mitre_data_sources.push(dataSource);
-        }
-    }
-
-    public addRemoveContributor(contributor: string) {
-        if ( this.foundContributor(contributor) ) {
-            this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((p) => p !== contributor);
-        } else {
-            this.attackPattern.attributes.x_mitre_contributors.push(contributor);
-        }
-    }
-
-    public addContributor(): void {
-      let contributorName = '';
-      this.attackPattern.attributes.x_mitre_contributors.unshift(contributorName);
-    }
-
-    public removeContributor(contributor): void {
-      this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((h) => h !== contributor)
     }
 
     public loadAttackPattern(): void {
@@ -141,16 +110,16 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         return found ? true : false;
     }
 
-    public foundDataSource(dataSource: string): boolean {
-        let found = this.attackPattern.attributes.x_mitre_data_sources.find((c) => {
-            return c === dataSource;
+    public foundPermission(permission: string): boolean {
+        let found = this.attackPattern.attributes.x_mitre_permissions_required.find((p) => {
+            return p === permission;
         });
         return found ? true : false;
     }
 
-    public foundContributor(contributor: string): boolean {
-        let found = this.attackPattern.attributes.x_mitre_contributors.find((c) => {
-            return c === contributor;
+    public foundEffectivePerm(permission: string): boolean {
+        let found = this.attackPattern.attributes.x_mitre_effective_permissions.find((p) => {
+            return p === permission;
         });
         return found ? true : false;
     }

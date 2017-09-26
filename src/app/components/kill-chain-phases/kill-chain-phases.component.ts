@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 import { KillChainPhase } from '../../models';
@@ -7,20 +7,64 @@ import { KillChainPhase } from '../../models';
   selector: 'kill-chain-phases',
   templateUrl: './kill-chain-phases.component.html'
 })
-export class KillChainPhasesComponent {
+export class KillChainPhasesComponent implements ngOnChanges{
 
     @Input() public model: any;
-    private tactics: string[] = ['collection', 'command-and-control', 'credential-access', 'defense-evasion', 'discovery', 'execution', 'exfiltration', 'lateral-movement', 'persistence', 'privilege-escalation'];
+    @Output() onTacticAdd: EventEmitter<any> = new EventEmitter<any>();
+    public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exfil': false};
+    private tactics: string[] = [
+      {'name':'collection', 'val': false},
+      {'name': 'command-and-control', 'val': false},
+      {'name': 'credential-access', 'val': false},
+      {'name':'defense-evasion', 'val': false},
+      {'name': 'discovery', 'val': false},
+      {'name': 'execution', 'val': false},
+      {'name': 'exfiltration', 'val': false},
+      {'name': 'lateral-movement', 'val': false},
+      {'name': 'persistence', 'val': false},
+      {'name': 'privilege-escalation', 'val': false}
+    ];
 
-    public addkillChainPhase(): void {
-        // let id = this.attackPattern.kill_chain_phases.length + 1;
-        let killChainPhase = new KillChainPhase();
-        killChainPhase.kill_chain_name = 'mitre-attack';
-        killChainPhase.phase_name = '';
-        this.model.attributes.kill_chain_phases.unshift(killChainPhase);
+    ngOnChanges(){
+        for (let i in this.tactics){
+            if(this.foundTactic(this.tactics[i]['name']){
+                this.tactics[i]['val'] = true;
+            }
+        }
     }
 
-    public removekillChainPhase(killChainPhase: KillChainPhase): void {
-         this.model.attributes.kill_chain_phases = this.model.attributes.kill_chain_phases.filter((h) => h !== killChainPhase);
+    public emitTactic(tactic: string){
+        if(tactic === 'privilege-escalation'){
+            this.tacticBools['privEsc'] = !this.tacticBools['privEsc'];
+        }
+        if(tactic === 'execution'){
+            this.tacticBools['execution'] = !this.tacticBools['execution'];
+        }
+        if(tactic === 'defense-evasion'){
+            this.tacticBools['defEvas'] = !this.tacticBools['defEvas'];
+        }
+        if(tactic === 'exfiltration'){
+            this.tacticBools['exfil'] = !this.tacticBools['exfil'];
+        }
+        this.onTacticAdd.emit(this.tacticBools);
+    }
+
+    public addRemoveTactic(tactic: string) {
+        this.emitTactic(tactic);
+        if ( this.foundTactic(tactic) ) {
+            this.model.attributes.kill_chain_phases = this.model.attributes.kill_chain_phases.filter((h) => h.phase_name != tactic );
+        } else {
+            let killChainPhase = new KillChainPhase();
+            killChainPhase.kill_chain_name = 'mitre-attack';
+            killChainPhase.phase_name = tactic;
+            this.model.attributes.kill_chain_phases.push(killChainPhase);
+        }
+    }
+
+    public foundTactic(tactic: string): boolean {
+        let found = this.model.attributes.kill_chain_phases.find((h) => {
+            return h.phase_name == tactic;
+        });
+        return found ? true : false;
     }
 }

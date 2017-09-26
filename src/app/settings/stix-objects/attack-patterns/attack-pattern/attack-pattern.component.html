@@ -20,11 +20,16 @@
                                 <h6>{{attackPattern.attributes.name}}</h6>
                             </div>
                         </div>
-
                         <div class="row">
                            <div class="col-md-12">
                                 <label>Description</label>
                                 <h6>{{attackPattern.attributes.description}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-12">
+                                <label>Detection</label>
+                                <h6>{{attackPattern.attributes.x_mitre_detection}}</h6>
                             </div>
                         </div>
                         <div class="row">
@@ -40,6 +45,57 @@
                                     <md-chip *ngFor="let platform of attackPattern.attributes.x_mitre_platforms"
                                         selected="true">
                                         {{platform}}
+                                    </md-chip>
+                                </md-chip-list>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Permissions Required:</label>
+                                <md-chip-list>
+                                    <md-chip *ngFor="let permission of attackPattern.attributes.x_mitre_permissions_required"
+                                        selected="true">
+                                        {{permission}}
+                                    </md-chip>
+                                </md-chip-list>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Effective Permissions:</label>
+                                <md-chip-list>
+                                    <md-chip *ngFor="let permission of attackPattern.attributes.x_mitre_effective_permissions"
+                                        selected="true">
+                                        {{permission}}
+                                    </md-chip>
+                                </md-chip-list>
+                            </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-12">
+                                <label>Supports Remote</label>
+                                <h6>{{attackPattern.attributes.x_mitre_supports_remote}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-12">
+                                <label>Requires Network</label>
+                                <h6>{{attackPattern.attributes.x_mitre_requires_network}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-12">
+                                <label>Defense Bypassed</label>
+                                <h6>{{attackPattern.attributes.x_mitre_defense_bypassed}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Data Sources:</label>
+                                <md-chip-list>
+                                    <md-chip *ngFor="let dataSource of attackPattern.attributes.x_mitre_data_sources"
+                                        selected="true">
+                                        {{dataSource}}
                                     </md-chip>
                                 </md-chip-list>
                             </div>

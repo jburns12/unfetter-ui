@@ -1,35 +1,11 @@
-<div class="row">
-            <div class="col-md-12">
-                <label>Tactics</label>
-                <div class="button-row">
-                    <a class=" " md-raised-button (click)="addkillChainPhase()"><i class="material-icons">add</i> ADD</a>
-                </div>
-            </div>
-        </div>
-         <div class="row">
-            <div class="col-md-12">
 
-                     <md-card *ngFor="let killChainPhase of model.attributes.kill_chain_phases" style="margin: 10px 0px;">
-                            <md-card-content>
-                                <div class="row">
-                                  <div class="col-md-6">
-                                          <md-input-container class="full-width">
-                                              <input mdInput placeholder="Tactic Name" [(ngModel)]="killChainPhase.phase_name" [mdAutocomplete]="auto">
-                                          </md-input-container>
-                                          <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                          <md-option *ngFor="let tactic of tactics" [value]="tactic">
-                                              <span>{{ tactic }}</span>
-                                          </md-option>
-                                      </md-autocomplete>
-                                  </div>
-                                </div>
-                            </md-card-content>
-                            <md-card-actions>
-                                <div class="button-row">
-                                    <a class="" md-raised-button (click)="removekillChainPhase(killChainPhase)"><i class="material-icons">delete</i> REMOVE</a>
-                                </div>
-                            </md-card-actions>
-                    </md-card>
-
-            </div>
-        </div>
+  <div class="row">
+      <div class="col-md-12">
+        <label>Tactics</label>
+          <div class="row">
+              <div class="col-md-4" *ngFor="let tactic of tactics">
+                      <md-checkbox class="identity-margin" (change)="addRemoveTactic(tactic.name)" [checked]="tactic.val">{{tactic.name}}</md-checkbox>
+              </div>
+          </div>
+      </div>
+  </div>

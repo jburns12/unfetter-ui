@@ -53,6 +53,9 @@ export class AttackPattern {
             x_mitre_platforms: [],
             x_mitre_contributors: [],
             x_mitre_data_sources: [],
+            x_mitre_permissions_required: [],
+            x_mitre_effective_permissions: [],
+            x_mitre_detection: '',
             // x_unfetter_sophistication_level: -1
         };
     }

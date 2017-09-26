@@ -11,10 +11,6 @@ import { AttackPattern } from '../../../../models';
     templateUrl: './attack-pattern-new.component.html'
 })
 export class AttackPatternNewComponent extends AttackPatternEditComponent implements OnInit {
-
-    public platforms: string[] = [];
-    public contributors: string[] = [];
-    public dataSources: string[] = [];
     public attackPatterns: any;
 
     constructor(
@@ -47,42 +43,6 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
               }
           }
       );
-    }
-
-    public getPlatforms(): void {
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            let currPlatforms = attackPattern.attributes.x_mitre_platforms;
-            for (let i in currPlatforms){
-                this.platforms = this.platforms.concat(currPlatforms[i]);
-            }
-            this.platforms = this.platforms.filter(function(elem, index, self){
-                return index == self.indexOf(elem);
-            }).sort().filter(Boolean);
-        }
-    }
-
-    public getDataSources(): void {
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            let currDataSources = attackPattern.attributes.x_mitre_data_sources;
-            for (let i in currDataSources){
-                this.dataSources = this.dataSources.concat(currDataSources[i]);
-            }
-            this.dataSources = this.dataSources.filter(function(elem, index, self){
-                return index == self.indexOf(elem);
-            }).sort().filter(Boolean);
-        }
-    }
-
-    public getContributors(): void {
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            let currContributors= attackPattern.attributes.x_mitre_contributors;
-            for (let i in currContributors){
-                this.contributors = this.contributors.concat(currContributors[i]);
-            }
-            this.contributors = this.contributors.filter(function(elem, index, self){
-                return index == self.indexOf(elem);
-            }).sort().filter(Boolean);
-        }
     }
 
      public saveAttackPattern(): void {

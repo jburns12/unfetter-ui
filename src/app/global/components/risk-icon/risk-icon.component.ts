@@ -3,14 +3,14 @@ import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'risk-icon',
-  styleUrls: ['risk-icon.component.css'],
+  styleUrls: ['risk-icon.component.scss'],
   templateUrl: 'risk-icon.component.html'
 })
 export class RiskIconComponent {
   @Input('risk') public risk: number;
   @Input('showTooltip') public showTooltip = false;
   @Input('tooltipPlacement') public tooltipPlacement = 'after';
-
+  
   public getRiskColor(avgRisk) {
     let riskHsl: any = {};
 

@@ -15,6 +15,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public platforms: any = [];
     public contributors: string[] = [];
     public dataSources: string[] = [];
+    public attackPatterns: AttackPattern[];
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exFil': false};
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
@@ -80,7 +81,8 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             uniqPlatforms = allPlatforms.filter(function(elem, index, self){
                 return index == self.indexOf(elem);
             }).sort().filter(Boolean);
-        }
+        });
+
         for(let currPlatform of uniqPlatforms){
             if(this.attackPattern.attributes.x_mitre_platforms.includes(currPlatform)){
                 this.platforms.push({'name': currPlatform, 'val': true});
@@ -94,12 +96,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public assignPerms(): void {
       for (let i in this.permissions_req){
-          if(this.foundPermission(this.permissions_req[i]['name']){
+          if(this.foundPermission(this.permissions_req[i]['name'])){
               this.permissions_req[i]['val'] = true;
           }
       }
       for (let i in this.effective_perms){
-          if(this.foundEffectivePerm(this.effective_perms[i]['name']){
+          if(this.foundEffectivePerm(this.effective_perms[i]['name'])){
               this.effective_perms[i]['val'] = true;
           }
       }
@@ -114,7 +116,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             this.dataSources = this.dataSources.filter(function(elem, index, self){
                 return index == self.indexOf(elem);
             }).sort().filter(Boolean);
-        }
+        });
     }
 
     public getContributors(): void {
@@ -126,7 +128,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             this.contributors = this.contributors.filter(function(elem, index, self){
                 return index == self.indexOf(elem);
             }).sort().filter(Boolean);
-        }
+        });
     }
 
     public tacticChange(tactics){

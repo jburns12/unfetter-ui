@@ -50,7 +50,7 @@
               <label>Permissions Required</label>
                 <div class="row">
                     <div class="col-md-4" *ngFor="let perm of permissions_req">
-                            <md-checkbox class="identity-margin" (change)="addRemovePermission(perm)">{{perm}}</md-checkbox>
+                            <md-checkbox class="identity-margin" (change)="addRemovePermission(perm.name)">{{perm.name}}</md-checkbox>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
               <label>Effective Permissions</label>
                 <div class="row">
                     <div class="col-md-4" *ngFor="let perm of effective_perms">
-                            <md-checkbox class="identity-margin" (change)="addRemoveEffectivePerm(perm)">{{perm}}</md-checkbox>
+                            <md-checkbox class="identity-margin" (change)="addRemoveEffectivePerm(perm.name)">{{perm.name}}</md-checkbox>
                     </div>
                 </div>
             </div><br>
@@ -69,7 +69,7 @@
           <label>Supports Remote</label>
           <div class="row">
               <div class="col-md-6">
-                  <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_supports_remote">
+                  <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_remote_support">
                     <md-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
                         {{boolVal.label}}<br>
                     </md-radio-button>
@@ -81,7 +81,7 @@
           <label>Requires Network</label>
           <div class="row">
               <div class="col-md-6">
-                  <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_requires_network">
+                  <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_network_requirements">
                     <md-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
                         {{boolVal.label}}<br>
                     </md-radio-button>

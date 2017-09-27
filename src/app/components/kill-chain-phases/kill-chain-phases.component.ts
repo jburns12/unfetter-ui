@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 import { KillChainPhase } from '../../models';
@@ -7,12 +7,12 @@ import { KillChainPhase } from '../../models';
   selector: 'kill-chain-phases',
   templateUrl: './kill-chain-phases.component.html'
 })
-export class KillChainPhasesComponent implements ngOnChanges{
+export class KillChainPhasesComponent implements OnChanges{
 
     @Input() public model: any;
     @Output() onTacticAdd: EventEmitter<any> = new EventEmitter<any>();
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exfil': false};
-    private tactics: string[] = [
+    private tactics: any = [
       {'name':'collection', 'val': false},
       {'name': 'command-and-control', 'val': false},
       {'name': 'credential-access', 'val': false},
@@ -25,9 +25,9 @@ export class KillChainPhasesComponent implements ngOnChanges{
       {'name': 'privilege-escalation', 'val': false}
     ];
 
-    ngOnChanges(){
+    public ngOnChanges(){
         for (let i in this.tactics){
-            if(this.foundTactic(this.tactics[i]['name']){
+            if(this.foundTactic(this.tactics[i]['name'])){
                 this.tactics[i]['val'] = true;
                 this.emitTactic(this.tactics[i]['name'], true);
             }

@@ -20,6 +20,20 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
     ];
+    public permissions_req = [
+      {'name': 'Administrator', 'val': false},
+      {'name': 'root', 'val': false},
+      {'name': 'SYSTEM', 'val': false},
+      {'name': 'User', 'val': false},
+      {'name': 'Remote Desktop Users', 'val': false}
+    ];
+
+    public effective_perms = [
+      {'name': 'Administrator', 'val': false},
+      {'name': 'root', 'val': false},
+      {'name': 'SYSTEM', 'val': false},
+      {'name': 'User', 'val': false}
+    ];
 
     constructor(
         public stixService: StixService,
@@ -41,6 +55,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getPlatforms();
                this.getContributors();
                this.getDataSources();
+               this.assignPerms();
                console.log(this.dataSources);
            }, (error) => {
                // handle errors here
@@ -77,6 +92,19 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         console.log(this.platforms);
     }
 
+    public assignPerms(): void {
+      for (let i in this.permissions_req){
+          if(this.foundPermission(this.permissions_req[i]['name']){
+              this.permissions_req[i]['val'] = true;
+          }
+      }
+      for (let i in this.effective_perms){
+          if(this.foundEffectivePerm(this.effective_perms[i]['name']){
+              this.effective_perms[i]['val'] = true;
+          }
+      }
+    }
+
     public getDataSources(): void {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let currDataSources = attackPattern.attributes.x_mitre_data_sources;
@@ -105,15 +133,18 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
       this.tacticBools = tactics;
       if(!this.tacticBools['privEsc']){
         this.attackPattern.attributes.x_mitre_effective_permissions = [];
+        for(let i in this.effective_perms){
+            this.effective_perms[i]['val'] = false;
+        }
       }
       if(!this.tacticBools['execution']){
-        delete this.attackPattern.attributes['x_mitre_supports_remote'];
+        delete this.attackPattern.attributes['x_mitre_remote_support'];
       }
       if(!this.tacticBools['defEvas']){
         delete this.attackPattern.attributes['x_mitre_defense_bypassed'];
       }
       if(!this.tacticBools['exfil']){
-        delete this.attackPattern.attributes['x_mitre_requires_network'];
+        delete this.attackPattern.attributes['x_mitre_network_requirements'];
       }
     }
 

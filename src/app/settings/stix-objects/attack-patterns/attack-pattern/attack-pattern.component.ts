@@ -23,8 +23,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
           { id : 3, value: '3 - Expert' },
           { id : 4, value: '4 - Innovator' }
     ];
-    public permissions_req = ['Administrator', 'root', 'SYSTEM', 'User', 'Remote Desktop Users'];
-    public effective_perms = ['Administrator', 'root', 'SYSTEM', 'User'];
 
     constructor(
         public stixService: StixService,

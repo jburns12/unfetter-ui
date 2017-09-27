@@ -27,7 +27,7 @@ export class AttackPattern {
         x_mitre_remote_support: boolean;
         x_mitre_detection: string;
         x_mitre_permissions_required: string[];
-        x_mitre_requires_network: boolean;
+        x_mitre_network_requirements: boolean;
     };
 
     constructor(data?: AttackPattern) {

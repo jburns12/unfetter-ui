@@ -29,11 +29,13 @@ export class KillChainPhasesComponent implements ngOnChanges{
         for (let i in this.tactics){
             if(this.foundTactic(this.tactics[i]['name']){
                 this.tactics[i]['val'] = true;
+                this.emitTactic(this.tactics[i]['name'], true);
             }
         }
+        this.emitTactic(null, false);
     }
 
-    public emitTactic(tactic: string){
+    public emitTactic(tactic: string, wait: boolean){
         if(tactic === 'privilege-escalation'){
             this.tacticBools['privEsc'] = !this.tacticBools['privEsc'];
         }
@@ -46,11 +48,13 @@ export class KillChainPhasesComponent implements ngOnChanges{
         if(tactic === 'exfiltration'){
             this.tacticBools['exfil'] = !this.tacticBools['exfil'];
         }
-        this.onTacticAdd.emit(this.tacticBools);
+        if(!wait){
+          this.onTacticAdd.emit(this.tacticBools);
+        }
     }
 
     public addRemoveTactic(tactic: string) {
-        this.emitTactic(tactic);
+        this.emitTactic(tactic, false);
         if ( this.foundTactic(tactic) ) {
             this.model.attributes.kill_chain_phases = this.model.attributes.kill_chain_phases.filter((h) => h.phase_name != tactic );
         } else {

@@ -42,7 +42,6 @@
                     </md-input-container>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-12">
                   <label>Platforms</label>
@@ -53,7 +52,116 @@
                     </div>
                 </div>
             </div><br>
-
+            <div class="row">
+                <div class="col-md-12">
+                  <label>Permissions Required</label>
+                    <div class="row">
+                        <div class="col-md-4" *ngFor="let perm of permissions_req">
+                                <md-checkbox class="identity-margin" (change)="addRemovePermission(perm.name)" [checked]="perm.val">{{perm.name}}</md-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="tacticBools['privEsc']" class="row"><br>
+                <div class="col-md-12">
+                  <label>Effective Permissions</label>
+                    <div class="row">
+                        <div class="col-md-4" *ngFor="let perm of effective_perms">
+                                <md-checkbox class="identity-margin" (change)="addRemoveEffectivePerm(perm.name)" [checked]="perm.val">{{perm.name}}</md-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="tacticBools['execution']"><br>
+              <label>Supports Remote</label>
+              <div class="row">
+                <div class="col-md-6">
+                    <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_remote_support">
+                      <md-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
+                          {{boolVal.label}}<br>
+                      </md-radio-button>
+                    </md-radio-group>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="tacticBools['exfil']"><br>
+              <label>Requires Network</label>
+              <div class="row">
+                  <div class="col-md-6">
+                      <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_network_requirements">
+                        <md-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
+                            {{boolVal.label}}<br>
+                        </md-radio-button>
+                      </md-radio-group>
+                  </div>
+              </div>
+            </div><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Data Sources</label>
+                          <div class="button-row">
+                                <a class=" " md-raised-button (click)="addDataSource()"><i class="material-icons">add</i> ADD</a>
+                          </div>
+                      </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-md-12">
+                                 <md-card *ngFor="let dataSource of attackPattern.attributes.x_mitre_data_sources; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                        <md-card-content>
+                                            <div class="row">
+                                              <div class="col-md-6">
+                                                      <md-input-container class="full-width">
+                                                          <input mdInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [mdAutocomplete]="auto">
+                                                      </md-input-container>
+                                                      <md-autocomplete name="auto" #auto="mdAutocomplete" >
+                                                      <md-option *ngFor="let dataSource of dataSources" [value]="dataSource">
+                                                          <span>{{ dataSource }}</span>
+                                                      </md-option>
+                                                  </md-autocomplete>
+                                              </div>
+                                            </div>
+                                        </md-card-content>
+                                        <md-card-actions>
+                                            <div class="button-row">
+                                                <a class="" md-raised-button (click)="removeDataSource(dataSource)"><i class="material-icons">delete</i> REMOVE</a>
+                                            </div>
+                                        </md-card-actions>
+                                </md-card>
+                        </div>
+            </div><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Contributors</label>
+                          <div class="button-row">
+                                <a class=" " md-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
+                          </div>
+                      </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-md-12">
+                                 <md-card *ngFor="let contributor of attackPattern.attributes.x_mitre_contributors; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                        <md-card-content>
+                                            <div class="row">
+                                              <div class="col-md-6">
+                                                      <md-input-container class="full-width">
+                                                          <input mdInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [mdAutocomplete]="auto">
+                                                      </md-input-container>
+                                                      <md-autocomplete name="auto" #auto="mdAutocomplete" >
+                                                      <md-option *ngFor="let contributor of contributors" [value]="contributor">
+                                                          <span>{{ contributor }}</span>
+                                                      </md-option>
+                                                  </md-autocomplete>
+                                              </div>
+                                            </div>
+                                        </md-card-content>
+                                        <md-card-actions>
+                                            <div class="button-row">
+                                                <a class="" md-raised-button (click)="removeContributor(contributor)"><i class="material-icons">delete</i> REMOVE</a>
+                                            </div>
+                                        </md-card-actions>
+                                </md-card>
+                        </div>
+            </div><br>
             <external-reference [(model)]="attackPattern"></external-reference>
 
             <div class="row">

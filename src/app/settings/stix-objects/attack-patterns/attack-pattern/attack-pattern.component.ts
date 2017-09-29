@@ -61,6 +61,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
          let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
+                console.log(this.attackPattern);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -102,23 +103,51 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public foundPlatform(platform: string): boolean {
-        let found = this.attackPattern.attributes.x_mitre_platforms.find((p) => {
-            return p === platform;
-        });
+        if(this.attackPattern.attributes.x_mitre_platforms === undefined){
+            found = false;
+        }
+        else{
+            let found = this.attackPattern.attributes.x_mitre_platforms.find((p) => {
+                return p === platform;
+            });
+        }
         return found ? true : false;
     }
 
     public foundPermission(permission: string): boolean {
-        let found = this.attackPattern.attributes.x_mitre_permissions_required.find((p) => {
-            return p === permission;
-        });
+        if(this.attackPattern.attributes.x_mitre_permissions_required === undefined){
+            found = false;
+        }
+        else{
+            let found = this.attackPattern.attributes.x_mitre_permissions_required.find((p) => {
+                return p === permission;
+            });
+        }
         return found ? true : false;
     }
 
     public foundEffectivePerm(permission: string): boolean {
-        let found = this.attackPattern.attributes.x_mitre_effective_permissions.find((p) => {
-            return p === permission;
-        });
+        if(this.attackPattern.attributes.x_mitre_effective_permissions === undefined){
+            found = false;
+        }
+        else{
+            let found = this.attackPattern.attributes.x_mitre_effective_permissions.find((p) => {
+                return p === permission;
+            });
+        }
         return found ? true : false;
+    }
+
+    public permsReqExist(): boolean {
+      let found = true;
+      if(this.attackPattern.attributes.x_mitre_permissions_required){
+        if(!this.attackPattern.attributes.x_mitre_permissions_required.length){
+          found = false
+        }
+      }
+      else{
+        found = false
+      }
+      return found ? true : false;
     }
 }

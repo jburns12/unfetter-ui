@@ -23,7 +23,7 @@
                         <div class="row">
                            <div class="col-md-12">
                                 <label>Description</label>
-                                <h6>{{attackPattern.attributes.description}}</h6>
+                                <h6 [innerHTML]="cleanWhitespace(attackPattern.attributes.description)"></h6>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_detection" class="row">

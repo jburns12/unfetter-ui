@@ -358,6 +358,12 @@ a {
     font-size: 2.5rem;
 }
 
+.chipListChip {
+    margin-top: 3px !important;
+    margin-bottom: 3px !important;
+    margin-left: 5px !important;
+}
+
 // ~~~ Angular Material Themes: *ALWAYS* nest in a class, *NOT* overrides ~~~
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
@@ -393,5 +399,11 @@ a {
         .mat-header-row {
             display: none !important;
         }
+    }
+}
+
+#threatReportCreationComponent {
+    .mat-select-trigger {
+        height: 23px !important;
     }
 }

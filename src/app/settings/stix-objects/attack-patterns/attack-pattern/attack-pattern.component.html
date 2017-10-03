@@ -38,10 +38,10 @@
                                 <h6>{{attackPattern.attributes.x_mitre_system_requirements}}</h6>
                             </div>
                         </div>
-                        <div *ngIf="this.mitigation" class="row">
+                        <div *ngIf="mitigation" class="row">
                             <div class="col-md-12">
                                 <label>Mitigation</label>
-                                <h6>{{mitigation}}</h6>
+                                <h6 [innerHTML]="cleanWhitespaceMitigation(mitigation)"></h6>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_platforms && attackPattern.attributes.x_mitre_platforms.length" class="row">

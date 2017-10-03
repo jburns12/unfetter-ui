@@ -6,4 +6,8 @@ export class FormatHelpers {
     public static mitreCitationsToHtml(inputString: string): string {
         return inputString ? inputString.replace(/\[\[Citation: ([^\]\]]*)\]\]/g, `&nbsp;<small><cite class="text-muted">($1)</cite></small>`) : '';
     }
+
+    public static mitreCiteRefToHtml(inputString: string): string {
+        return inputString ? inputString.replace(/\[\[CiteRef::([^\]\]]*)\]\]/g, `&nbsp;<small><cite class="text-muted">($1)</cite></small>`) : '';
+    }
 }

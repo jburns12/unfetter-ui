@@ -24,7 +24,7 @@
                                         <h6>{{courseOfAction.attributes.description}}</h6>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div *ngIf="courseOfAction.attributes.labels && courseOfAction.attributes.labels.length" class="row">
                                     <div class="col-md-12">
                                         <label>Labels</label>
                                         <md-chip-list>
@@ -34,10 +34,9 @@
                                                 {{label}}
                                             </md-chip>
                                         </md-chip-list>
-
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div *ngIf="courseOfAction.attributes.external_references && courseOfAction.attributes.external_references.length" class="row">
                                     <div class="col-md-12">
                                         <label>External References</label>
                                         <md-chip-list>
@@ -61,4 +60,3 @@
 <relationship-list *ngIf="courseOfAction.id" [model]="courseOfAction"></relationship-list>
 
 <div class="pull-right grey-text">{{courseOfAction.id}}</div>
-

@@ -22,7 +22,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public courseOfAction: CourseOfAction = new CourseOfAction();
     public coaMitigator: CourseOfAction;
     public relationship: Relationship = new Relationship();
-    public coaId = '';
+    public coaId: string = '';
+    public target: any;
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
           { id : 2, value: '2 - Practicioner' },
@@ -66,8 +67,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public loadAttackPattern(): void {
          let subscription =  super.get().subscribe(
             (data) => {
-                this.findCoA();
                 this.attackPattern = data as AttackPattern;
+                this.findCoA();
                 console.log(this.attackPattern);
             }, (error) => {
                 // handle errors here
@@ -110,6 +111,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public foundPlatform(platform: string): boolean {
+        let found = false;
         if(this.attackPattern.attributes.x_mitre_platforms === undefined){
             found = false;
         }
@@ -122,6 +124,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public foundPermission(permission: string): boolean {
+        let found = false;
         if(this.attackPattern.attributes.x_mitre_permissions_required === undefined){
             found = false;
         }
@@ -134,6 +137,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public foundEffectivePerm(permission: string): boolean {
+        let found = false;
         if(this.attackPattern.attributes.x_mitre_effective_permissions === undefined){
             found = false;
         }
@@ -153,13 +157,13 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         }
       }
       else{
-        found = false
+        found = false;
       }
       return found ? true : false;
     }
 
     public findCoA(): void{
-        let filter = { 'stix.target_ref': this.attackPattern.attributes.id };
+        let filter = { 'stix.target_ref': this.attackPattern.id };
         let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
@@ -264,5 +268,9 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
 
     public cleanWhitespace(inputString): string {
         return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
+    }
+
+    public cleanWhitespaceMitigation(inputString): string {
+        return FormatHelpers.mitreCiteRefToHtml(FormatHelpers.whitespaceToBreak(inputString));
     }
 }

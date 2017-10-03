@@ -111,41 +111,23 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public foundPlatform(platform: string): boolean {
-        let found = false;
-        if(this.attackPattern.attributes.x_mitre_platforms === undefined){
-            found = false;
-        }
-        else{
-            let found = this.attackPattern.attributes.x_mitre_platforms.find((p) => {
-                return p === platform;
-            });
-        }
+        let found = this.attackPattern.attributes.x_mitre_platforms.find((p) => {
+            return p === platform;
+        });
         return found ? true : false;
     }
 
     public foundPermission(permission: string): boolean {
-        let found = false;
-        if(this.attackPattern.attributes.x_mitre_permissions_required === undefined){
-            found = false;
-        }
-        else{
-            let found = this.attackPattern.attributes.x_mitre_permissions_required.find((p) => {
-                return p === permission;
-            });
-        }
+        let found = this.attackPattern.attributes.x_mitre_permissions_required.find((p) => {
+            return p === permission;
+        });
         return found ? true : false;
     }
 
     public foundEffectivePerm(permission: string): boolean {
-        let found = false;
-        if(this.attackPattern.attributes.x_mitre_effective_permissions === undefined){
-            found = false;
-        }
-        else{
-            let found = this.attackPattern.attributes.x_mitre_effective_permissions.find((p) => {
-                return p === permission;
-            });
-        }
+        let found = this.attackPattern.attributes.x_mitre_effective_permissions.find((p) => {
+            return p === permission;
+        });
         return found ? true : false;
     }
 

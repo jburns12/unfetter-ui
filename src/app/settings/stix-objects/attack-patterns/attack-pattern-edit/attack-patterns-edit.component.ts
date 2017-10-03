@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { StixService } from '../../../stix.service';
 import { AttackPattern, ExternalReference, KillChainPhase } from '../../../../models';
+import { Constance } from '../../../../utils/constance';
 
 @Component({
     selector: 'attack-pattern-edit',
@@ -15,6 +16,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public platforms: any = [];
     public contributors: string[] = [];
     public dataSources: string[] = [];
+    public id: string;
     public attackPatterns: AttackPattern[];
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exFil': false};
     public supportsRemoteReqNet: any = [
@@ -57,6 +59,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getContributors();
                this.getDataSources();
                this.assignPerms();
+               this.findCoA();
                console.log(this.dataSources);
            }, (error) => {
                // handle errors here
@@ -91,7 +94,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 this.platforms.push({'name': currPlatform, 'val': false});
             }
         }
-        console.log(this.platforms);
     }
 
     public assignPerms(): void {
@@ -121,7 +123,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public getContributors(): void {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            let currContributors= attackPattern.attributes.x_mitre_contributors;
+            let currContributors = attackPattern.attributes.x_mitre_contributors;
             for (let i in currContributors){
                 this.contributors = this.contributors.concat(currContributors[i]);
             }
@@ -129,6 +131,23 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 return index == self.indexOf(elem);
             }).sort().filter(Boolean);
         });
+    }
+
+    public getId(): void{
+        let ids = [];
+        let allIds = [];
+        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
+            for (let i in attackPattern.attributes.external_references){
+                if(attackPattern.attributes.external_references[i].external_id){
+                    ids.push(attackPattern.attributes.external_references[i].external_id);
+                }
+            }
+        });
+        allIds = ids.filter(function(elem, index, self){
+            return index == self.indexOf(elem);
+        }).sort().filter(Boolean);
+        this.id = 'T' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
+        console.log(this.id);
     }
 
     public tacticChange(tactics){
@@ -195,6 +214,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public saveAttackPattern(): void {
          let sub = super.saveButtonClicked().subscribe(
             (data) => {
+                this.saveCourseOfAction(data.id);
                 this.location.back();
             }, (error) => {
                 // handle errors here

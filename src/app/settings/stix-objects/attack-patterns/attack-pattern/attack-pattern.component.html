@@ -38,7 +38,13 @@
                                 <h6>{{attackPattern.attributes.x_mitre_system_requirements}}</h6>
                             </div>
                         </div>
-                        <div *ngIf="attackPattern.attributes.x_mitre_platforms" class="row">
+                        <div *ngIf="this.mitigation" class="row">
+                            <div class="col-md-12">
+                                <label>Mitigation</label>
+                                <h6>{{mitigation}}</h6>
+                            </div>
+                        </div>
+                        <div *ngIf="attackPattern.attributes.x_mitre_platforms && attackPattern.attributes.x_mitre_platforms.length" class="row">
                             <div class="col-md-12">
                                 <label>Platforms:</label>
                                 <md-chip-list>
@@ -111,7 +117,7 @@
                                 </md-chip-list>
                             </div>
                         </div>
-                        <div class="row">
+                        <div *ngIf="attackPattern.attributes.kill_chain_phases && attackPattern.attributes.kill_chain_phases.length" class="row">
                             <div class="col-md-12">
                                 <label>Kill Chain Name:</label>
                                 <md-chip-list>

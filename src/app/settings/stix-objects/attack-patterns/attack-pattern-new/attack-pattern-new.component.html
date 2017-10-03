@@ -1,6 +1,11 @@
 
         <div class="row">
             <div class="col-md-12">
+                MITRE ID: {{id}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <md-input-container class="full-width">
                     <input mdInput placeholder="Name" required [(ngModel)]="attackPattern.attributes.name">
                 </md-input-container>
@@ -18,6 +23,13 @@
             <div class="col-md-12">
                 <md-input-container class="full-width">
                     <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_detection"  placeholder="Detection"></textarea>
+                </md-input-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <md-input-container class="full-width">
+                    <textarea mdInput [(ngModel)]="mitigation"  placeholder="Mitigation"></textarea>
                 </md-input-container>
             </div>
         </div>

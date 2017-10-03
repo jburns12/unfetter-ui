@@ -47,7 +47,7 @@ export class AttackPattern {
             // modified: new Date(),
             // description: '',
             // name: '',
-            labels: [],
+            // labels: [],
             external_references: [],
             kill_chain_phases: [],
             x_mitre_platforms: [],
@@ -56,6 +56,7 @@ export class AttackPattern {
             x_mitre_permissions_required: [],
             x_mitre_effective_permissions: [],
             x_mitre_detection: '',
+            created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5";
             // x_unfetter_sophistication_level: -1
         };
     }

@@ -4,7 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AttackPatternEditComponent } from '../attack-pattern-edit/attack-patterns-edit.component';
 import { StixService } from '../../../stix.service';
-import { AttackPattern } from '../../../../models';
+import { AttackPattern, CourseOfAction, ExternalReference, Relationship } from '../../../../models';
+import { Constance } from '../../../../utils/constance';
 
 @Component({
     selector: 'attack-pattern-new',
@@ -32,7 +33,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
               this.getPlatforms();
               this.getContributors();
               this.getDataSources();
-              console.log(this.dataSources);
+              this.getId();
           }, (error) => {
               // handle errors here
               console.log('error ' + error);
@@ -46,8 +47,13 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
     }
 
      public saveAttackPattern(): void {
+         let idRef = new ExternalReference();
+         idRef.external_id = this.id;
+         idRef.source_name = 'mitre-attack';
+         this.attackPattern.attributes.external_references.push(idRef);
          let sub = super.create(this.attackPattern).subscribe(
             (data) => {
+                 this.saveCourseOfAction(data[0].id);
                  this.location.back();
             }, (error) => {
                 // handle errors here

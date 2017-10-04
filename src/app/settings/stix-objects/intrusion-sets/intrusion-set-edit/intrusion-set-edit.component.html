@@ -6,138 +6,127 @@
         </md-input-container>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-6">
-                 <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.first_seen"  dateFormat="M-dd-yy"  showIcon="true"></p-calendar> -->
-
-                <!--<md-input-container class="full-width">
-                    <input mdInput [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
-                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
-                </md-input-container>
-                <md-datepicker #picker></md-datepicker>-->
-
-                <md-form-field class="full-width">
-                    <input mdInput [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
-                    <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
-                    <md-datepicker #picker></md-datepicker>
-                </md-form-field>
-
-                
-    </div>
-    <div class="col-md-6">
-                 <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.last_seen"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
-                <!--<md-input-container class="full-width">
-                    <input mdInput [mdDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
-                    <button mdSuffix [mdDatepickerToggle]="picker_last_seen"></button>
-                </md-input-container>
-                <md-datepicker #picker_last_seen></md-datepicker>-->
-
-                <md-form-field class="full-width">
-                    <input mdInput [mdDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
-                    <md-datepicker-toggle mdSuffix [for]="picker_last_seen"></md-datepicker-toggle>
-                    <md-datepicker #picker_last_seen></md-datepicker>
-                </md-form-field>
-    </div>
-</div>
-
+<md-input-container class="full-width">
+    <textarea mdInput mdTextareaAutosize placeholder="Description" [(ngModel)]="intrusionSet.attributes.description">{{intrusionSet.attributes.description}}</textarea>
+</md-input-container>
 <div class="row">
     <div class="col-md-12">
-          <form>
-            <md-input-container class="full-width">
-                <input mdInput placeholder="Primary Motivation" aria-label="Primary Motivation" [mdAutocomplete]="auto"
-                [formControl]="motivationCtrl" [(ngModel)]="intrusionSet.attributes.primary_motivation">
-            </md-input-container>
-        </form>
-        <md-autocomplete name="auto" #auto="mdAutocomplete" >
-            <md-option *ngFor="let motivation of motivations" [value]="motivation">
-
-                <span>{{ motivation }}</span>
-            </md-option>
-        </md-autocomplete>
-       <!-- <md-input-container class="full-width">
-        <input mdInput placeholder="Primary Motivation"  [(ngModel)]="intrusionSet.attributes.primary_motivation" value="{{intrusionSet.attributes.primary_motivation}}">
-        </md-input-container> -->
-    </div>
-</div>
+        <label>Aliases</label>
+              <div class="button-row">
+                    <a class=" " md-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
+              </div>
+          </div>
+        </div>
+         <div class="row">
+            <div class="col-md-12">
+                     <md-card *ngFor="let alias of aliases; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                            <md-card-content>
+                                <div class="row">
+                                  <div class="col-md-4">
+                                          <md-input-container class="full-width">
+                                              <input mdInput placeholder="Alias" [(ngModel)]="aliases[i].name">
+                                          </md-input-container>
+                                  </div>
+                                  <div class="col-md-4">
+                                          <md-input-container class="full-width">
+                                              <input mdInput placeholder="Description" [(ngModel)]="aliases[i].description">
+                                          </md-input-container>
+                                  </div>
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <div class="button-row">
+                                    <a class="" md-raised-button (click)="removeAlias(aliases[i].name)"><i class="material-icons">delete</i> REMOVE</a>
+                                </div>
+                            </md-card-actions>
+                    </md-card>
+            </div>
+</div><br>
 <div class="row">
     <div class="col-md-12">
-       <md-input-container class="full-width">
-        <input mdInput placeholder="Goals"  [(ngModel)]="intrusionSet.attributes.goals" value="{{intrusionSet.attributes.goals}}">
-        </md-input-container>
-    </div>
-</div>
+        <label>Techniques</label>
+              <div class="button-row">
+                    <a class=" " md-raised-button (click)="addTechnique()"><i class="material-icons">add</i> ADD</a>
+              </div>
+          </div>
+        </div>
+         <div class="row">
+            <div class="col-md-12">
+                     <md-card *ngFor="let addedTechnique of addedTechniques; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                            <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Technique" [(ngModel)]="addedTechniques[i].name" [mdAutocomplete]="auto">
+                                            </md-input-container>
+                                    </div>
+                                    <div class="col-md-4">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Description" [(ngModel)]="addedTechniques[i].description">
+                                            </md-input-container>
+                                    </div>
+                                    <md-autocomplete name="auto" #auto="mdAutocomplete" >
+                                        <md-option *ngFor="let technique of techniques" [value]="technique.name">
+                                              <span>{{ technique.name }}</span>
+                                        </md-option>
+                                    </md-autocomplete>
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <div class="button-row">
+                                    <a class="" md-raised-button (click)="removeTechnique(addedTechniques[i].name)"><i class="material-icons">delete</i> REMOVE</a>
+                                </div>
+                            </md-card-actions>
+                    </md-card>
+            </div>
+</div><br>
 <div class="row">
     <div class="col-md-12">
-         <form>
-            <md-input-container class="full-width">
-                <input mdInput placeholder="Resource Level" aria-label="Resource Level" [mdAutocomplete]="autores"
-                [formControl]="resourceLevelCtrl" [(ngModel)]="intrusionSet.attributes.resource_level">
-            </md-input-container>
-        </form>
-        <md-autocomplete name="autores" #autores="mdAutocomplete">
-            <md-option *ngFor="let resourceLevel of resourceLevels" [value]="resourceLevel">
-                <span>{{ resourceLevel }}</span>
-            </md-option>
-        </md-autocomplete>
-       <!-- <md-input-container class="full-width">
-        <input mdInput placeholder="Resource Level"  [(ngModel)]="intrusionSet.attributes.resource_level" value="{{intrusionSet.attributes.resource_level}}">
-        </md-input-container> -->
-    </div>
+        <label>Software</label>
+              <div class="button-row">
+                    <a class=" " md-raised-button (click)="addSoftware()"><i class="material-icons">add</i> ADD</a>
+              </div>
+          </div>
+        </div>
+         <div class="row">
+            <div class="col-md-12">
+                     <md-card *ngFor="let addedSoftware of addedSoftwares; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                            <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Software" [(ngModel)]="addedSoftwares[i].name" [mdAutocomplete]="auto">
+                                            </md-input-container>
+                                    </div>
+                                    <div class="col-md-4">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Description" [(ngModel)]="addedSoftwares[i].description">
+                                            </md-input-container>
+                                    </div>
+                                    <md-autocomplete name="auto" #auto="mdAutocomplete" >
+                                        <md-option *ngFor="let software of softwares" [value]="software.name">
+                                              <span>{{ software.name }}</span>
+                                        </md-option>
+                                    </md-autocomplete>
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <div class="button-row">
+                                    <a class="" md-raised-button (click)="removeSoftware(addedSoftwares[i].name)"><i class="material-icons">delete</i> REMOVE</a>
+                                </div>
+                            </md-card-actions>
+                    </md-card>
+            </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <select-search-field [placeholder]="'Identities'" [searchUrl]="'identities'" (optionChanged)="add($event)"></select-search-field>
-        <md-chip-list class="pull-left">
-            <md-chip selected="true" color="accent" *ngFor="let identity of identities">
-                {{identity.attributes.name}}
-               <span class="cursor-pointer" (click)="remove(identity)"><i class="material-icons">delete</i></span>
-            </md-chip>
-        </md-chip-list>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <select-search-field [placeholder]="'Threat Actors'" [searchUrl]="'threat-actors'" (optionChanged)="add($event)"></select-search-field>
-        <md-chip-list class="pull-left">
-            <md-chip selected="true" color="accent" *ngFor="let threatActor of threatActors">
-                {{threatActor.attributes.name}}
-               <span class="cursor-pointer" (click)="remove(threatActor)"><i class="material-icons">delete</i></span>
-            </md-chip>
-        </md-chip-list>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'" (optionChanged)="add($event)"></select-search-field>
-        <md-chip-list class="pull-left">
-            <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
-                {{attackPattern.attributes.name}}
-               <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="material-icons">delete</i></span>
-            </md-chip>
-        </md-chip-list>
-    </div>
-</div>
-
-
-
 
 
 <!--<external-reference [(model)]="intrusionSet"></external-reference>-->
-<div class="row">
-    <div class="col-md-12">
-        <md-input-container class="full-width">
-            <input mdInput placeholder="Description" [(ngModel)]="intrusionSet.attributes.description" value="{{intrusionSet.attributes.description}}">
-        </md-input-container>
-    </div>
-</div>
-
 
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                <a class=" " md-raised-button (click)="saveIdentity()" [disabled]="!intrusionSet.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                <a class=" " md-raised-button (click)="saveIdentity()" [disabled]="!intrusionSet.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
         </div>
     </div>
 </div>

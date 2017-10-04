@@ -12,7 +12,7 @@ import { Observable } from 'rxjs/Observable';
     templateUrl: './intrusion-set-new.component.html',
     styleUrls: ['./intrusion-set-new.component.scss']
 })
-export class IntrusionSetNewComponent extends IntrusionSetEditComponent {
+export class IntrusionSetNewComponent extends IntrusionSetEditComponent implements OnInit {
 
     constructor(public stixService: StixService, public route: ActivatedRoute,
                 public router: Router, public dialog: MdDialog,
@@ -20,11 +20,19 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent {
         super(stixService, route, router, dialog, location, snackBar);
     }
 
+    public ngOnInit() {
+        this.getTechniques();
+        this.getSoftware();
+    }
+
     public saveButtonClicked(): Observable<any> {
+        this.addAliasesToIntrusionSet();
         const observable = super.create(this.intrusionSet);
         const sub = observable
             .subscribe(
             (data) => {
+                console.log(data);
+                this.createRelationships(data[0].id);
                 this.location.back();
             }, (error) => {
                 // handle errors here

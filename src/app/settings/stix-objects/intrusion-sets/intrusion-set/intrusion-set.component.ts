@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
-import { IntrusionSet } from '../../../../models';
+import { IntrusionSet, Relationship, ExternalReference } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 
 @Component({
@@ -14,6 +14,7 @@ import { Constance } from '../../../../utils/constance';
 })
 export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public intrusionSet: IntrusionSet = new IntrusionSet();
+    public aliases: any = [];
 
      constructor(
         public stixService: StixService,
@@ -63,14 +64,29 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         });
     }
 
+    public getAllAliases(): void{
+        for(let alias of this.intrusionSet.attributes.aliases){
+            let description = '';
+            let extRef = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name === alias));
+            if(extRef.length > 0){
+                this.intrusionSet.attributes.external_references = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name !== alias));
+                description = extRef[0].description;
+            }
+            this.aliases.push({'name': alias, 'description': description});
+            this.intrusionSet.attributes.aliases = [];
+        }
+        console.log(this.aliases);
+    }
+
     public loadIntrusionSet(): void {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.intrusionSet = new IntrusionSet(data);
-                let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));
+                this.getAllAliases();
+                //let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));
                 // this.loadRelationships(filter);
 
-                filter = 'filter=' + encodeURIComponent(JSON.stringify({ source_ref: this.intrusionSet.id }));
+                //filter = 'filter=' + encodeURIComponent(JSON.stringify({ source_ref: this.intrusionSet.id }));
                 // this.loadRelationships(filter);
             }, (error) => {
                 // handle errors here

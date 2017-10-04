@@ -97,20 +97,20 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public assignPerms(): void {
-      if('x_mitre_permissions_required' in this.attackPattern.attributes){
-          for (let i in this.permissions_req){
-              if(this.foundPermission(this.permissions_req[i]['name'])){
-                  this.permissions_req[i]['val'] = true;
-              }
-          }
-      }
-      if('x_mitre_effective_permissions' in this.attackPattern.attributes){
-          for (let i in this.effective_perms){
-              if(this.foundEffectivePerm(this.effective_perms[i]['name'])){
-                  this.effective_perms[i]['val'] = true;
-              }
-          }
-      }
+        if('x_mitre_permissions_required' in this.attackPattern.attributes){
+            for (let i in this.permissions_req){
+                if(this.foundPermission(this.permissions_req[i]['name'])){
+                    this.permissions_req[i]['val'] = true;
+                }
+            }
+        }
+        if('x_mitre_effective_permissions' in this.attackPattern.attributes){
+            for (let i in this.effective_perms){
+                if(this.foundEffectivePerm(this.effective_perms[i]['name'])){
+                    this.effective_perms[i]['val'] = true;
+                }
+            }
+        }
     }
 
     public getDataSources(): void {

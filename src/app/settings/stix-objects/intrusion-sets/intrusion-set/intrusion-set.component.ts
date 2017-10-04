@@ -5,8 +5,9 @@ import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
-import { IntrusionSet, Relationship, ExternalReference } from '../../../../models';
+import { AttackPattern, IntrusionSet, Relationship, ExternalReference, Malware, Tool } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
+import { FormatHelpers } from '../../../../global/static/format-helpers'
 
 @Component({
     selector: 'intrusion-set',
@@ -15,6 +16,10 @@ import { Constance } from '../../../../utils/constance';
 export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public intrusionSet: IntrusionSet = new IntrusionSet();
     public aliases: any = [];
+    public addedTechniques: any = [];
+    public techniques: any = [];
+    public addedSoftwares: any = [];
+    public softwares: any = [];
 
      constructor(
         public stixService: StixService,
@@ -65,6 +70,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     }
 
     public getAllAliases(): void{
+        this.intrusionSet.attributes.aliases.shift();
         for(let alias of this.intrusionSet.attributes.aliases){
             let description = '';
             let extRef = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name === alias));
@@ -78,10 +84,122 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         console.log(this.aliases);
     }
 
+    public findRelationships(technique: boolean): void{
+        let filter = { 'stix.source_ref': this.intrusionSet.id };
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                let target = data as Relationship[];
+                target.forEach((relationship: Relationship) => {
+                    if(relationship.attributes.relationship_type == "uses"){
+                        if(technique){
+                            this.getTechniqueRels(relationship);
+                        }
+                        else{
+                            this.getSwRels(relationship);
+                        }
+                    }
+                });
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public getTechniqueRels(relationship: Relationship): void{
+        let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
+        if(tech.length > 0){
+            this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
+        }
+    }
+
+    public getSwRels(relationship: Relationship): void{
+        let sw = this.softwares.filter((h) => h.id === relationship.attributes.target_ref);
+        if(sw.length > 0){
+            this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
+        }
+    }
+
+    public getTechniques(create: boolean): void{
+        let subscription =  super.getByUrl(Constance.ATTACK_PATTERN_URL).subscribe(
+            (data) => {
+                let target = data as AttackPattern[];
+                target.forEach((attackPattern: AttackPattern) => {
+                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
+                });
+                this.techniques = this.techniques.sort((a,b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                if(!create){
+                    this.findRelationships(true);
+                }
+                console.log(this.techniques);
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public getSoftware(create: boolean): void {
+        let subscription =  super.getByUrl(Constance.MALWARE_URL).subscribe(
+            (data) => {
+                let target = data as Malware[];
+                target.forEach((malware: Malware) => {
+                    this.softwares.push({'name': malware.attributes.name, 'id': malware.id});
+                });
+                this.getTools(create);
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public getTools(create: boolean): void {
+        let subscription =  super.getByUrl(Constance.TOOL_URL).subscribe(
+            (data) => {
+                let target = data as Tool[];
+                target.forEach((tool: Tool) => {
+                    this.softwares.push({'name': tool.attributes.name, 'id': tool.id});
+                });
+                this.softwares = this.softwares.sort((a,b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
+                if(!create){
+                    this.findRelationships(false);
+                }
+                console.log(this.softwares);
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
     public loadIntrusionSet(): void {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.intrusionSet = new IntrusionSet(data);
+                this.getTechniques(false);
+                this.getSoftware(false);
                 this.getAllAliases();
                 //let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));
                 // this.loadRelationships(filter);
@@ -98,5 +216,9 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 }
             }
         );
+    }
+
+    public cleanWhitespace(inputString): string {
+        return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
     }
 }

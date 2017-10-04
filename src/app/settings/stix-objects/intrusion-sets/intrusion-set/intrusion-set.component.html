@@ -20,41 +20,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <label>First Seen</label>
-                            <p>{{intrusionSet.attributes.first_seen | date:'medium' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Last Seen</label>
-                            <p>{{intrusionSet.attributes.last_seen | date:'medium' }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Primary Motivation</label>
-                            <h5>{{intrusionSet.attributes.primary_motivation}}</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Goals</label>
-                            <h5>{{intrusionSet.attributes.goals}}</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Resource Level</label>
-                            <h5>{{intrusionSet.attributes.resource_level}}</h5>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-12">
                             <label>Description</label>
-                            <h5>{{intrusionSet.attributes.description}}</h5>
+                            <h6 [innerHTML]="cleanWhitespace(intrusionSet.attributes.description)"></h6>
                         </div>
                     </div>
-
-
             </md-card-content>
 
         </md-card>

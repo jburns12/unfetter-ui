@@ -51,18 +51,18 @@ export class IntrusionSet {
             // modified: moment().format(Constance.DATE_FORMATE),
             // name: '',
             // description: '',
-            first_seen: new Date(),
-            last_seen: new Date(),
+            // first_seen: new Date(),
+            // last_seen: new Date(),
             // goals: '',
             // resource_level: '',
             // primary_motivation: '',
-            secondary_motivation: [ ],
+            // secondary_motivation: [ ],
             // objective: '',
             // timestamp_precision: '',
-            labels: [],
+            // labels: [],
             aliases: [],
             external_references: [],
-            kill_chain_phases: []
+            // kill_chain_phases: []
         };
     }
 }

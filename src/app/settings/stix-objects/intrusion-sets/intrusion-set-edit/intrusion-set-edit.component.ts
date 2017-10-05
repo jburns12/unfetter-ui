@@ -31,6 +31,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public resourceLevels = new Set(ResourceLevel.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
     public motivationCtrl: FormControl;
     public resourceLevelCtrl: FormControl;
+    public editComponent: boolean = true;
 
     public labels = [
         {label: 'activist'},

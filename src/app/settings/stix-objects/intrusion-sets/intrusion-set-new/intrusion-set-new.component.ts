@@ -17,6 +17,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
 
     public groups: IntrusionSet[];
     public id: string;
+    public ids: any;
 
     constructor(public stixService: StixService, public route: ActivatedRoute,
                 public router: Router, public dialog: MdDialog,
@@ -30,7 +31,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         this.getId();
     }
 
-    getIdString(ids: any): string {
+    public getIdString(ids: any): string {
       let idStr = "";
       idStr = "" + (parseInt(ids[ids.length - 1].substr(1)) + 1);
       let numZeroes = 4 - idStr.length;

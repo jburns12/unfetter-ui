@@ -9,6 +9,7 @@ export class IntrusionSet {
     public attributes: {
         version: string;
         created: string;
+        created_by_ref: string;
         modified: string;
         description: string;
         name: string;
@@ -20,6 +21,7 @@ export class IntrusionSet {
         resource_level: string;
         primary_motivation: string;
         secondary_motivation: string[ ],
+        object_marking_refs: string[];
         objective: string;
         timestamp_precision: string;
         external_references: ExternalReference[];
@@ -31,7 +33,7 @@ export class IntrusionSet {
         if (data) {
             this.attributes = data.attributes;
             this.id = data.id;
-            this.formatDate();
+            // this.formatDate();
         } else {
             this.attributes = this.createAttributes();
         }
@@ -61,6 +63,8 @@ export class IntrusionSet {
             // timestamp_precision: '',
             // labels: [],
             aliases: [],
+            created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            object_marking_refs: ["marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"],
             external_references: [],
             // kill_chain_phases: []
         };

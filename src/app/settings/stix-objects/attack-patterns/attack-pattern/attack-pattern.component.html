@@ -119,7 +119,7 @@
                         </div>
                         <div *ngIf="attackPattern.attributes.kill_chain_phases && attackPattern.attributes.kill_chain_phases.length" class="row">
                             <div class="col-md-12">
-                                <label>Kill Chain Name:</label>
+                                <label>Tactics:</label>
                                 <md-chip-list>
                                     <md-chip *ngFor="let kill_chain_phase of attackPattern.attributes.kill_chain_phases"
                                         selected="true">
@@ -130,7 +130,7 @@
                         </div>
                            <div class="row">
                                 <div class="col-md-12">
-                                    <label>External References</label>
+                                    <label>External References:</label>
                                     <md-chip-list>
                                         <md-chip *ngFor="let externalReferences of attackPattern.attributes.external_references"
                                             selected="true">

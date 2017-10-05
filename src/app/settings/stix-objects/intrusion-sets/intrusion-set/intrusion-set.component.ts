@@ -7,7 +7,7 @@ import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { AttackPattern, IntrusionSet, Relationship, ExternalReference, Malware, Tool } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
-import { FormatHelpers } from '../../../../global/static/format-helpers'
+import { FormatHelpers } from '../../../../global/static/format-helpers';
 
 @Component({
     selector: 'intrusion-set',

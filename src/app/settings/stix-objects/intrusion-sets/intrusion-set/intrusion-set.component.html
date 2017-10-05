@@ -8,10 +8,8 @@
        </div>
 </div>
  <div class="row" style="margin-top: 15px;">
-
     <div class="col-md-12">
         <md-card>
-
             <md-card-content>
                     <div class="row">
                         <div class="col-md-12">
@@ -25,8 +23,18 @@
                             <h6 [innerHTML]="cleanWhitespace(intrusionSet.attributes.description)"></h6>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Aliases:</label>
+                            <md-chip-list>
+                                <md-chip *ngFor="let alias of intrusionSet.attributes.aliases"
+                                    selected="true">
+                                    {{alias}}
+                                </md-chip>
+                            </md-chip-list>
+                        </div>
+                    </div>
             </md-card-content>
-
         </md-card>
     </div>
  </div>

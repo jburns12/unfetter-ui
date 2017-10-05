@@ -88,6 +88,8 @@ export class RelationshipListComponent implements OnInit, OnChanges {
             this.load(Constance.INTRUSION_SET_URL, id);
         }  else if (id.indexOf('malware') >= 0) {
             this.load(Constance.MALWARE_URL, id);
+        }  else if (id.indexOf('tool') >= 0) {
+            this.load(Constance.TOOL_URL, id);
         }
     }
 
@@ -118,6 +120,8 @@ export class RelationshipListComponent implements OnInit, OnChanges {
             icon = Constance.INTRUSION_SET_ICON;
         } else if (relationshipMap.type === Constance.MALWARE_TYPE) {
             icon = Constance.MALWARE_ICON;
+        } else if (relationshipMap.type === Constance.TOOL_TYPE) {
+            icon = Constance.TOOL_ICON;
         }
         return icon;
     }
@@ -134,6 +138,8 @@ export class RelationshipListComponent implements OnInit, OnChanges {
             url = Constance.INTRUSION_SET_URL;
         } else if (relationshipMap.type === Constance.MALWARE_TYPE) {
             url = Constance.MALWARE_URL;
+        } else if (relationshipMap.type === Constance.TOOL_TYPE) {
+            url = Constance.TOOL_URL;
         }
         return url.replace('api', '');
     }

@@ -20,6 +20,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public techniques: any = [];
     public addedSoftwares: any = [];
     public softwares: any = [];
+    public editComponent: boolean = false;
 
      constructor(
         public stixService: StixService,
@@ -81,7 +82,6 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
             this.aliases.push({'name': alias, 'description': description});
             this.intrusionSet.attributes.aliases = [];
         }
-        console.log(this.aliases);
     }
 
     public findRelationships(technique: boolean): void{
@@ -200,7 +200,9 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 this.intrusionSet = new IntrusionSet(data);
                 this.getTechniques(false);
                 this.getSoftware(false);
-                this.getAllAliases();
+                if(this.editComponent){
+                    this.getAllAliases();
+                }
                 //let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));
                 // this.loadRelationships(filter);
 

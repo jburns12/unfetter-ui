@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 import { BaseComponent } from '../base.component';
+import { FormatHelpers } from '../../global/static/format-helpers';
 
 @Component({
   selector: 'list-stix-objects',
@@ -55,5 +56,9 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         this.isLastRow = this.index < this.model.length ? true : false;
         this.index = this.index + 1;
         return this.isLastRow;
+    }
+
+    public cleanWhitespace(inputString): string {
+        return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
     }
 }

@@ -71,6 +71,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
             }
         );
     }
+    
     public saveButtonClicked(): Observable<any> {
         let idRef = new ExternalReference();
         idRef.external_id = this.id;

@@ -9,7 +9,7 @@
                                     <a class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
                                 </div>
                                 <div class="truncate">
-                                    <small>{{data.attributes.description}}</small>
+                                    <small [innerHTML]="cleanWhitespace(data.attributes.description)"></small>
                                 </div>
 
                                 <md-chip-list class="pull-left" *ngIf="showLabels">

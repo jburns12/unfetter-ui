@@ -18,6 +18,7 @@ export class AttackPattern {
         labels: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+        object_marking_refs: string[];
         x_mitre_contributors: string[];
         x_mitre_data_sources: string[];
         x_mitre_platforms: string[];
@@ -50,6 +51,7 @@ export class AttackPattern {
             // labels: [],
             external_references: [],
             kill_chain_phases: [],
+            object_marking_refs: ["marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"],
             // x_mitre_platforms: [],
             x_mitre_contributors: [],
             x_mitre_data_sources: [],

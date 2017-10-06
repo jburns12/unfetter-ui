@@ -46,6 +46,7 @@ constructor(
        super.openDialog(this.tool).subscribe(
            () => {
                this.location.back();
+               this.deleteRels(this.tool.id);
            }
        );
    }

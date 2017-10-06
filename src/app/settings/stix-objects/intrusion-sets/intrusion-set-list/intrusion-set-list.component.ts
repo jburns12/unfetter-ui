@@ -49,6 +49,7 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
         super.openDialog(intrusionSet).subscribe(
             () => {
                  this.filteredItems = this.filteredItems.filter((h) => h.id !== intrusionSet.id);
+                 this.deleteRels(intrusionSet.id);
             }
         );
     }

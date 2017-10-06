@@ -10,6 +10,7 @@ export class CourseOfAction {
     public attributes: {
         version: string;
         created: string;
+        create_by_ref: string;
         modified: string;
         description: string;
         name: string;

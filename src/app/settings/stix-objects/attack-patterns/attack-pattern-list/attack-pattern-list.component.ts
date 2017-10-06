@@ -22,7 +22,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public attackPatternByPhaseMap: any = {};
     public numOfRows = 10;
     public displayedColumns: string[] = ['name', 'action'];
-    public data: any;
+    public target: any;
 
     constructor(
         public stixService: StixService,
@@ -99,32 +99,13 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
                 this.attackPattern.id = attackPattern.id;
-                this.getRels();
+                this.deleteRels();
                 // TODO determine if there is a better wya to do this
                 let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
                 delete this.attackPatternByPhaseMap[key];
                 this.ref.detectChanges();
                 this.attackPatternByPhaseMap[key] = temp;
 
-            }
-        );
-    }
-
-    public getRels(): void{
-        let filter = { 'stix.target_ref': this.attackPattern.id };
-        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
-        let subscription =  super.getByUrl(uri).subscribe(
-            (data) => {
-                this.data = data as Relationship[];
-                this.deleteRelationships(this.attackPattern.id);
-               }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
             }
         );
     }
@@ -161,26 +142,6 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
 
     public totalRecords(key: string): number {
         return this.phaseNameGroups[key].length;
-    }
-
-    public deleteRelationships(id: string): void {
-        console.log(id);
-        console.log(this.data);
-        if(this.data.length > 0){
-            let allRelationships = this.data.filter((r) => {
-                return r.attributes.source_ref === id || r.attributes.target_ref === id ;
-            });
-            for(let relationship of allRelationships){
-                console.log(relationship);
-                relationship.url = Constance.RELATIONSHIPS_URL;
-                relationship.id = relationship.attributes.id;
-                super.delete(relationship).subscribe(
-                    () => {
-                          this.data = this.data.filter((r) => r.id === relationship.id);
-                    }
-                );
-            }
-        }
     }
 
     public loadData(event: any, phaseName: string): void {

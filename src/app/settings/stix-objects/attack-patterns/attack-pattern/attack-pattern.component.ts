@@ -61,7 +61,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         super.openDialog(this.attackPattern).subscribe(
             () => {
                 this.location.back();
-                this.deleteRelationships(this.attackPattern.id);
+                this.deleteRels();
             }
         );
     }
@@ -70,7 +70,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
          let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
-                this.findCoA(true);
+                this.findCoA();
                 console.log(this.attackPattern);
             }, (error) => {
                 // handle errors here
@@ -144,6 +144,24 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         found = false;
       }
       return found ? true : false;
+    }
+
+    public deleteRels(): void{
+        let uri = Constance.RELATIONSHIPS_URL
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                this.target = data as Relationship[];
+                this.deleteRelationships(this.attackPattern.id);
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
     }
 
     public findCoA(): void{

@@ -208,6 +208,24 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
+    public selectAllPlatforms(): void {
+        this.attackPattern.attributes.x_mitre_platforms = [];
+        for (let i in this.platforms){
+            this.platforms[i]['val'] = true;
+            this.attackPattern.attributes.x_mitre_platforms.push(this.platforms[i]);
+        }
+        console.log(this.attackPattern.attributes.x_mitre_platforms);
+    }
+
+    public removeAllPlatforms(): void{
+        for (let i in this.platforms){
+            this.platforms[i]['val'] = false;
+        }
+        delete this.attackPattern.attributes['x_mitre_platforms'];
+        console.log(this.platforms);
+        console.log(this.attackPattern.attributes.x_mitre_platforms);
+    }
+
     public addRemoveEffectivePerm(permission: string) {
         if (!('x_mitre_effective_permissions' in this.attackPattern.attributes)){
             this.attackPattern.attributes.x_mitre_effective_permissions = [];

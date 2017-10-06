@@ -63,22 +63,21 @@
                      <md-card *ngFor="let addedTechnique of addedTechniques; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
                             <md-card-content>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
+                                        <form>
+                                            <md-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" placeholder="Technique" class="full-width">
+                                              <md-option *ngFor="let technique of techniques" [value]="technique.name">
+                                                    <span>{{ technique.name }}</span>
+                                              </md-option>
+                                            </md-select>
+                                        </form><br>
+                                    </div>
+                                    <div class="col-md-12">
                                             <md-input-container class="full-width">
-                                                <input mdInput placeholder="Technique" [(ngModel)]="addedTechniques[i].name" [mdAutocomplete]="auto">
+                                                <textarea mdInput mdTextareaAutosize placeholder="Description" [(ngModel)]="addedTechniques[i].description"></textarea>
                                             </md-input-container>
                                     </div>
-                                    <div class="col-md-4">
-                                            <md-input-container class="full-width">
-                                                <input mdInput placeholder="Description" [(ngModel)]="addedTechniques[i].description">
-                                            </md-input-container>
-                                    </div>
-                                    <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                        <md-option *ngFor="let technique of techniques" [value]="technique.name">
-                                              <span>{{ technique.name }}</span>
-                                        </md-option>
-                                    </md-autocomplete>
-                                </div>
+                                  </div>
                             </md-card-content>
                             <md-card-actions>
                                 <div class="button-row">

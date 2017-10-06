@@ -51,7 +51,9 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                  <label>Platforms</label>
+                  <label>Platforms</label><br>
+                  <a href="javascript:;" (click)="selectAllPlatforms()">[ Select All ]</a>
+                  <a href="javascript:;" (click)="removeAllPlatforms()">[ Select None ]</a><br>
                     <div class="row">
                         <div class="col-md-4" *ngFor="let platform of platforms">
                                 <md-checkbox class="identity-margin" (change)="addRemovePlatform(platform.name)" [checked]="platform.val">{{platform.name}}</md-checkbox>

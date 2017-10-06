@@ -68,7 +68,9 @@ public addAliasesToTool(): void{
 public createRelationships(id: string): void {
     for(let technique of this.addedTechniques){
         let currTechnique = this.techniques.filter((h) => h.name === technique.name);
-        this.saveRelationship(currTechnique[0].id, id, technique.description, technique.relationship);
+        if(currTechnique.length > 0){
+            this.saveRelationship(currTechnique[0].id, id, technique.description, technique.relationship);
+        }
     }
 }
 

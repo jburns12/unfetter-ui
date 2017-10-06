@@ -24,6 +24,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public relationship: Relationship = new Relationship();
     public coaId: string = '';
     public target: any;
+
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
           { id : 2, value: '2 - Practicioner' },
@@ -60,6 +61,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         super.openDialog(this.attackPattern).subscribe(
             () => {
                 this.location.back();
+                this.deleteRelationships(this.attackPattern.id);
             }
         );
     }
@@ -68,7 +70,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
          let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
-                this.findCoA();
+                this.findCoA(true);
                 console.log(this.attackPattern);
             }, (error) => {
                 // handle errors here
@@ -246,6 +248,27 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 }
             }
         );
+    }
+
+
+    public deleteRelationships(id: string): void {
+        console.log(id);
+        console.log(this.target);
+        if(this.target.length > 0){
+            let allRelationships = this.target.filter((r) => {
+                return r.attributes.source_ref === id || r.attributes.target_ref === id ;
+            });
+            for(let relationship of allRelationships){
+                console.log(relationship);
+                relationship.url = Constance.RELATIONSHIPS_URL;
+                relationship.id = relationship.attributes.id;
+                super.delete(relationship).subscribe(
+                    () => {
+                          this.target = this.target.filter((r) => r.id === relationship.id);
+                    }
+                );
+            }
+        }
     }
 
     public cleanWhitespace(inputString): string {

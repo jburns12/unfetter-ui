@@ -13,7 +13,6 @@ export class ExternalReferenceComponent {
 
      public addExternalReferenceButtonClicked(): void {
         let externalReference = new ExternalReference();
-        externalReference.external_id = '' + Math.random();
         this.model.attributes.external_references.unshift(externalReference);
     }
 

@@ -61,7 +61,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         super.openDialog(this.attackPattern).subscribe(
             () => {
                 this.location.back();
-                this.deleteRels();
+                this.deleteRels(this.attackPattern.id);
             }
         );
     }
@@ -144,24 +144,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         found = false;
       }
       return found ? true : false;
-    }
-
-    public deleteRels(): void{
-        let uri = Constance.RELATIONSHIPS_URL
-        let subscription =  super.getByUrl(uri).subscribe(
-            (data) => {
-                this.target = data as Relationship[];
-                this.deleteRelationships(this.attackPattern.id);
-               }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
     }
 
     public findCoA(): void{
@@ -266,27 +248,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 }
             }
         );
-    }
-
-
-    public deleteRelationships(id: string): void {
-        console.log(id);
-        console.log(this.target);
-        if(this.target.length > 0){
-            let allRelationships = this.target.filter((r) => {
-                return r.attributes.source_ref === id || r.attributes.target_ref === id ;
-            });
-            for(let relationship of allRelationships){
-                console.log(relationship);
-                relationship.url = Constance.RELATIONSHIPS_URL;
-                relationship.id = relationship.attributes.id;
-                super.delete(relationship).subscribe(
-                    () => {
-                          this.target = this.target.filter((r) => r.id === relationship.id);
-                    }
-                );
-            }
-        }
     }
 
     public cleanWhitespace(inputString): string {

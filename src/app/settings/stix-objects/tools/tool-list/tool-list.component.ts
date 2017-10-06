@@ -50,6 +50,7 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
         super.openDialog(tool).subscribe(
             () => {
                  this.filteredItems = this.filteredItems.filter((h) => h.id !== tool.id);
+                 this.deleteRels(tool.id);
             }
         );
     }

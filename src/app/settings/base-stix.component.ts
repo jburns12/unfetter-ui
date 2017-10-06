@@ -3,11 +3,14 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
+import { Relationship } from '../models';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
+import { Constance } from '../utils/constance';
 
 export class BaseStixComponent {
     public filteredItems: any[];
+    public allRels: any;
     private duration = 3000;
 
     constructor(
@@ -153,10 +156,12 @@ export class BaseStixComponent {
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
-                    this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
-                        duration: this.duration,
-                        extraClasses: ['snack-bar-background-success']
-                    });
+                    if('name' in item.attributes && item.type != 'course-of-action'){
+                        this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
+                            duration: this.duration,
+                            extraClasses: ['snack-bar-background-success']
+                        });
+                    }
                 }, (error) => {
                     // handle errors here
                     this.snackBar.open('Error ' + error , '', {
@@ -175,7 +180,7 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                if('name' in item.attributes){
+                if('name' in item.attributes && item.type != 'course-of-action'){
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
                         extraClasses: ['snack-bar-background-success']
@@ -225,7 +230,7 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                if('name' in item.attributes){
+                if('name' in item.attributes && item.type != 'course-of-action'){
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
                         extraClasses: ['snack-bar-background-success']
@@ -246,4 +251,36 @@ export class BaseStixComponent {
         );
     }
 
+    public deleteRels(id: string): void{
+        let uri = Constance.RELATIONSHIPS_URL
+        let subscription =  this.getByUrl(uri).subscribe(
+            (data) => {
+                this.allRels = data as Relationship[];
+                console.log(id);
+                console.log(this.allRels);
+                if(this.allRels.length > 0){
+                    let allRelationships = this.allRels.filter((r) => {
+                        return r.attributes.source_ref === id || r.attributes.target_ref === id ;
+                    });
+                    for(let relationship of allRelationships){
+                        console.log(relationship);
+                        relationship.url = Constance.RELATIONSHIPS_URL;
+                        relationship.id = relationship.attributes.id;
+                        this.delete(relationship).subscribe(
+                            () => {
+                            }
+                        );
+                    }
+                }
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
 }

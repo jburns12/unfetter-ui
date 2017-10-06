@@ -47,6 +47,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         super.openDialog(this.intrusionSet).subscribe(
             () => {
                 this.location.back();
+                this.deleteRels(this.intrusionSet.id);
             }
         );
     }

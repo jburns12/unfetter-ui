@@ -21,6 +21,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public addedSoftwares: any = [];
     public softwares: any = [];
     public editComponent: boolean = false;
+    public origRels: any = [];
 
      constructor(
         public stixService: StixService,
@@ -116,6 +117,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public getTechniqueRels(relationship: Relationship): void{
         let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
         if(tech.length > 0){
+            this.origRels.push(relationship);
             this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
         }
     }
@@ -123,6 +125,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public getSwRels(relationship: Relationship): void{
         let sw = this.softwares.filter((h) => h.id === relationship.attributes.target_ref);
         if(sw.length > 0){
+            this.origRels.push(relationship);
             this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
         }
     }

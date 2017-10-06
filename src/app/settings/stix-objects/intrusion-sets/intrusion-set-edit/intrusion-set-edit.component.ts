@@ -84,6 +84,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
             (data) => {
                 this.location.back();
                 this.createRelationships(data.id);
+                this.removeRelationships(data.id);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -112,13 +113,16 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
     public createRelationships(id: string): void {
+        console.log(this.origRels);
         for(let technique of this.addedTechniques){
             let currTechnique = this.techniques.filter((h) => h.name === technique.name);
             this.saveRelationship(id, currTechnique[0].id, technique.description, technique.relationship);
+            this.origRels = this.origRels.filter((h) => h.id !== technique.relationship);
         }
         for(let software of this.addedSoftwares){
             let currSoftware = this.softwares.filter((h) => h.name === software.name);
             this.saveRelationship(id, currSoftware[0].id, software.description, software.relationship);
+            this.origRels = this.origRels.filter((h) => h.id !== software.relationship);
         }
     }
 
@@ -158,6 +162,17 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
                     if (subscription) {
                         subscription.unsubscribe();
                     }
+                }
+            );
+        }
+    }
+
+    public removeRelationships(id: string): void {
+        for(let rel of this.origRels){
+            rel.url = Constance.RELATIONSHIPS_URL;
+            rel.id = rel.attributes.id;
+            this.delete(rel).subscribe(
+                () => {
                 }
             );
         }

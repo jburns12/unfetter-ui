@@ -12,9 +12,9 @@
                                     <small [innerHTML]="cleanWhitespace(data.attributes.description)"></small>
                                 </div>
 
-                                <md-chip-list class="pull-left" *ngIf="showLabels">
+                                <!--<md-chip-list class="pull-left" *ngIf="showLabels">
                                     <md-chip selected="true" color="accent" *ngFor="let label of data.attributes.labels">{{label}}</md-chip>
-                                </md-chip-list>
+                                </md-chip-list>-->
 
                                 <md-chip-list class="pull-left" *ngIf="showPattern">
                                     <md-chip selected="true" color="accent">{{data.attributes.pattern}}</md-chip>

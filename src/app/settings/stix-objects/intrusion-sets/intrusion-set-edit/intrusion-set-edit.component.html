@@ -91,23 +91,22 @@
             <div class="col-md-12">
                      <md-card *ngFor="let addedSoftware of addedSoftwares; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
                             <md-card-content>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                            <md-input-container class="full-width">
-                                                <input mdInput placeholder="Software" [(ngModel)]="addedSoftwares[i].name" [mdAutocomplete]="auto">
-                                            </md-input-container>
-                                    </div>
-                                    <div class="col-md-4">
-                                            <md-input-container class="full-width">
-                                                <input mdInput placeholder="Description" [(ngModel)]="addedSoftwares[i].description">
-                                            </md-input-container>
-                                    </div>
-                                    <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                        <md-option *ngFor="let software of softwares" [value]="software.name">
-                                              <span>{{ software.name }}</span>
-                                        </md-option>
-                                    </md-autocomplete>
-                                </div>
+                               <div class="row">
+                                   <div class="col-md-6">
+                                       <form>
+                                           <md-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" placeholder="Software" class="full-width">
+                                             <md-option *ngFor="let software of softwares" [value]="software.name">
+                                                   <span>{{ software.name }}</span>
+                                             </md-option>
+                                           </md-select>
+                                       </form><br>
+                                   </div>
+                                   <div class="col-md-12">
+                                           <md-input-container class="full-width">
+                                               <textarea mdInput mdTextareaAutosize placeholder="Description" [(ngModel)]="addedSoftwares[i].description"></textarea>
+                                           </md-input-container>
+                                   </div>
+                                 </div>
                             </md-card-content>
                             <md-card-actions>
                                 <div class="button-row">
@@ -116,7 +115,7 @@
                             </md-card-actions>
                     </md-card>
             </div>
-</div>
+</div><br>
 
 
 <external-reference [(model)]="intrusionSet"></external-reference>

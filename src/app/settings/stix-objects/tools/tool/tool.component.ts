@@ -20,6 +20,7 @@ public tool: Tool = new Tool();
 public aliases: any = [];
 public addedTechniques: any = [];
 public techniques: any = [];
+public origRels: any = [];
 
 constructor(
      public stixService: StixService,
@@ -45,8 +46,8 @@ constructor(
    public deleteButtonClicked(): void {
        super.openDialog(this.tool).subscribe(
            () => {
-               this.location.back();
-               this.deleteRels(this.tool.id);
+              this.deleteRels(this.tool.id);
+              this.location.back();
            }
        );
    }
@@ -59,7 +60,8 @@ constructor(
                let target = data as Relationship[];
                target.forEach((relationship: Relationship) => {
                    if(relationship.attributes.relationship_type == "uses"){
-                       this.getTechniqueRels(relationship);
+                      this.origRels.push(relationship);
+                      this.getTechniqueRels(relationship);
                    }
                });
               }, (error) => {

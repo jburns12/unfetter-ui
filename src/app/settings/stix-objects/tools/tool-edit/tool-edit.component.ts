@@ -71,6 +71,9 @@ public createRelationships(id: string): void {
         if(currTechnique.length > 0){
             this.saveRelationship(currTechnique[0].id, id, technique.description, technique.relationship);
         }
+        console.log(technique.relationship);
+        console.log(this.origRels);
+        this.origRels = this.origRels.filter((h) => h.id !== technique.relationship);
     }
 }
 
@@ -121,6 +124,7 @@ public saveTool(): void {
         (data) => {
             this.location.back();
             this.createRelationships(data.id);
+            this.removeRelationships(data.id);
         }, (error) => {
             // handle errors here
              console.log('error ' + error);
@@ -238,6 +242,17 @@ public loadStixObject(id: string): void {
         this.loadObject(Constance.COURSE_OF_ACTION_URL, id, this.courseOfActions);
     } else if (id.indexOf('intrusion-set') >= 0) {
         this.loadObject(Constance.INTRUSION_SET_URL, id, this.intrusionSets);
+    }
+}
+
+public removeRelationships(id: string): void {
+    for(let rel of this.origRels){
+        rel.url = Constance.RELATIONSHIPS_URL;
+        rel.id = rel.attributes.id;
+        this.delete(rel).subscribe(
+            () => {
+            }
+        );
     }
 }
 

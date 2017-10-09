@@ -38,6 +38,7 @@ public ngOnInit() {
             console.log(this.tool);
             this.getTechniques(false);
             this.getAllAliases();
+            super.getCitations();
         }, (error) => {
             // handle errors here
              console.log('error ' + error);

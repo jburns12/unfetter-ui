@@ -29,6 +29,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         this.getTechniques(true);
         this.getSoftware(true);
         this.getId();
+        super.getCitations();
     }
 
     public getIdString(ids: any): string {
@@ -71,7 +72,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
             }
         );
     }
-    
+
     public saveButtonClicked(): Observable<any> {
         let idRef = new ExternalReference();
         idRef.external_id = this.id;

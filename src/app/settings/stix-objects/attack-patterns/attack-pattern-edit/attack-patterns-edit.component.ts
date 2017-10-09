@@ -60,6 +60,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getDataSources();
                this.assignPerms();
                this.findCoA();
+               super.getCitations();
                console.log(this.dataSources);
            }, (error) => {
                // handle errors here

@@ -207,6 +207,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 if(this.editComponent){
                     this.getAllAliases();
                 }
+                super.getCitations();
                 //let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));
                 // this.loadRelationships(filter);
 

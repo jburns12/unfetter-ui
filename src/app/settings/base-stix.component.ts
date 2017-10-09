@@ -10,6 +10,7 @@ import { Constance } from '../utils/constance';
 
 export class BaseStixComponent {
     public filteredItems: any[];
+    public allCitations: any = [];
     public allRels: any;
     private duration = 3000;
 
@@ -251,7 +252,33 @@ export class BaseStixComponent {
         );
     }
 
-    public deleteRels(id: string): void{
+    public getCitations(): void {
+        let uri = Constance.ATTACK_PATTERN_URL;
+        let subscription =  this.getByUrl(uri).subscribe(
+            (data) => {
+                let techniques = data as AttackPattern[];
+                console.log(techniques);
+                techniques.forEach((attackPattern: AttackPattern) => {
+                    for (let i in attackPattern.attributes.external_references){
+                        if(!(attackPattern.attributes.external_references[i].external_id)){
+                            this.allCitations.push(attackPattern.attributes.external_references[i]);
+                        }
+                    }
+                });
+                this.allCitations = this.allCitations.sort((a,b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                console.log(this.allCitations);
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+    public deleteRels(id: string): void {
         let uri = Constance.RELATIONSHIPS_URL
         let subscription =  this.getByUrl(uri).subscribe(
             (data) => {

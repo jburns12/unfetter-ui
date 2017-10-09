@@ -10,21 +10,17 @@
    <div class="col-md-12">
        <md-card>
            <md-card-content>
+             <md-card-header style="border-bottom: 1px solid lightgray;">
+                 <md-card-title><h3>{{ tool.attributes.name }}</h3></md-card-title>
+             </md-card-header>
                    <div class="row">
                        <div class="col-md-12">
-                           <label>Name</label>
-                           <h6>{{tool.attributes.name}}</h6>
-                       </div>
-                   </div>
-                   <div class="row">
-                       <div class="col-md-12">
-                           <label>Description</label>
-                           <h6 [innerHTML]="cleanWhitespace(tool.attributes.description)"></h6>
+                           <h5 [innerHTML]="cleanWhitespace(tool.attributes.description)"></h5><br>
                        </div>
                    </div>
                    <div *ngIf="tool.attributes.x_mitre_aliases.length > 0" class="row">
                        <div class="col-md-12">
-                           <label>Aliases:</label>
+                           <label>Aliases</label>
                            <md-chip-list>
                                <md-chip *ngFor="let alias of tool.attributes.x_mitre_aliases"
                                    selected="true">
@@ -32,7 +28,7 @@
                                </md-chip>
                            </md-chip-list>
                        </div>
-                   </div>
+                   </div><br>
                    <div class="row">
                        <div class="col-md-12">
                            <label>Labels</label>
@@ -45,7 +41,7 @@
                            </md-chip-list>
 
                        </div>
-                   </div>
+                   </div><br>
                    <div class="row">
                        <div class="col-md-12">
                            <label>External References</label>

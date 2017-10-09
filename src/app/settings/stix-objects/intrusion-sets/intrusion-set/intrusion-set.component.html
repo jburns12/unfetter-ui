@@ -11,21 +11,17 @@
     <div class="col-md-12">
         <md-card>
             <md-card-content>
+              <md-card-header style="border-bottom: 1px solid lightgray;">
+                  <md-card-title><h3>{{ intrusionSet.attributes.name }}</h3></md-card-title>
+              </md-card-header>
                     <div class="row">
                         <div class="col-md-12">
-                            <label>Name</label>
-                            <p>{{intrusionSet.attributes.name}}</p>
+                            <h5 [innerHTML]="cleanWhitespace(intrusionSet.attributes.description)"></h5><br>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <label>Description</label>
-                            <h6 [innerHTML]="cleanWhitespace(intrusionSet.attributes.description)"></h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>Aliases:</label>
+                            <label>Aliases</label>
                             <md-chip-list>
                                 <md-chip *ngFor="let alias of intrusionSet.attributes.aliases"
                                     selected="true">

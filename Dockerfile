@@ -1,8 +1,5 @@
 FROM node:8.5-alpine
 
-ENV http_proxy=http://gatekeeper-w.mitre.org:80
-ENV https_proxy=http://gatekeeper-w.mitre.org:80
-
 # Create Application Directory
 ENV WORKING_DIRECTORY /usr/share/unfetter-ui
 RUN mkdir -p $WORKING_DIRECTORY

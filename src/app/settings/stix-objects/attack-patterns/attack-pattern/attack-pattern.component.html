@@ -14,34 +14,30 @@
             <md-card>
 
                 <md-card-content>
+                      <md-card-header style="border-bottom: 1px solid lightgray;">
+                          <md-card-title><h3>{{ attackPattern.attributes.name }}</h3></md-card-title>
+                      </md-card-header>
                         <div class="row">
                            <div class="col-md-12">
-                                <label>Name</label>
-                                <h6>{{attackPattern.attributes.name}}</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                           <div class="col-md-12">
-                                <label>Description</label>
-                                <h6 [innerHTML]="cleanWhitespace(attackPattern.attributes.description)"></h6>
+                                <h5 [innerHTML]="cleanWhitespace(attackPattern.attributes.description)"></h5>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_detection" class="row">
                            <div class="col-md-12">
                                 <label>Detection</label>
-                                <h6>{{attackPattern.attributes.x_mitre_detection}}</h6>
+                                <h5>{{attackPattern.attributes.x_mitre_detection}}</h5>
                             </div>
-                        </div>
+                        </div><br>
                         <div *ngIf="attackPattern.attributes.x_mitre_system_requirements" class="row">
                             <div class="col-md-12">
                                 <label>System Requirements</label>
-                                <h6>{{attackPattern.attributes.x_mitre_system_requirements}}</h6>
+                                <h5>{{attackPattern.attributes.x_mitre_system_requirements}}</h5>
                             </div>
-                        </div>
+                        </div><br>
                         <div *ngIf="mitigation" class="row">
                             <div class="col-md-12">
                                 <label>Mitigation</label>
-                                <h6 [innerHTML]="cleanWhitespaceMitigation(mitigation)"></h6>
+                                <h5 [innerHTML]="cleanWhitespaceMitigation(mitigation)"></h5><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_platforms && attackPattern.attributes.x_mitre_platforms.length" class="row">
@@ -52,7 +48,7 @@
                                         selected="true">
                                         {{platform}}
                                     </md-chip>
-                                </md-chip-list>
+                                </md-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_permissions_required && attackPattern.attributes.x_mitre_permissions_required.length" class="row">
@@ -63,7 +59,7 @@
                                         selected="true">
                                         {{permission}}
                                     </md-chip>
-                                </md-chip-list>
+                                </md-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_effective_permissions && attackPattern.attributes.x_mitre_effective_permissions.length" class="row">
@@ -74,26 +70,26 @@
                                         selected="true">
                                         {{permission}}
                                     </md-chip>
-                                </md-chip-list>
+                                </md-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_remote_support" class="row">
                            <div class="col-md-12">
                                 <label>Supports Remote</label>
-                                <h6>{{attackPattern.attributes.x_mitre_remote_support}}</h6>
-                            </div>
+                                <h5>{{attackPattern.attributes.x_mitre_remote_support}}</h5>
+                            </div><br>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_network_requirements" class="row">
                            <div class="col-md-12">
                                 <label>Requires Network</label>
-                                <h6>{{attackPattern.attributes.x_mitre_network_requirements}}</h6>
-                            </div>
+                                <h5>{{attackPattern.attributes.x_mitre_network_requirements}}</h5>
+                            </div><br>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_defense_bypassed" class="row">
                            <div class="col-md-12">
                                 <label>Defense Bypassed</label>
-                                <h6>{{attackPattern.attributes.x_mitre_defense_bypassed}}</h6>
-                            </div>
+                                <h5>{{attackPattern.attributes.x_mitre_defense_bypassed}}</h5>
+                            </div><br>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_data_sources && attackPattern.attributes.x_mitre_data_sources.length" onloadedmetadata=""class="row">
                             <div class="col-md-12">
@@ -103,7 +99,7 @@
                                         selected="true">
                                         {{dataSource}}
                                     </md-chip>
-                                </md-chip-list>
+                                </md-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_contributors && attackPattern.attributes.x_mitre_contributors.length" class="row">
@@ -114,7 +110,7 @@
                                         selected="true">
                                         {{contributor}}
                                     </md-chip>
-                                </md-chip-list>
+                                </md-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.kill_chain_phases && attackPattern.attributes.kill_chain_phases.length" class="row">
@@ -125,7 +121,7 @@
                                         selected="true">
                                         {{kill_chain_phase.phase_name}}
                                     </md-chip>
-                                </md-chip-list>
+                                </md-chip-list><br>
                             </div>
                         </div>
                            <div class="row">

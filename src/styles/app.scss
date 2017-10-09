@@ -320,7 +320,7 @@ table.mitigation-groups td {
 
 span.stix-object-item-label {
     margin-left: 5px;
-    font-weight: normal;
+    font-weight: bold;
     vertical-align: middle;
 }
 
@@ -450,9 +450,9 @@ h6.phase-label {
 }
 .phase-label .selected {
     color: $primary-color;
-    
+
     background-color: $muted-color;
-       
+
 }
 .collection-item .plot {
     float: left;

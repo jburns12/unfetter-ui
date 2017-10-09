@@ -34,6 +34,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
               this.getContributors();
               this.getDataSources();
               this.getId();
+              super.getCitations();
           }, (error) => {
               // handle errors here
               console.log('error ' + error);

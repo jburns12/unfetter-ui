@@ -1,5 +1,8 @@
 FROM node:8.5-alpine
 
+ENV http_proxy=http://gatekeeper-w.mitre.org:80
+ENV https_proxy=http://gatekeeper-w.mitre.org:80
+
 # Create Application Directory
 ENV WORKING_DIRECTORY /usr/share/unfetter-ui
 RUN mkdir -p $WORKING_DIRECTORY
@@ -18,7 +21,7 @@ RUN apk update && \
     apk add --no-cache libsass && \
     # get correct webpack version, match this with package-lock.json
     # npm install -g webpack@~2.3.1 webpack-dev-server@2.4.1 && \
-    # get correct webpack-merge to fix, Error: Cannot find module 'webpack-merge' 
+    # get correct webpack-merge to fix, Error: Cannot find module 'webpack-merge'
     # npm install webpack-merge@3.0.0 -D && \
     npm install && \
     # The NPM package depends on TAR package, which has a test directory with an encrypted tgz file, that gets blocked by some antivirus scanners. Removing it.

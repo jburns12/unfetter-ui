@@ -31,14 +31,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <md-input-container class="full-width">
-                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_system_requirements"  placeholder="System Requirements">{{attackPattern.attributes.x_mitre_system_requirements}}</textarea>
+                        <textarea mdInput mdTextareaAutosize placeholder="Mitigation" [(ngModel)]="mitigation">{{mitigation}}</textarea>
                     </md-input-container>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <md-input-container class="full-width">
-                        <textarea mdInput mdTextareaAutosize placeholder="Mitigation" [(ngModel)]="mitigation">{{mitigation}}</textarea>
+                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_system_requirements"  placeholder="System Requirements">{{attackPattern.attributes.x_mitre_system_requirements}}</textarea>
                     </md-input-container>
                 </div>
             </div>
@@ -51,7 +51,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                  <label>Platforms</label><br>
+                  <h4>Platforms</h4>
                   <a href="javascript:;" (click)="selectAllPlatforms()">[ Select All ]</a>
                   <a href="javascript:;" (click)="removeAllPlatforms()">[ Select None ]</a><br>
                     <div class="row">
@@ -63,7 +63,7 @@
             </div><br>
             <div class="row">
                 <div class="col-md-12">
-                  <label>Permissions Required</label>
+                  <h4>Permissions Required</h4>
                     <div class="row">
                         <div class="col-md-4" *ngFor="let perm of permissions_req">
                                 <md-checkbox class="identity-margin" (change)="addRemovePermission(perm.name)" [checked]="perm.val">{{perm.name}}</md-checkbox>
@@ -73,7 +73,7 @@
             </div>
             <div *ngIf="tacticBools['privEsc']" class="row"><br>
                 <div class="col-md-12">
-                  <label>Effective Permissions</label>
+                  <h4>Effective Permissions</h4>
                     <div class="row">
                         <div class="col-md-4" *ngFor="let perm of effective_perms">
                                 <md-checkbox class="identity-margin" (change)="addRemoveEffectivePerm(perm.name)" [checked]="perm.val">{{perm.name}}</md-checkbox>
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div *ngIf="tacticBools['execution']"><br>
-              <label>Supports Remote</label>
+              <h4>Supports Remote</h4>
               <div class="row">
                 <div class="col-md-6">
                     <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_remote_support">
@@ -94,7 +94,7 @@
               </div>
             </div>
             <div *ngIf="tacticBools['exfil']"><br>
-              <label>Requires Network</label>
+              <h4>Requires Network</h4>
               <div class="row">
                   <div class="col-md-6">
                       <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_network_requirements">
@@ -107,7 +107,7 @@
             </div><br>
             <div class="row">
                 <div class="col-md-12">
-                    <label>Data Sources</label>
+                    <h4>Data Sources</h4>
                           <div class="button-row">
                                 <a class=" " md-raised-button (click)="addDataSource()"><i class="material-icons">add</i> ADD</a>
                           </div>
@@ -140,7 +140,7 @@
             </div><br>
             <div class="row">
                 <div class="col-md-12">
-                    <label>Contributors</label>
+                    <h4>Contributors</h4>
                           <div class="button-row">
                                 <a class=" " md-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
                           </div>

@@ -46,8 +46,8 @@ constructor(
    public deleteButtonClicked(): void {
        super.openDialog(this.tool).subscribe(
            () => {
-              this.deleteRels(this.tool.id);
               this.location.back();
+              this.deleteRels(this.tool.id);
            }
        );
    }

@@ -1,10 +1,13 @@
 
   <div class="row">
       <div class="col-md-12">
-        <h4>Tactics</h4>
+        <h4>Tactics
+        <span style="color:#FE6131">*</span></h4>
+          <a href="javascript:;" (click)="selectAllTactics()">[ Select All ]</a>
+          <a href="javascript:;" (click)="removeAllTactics()">[ Select None ]</a><br><br>
           <div class="row">
               <div class="col-md-4" *ngFor="let tactic of tactics">
-                      <md-checkbox class="identity-margin" (change)="addRemoveTactic(tactic.name)" [checked]="tactic.val">{{tactic.name}}</md-checkbox>
+                      <md-checkbox class="identity-margin" (change)="addRemoveTactic(tactic.name)" [(ngModel)]="tactic.val">{{tactic.name}}</md-checkbox>
               </div>
           </div>
       </div>

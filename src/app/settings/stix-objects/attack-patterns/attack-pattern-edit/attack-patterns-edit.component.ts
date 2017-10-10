@@ -183,7 +183,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             if ( this.foundPlatform(platform) ) {
                 this.attackPattern.attributes.x_mitre_platforms = this.attackPattern.attributes.x_mitre_platforms.filter((p) => p !== platform);
                 if(this.attackPattern.attributes.x_mitre_platforms.length == 0){
-                    delete this.attackPattern.attributes['x_mitre_platforms'];
+                    this.attackPattern.attributes['x_mitre_platforms'] = [];
                     console.log(this.attackPattern.attributes.x_mitre_platforms);
                 }
             } else {
@@ -222,7 +222,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         for (let i in this.platforms){
             this.platforms[i]['val'] = false;
         }
-        delete this.attackPattern.attributes['x_mitre_platforms'];
+        this.attackPattern.attributes['x_mitre_platforms'] = [];
         console.log(this.platforms);
         console.log(this.attackPattern.attributes.x_mitre_platforms);
     }

@@ -52,7 +52,7 @@ export class AttackPattern {
             external_references: [],
             kill_chain_phases: [],
             object_marking_refs: ["marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"],
-            // x_mitre_platforms: [],
+            x_mitre_platforms: [],
             x_mitre_contributors: [],
             x_mitre_data_sources: [],
             // x_mitre_permissions_required: [],

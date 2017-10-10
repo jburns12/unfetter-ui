@@ -11,7 +11,7 @@
   "scripts": {
     "analyze": "webpack-bundle-analyzer stats.json dist",
     "analyze:dev": "npm run clean && webpack --config config/webpack.dev.js --profile --json > stats.json && npm run analyze",
-    "analyze:prod": "npm run clean && webpack --config config/webpack.prod.js --profile > stats.json && npm run analyze",    
+    "analyze:prod": "npm run clean && webpack --config config/webpack.prod.js --profile > stats.json && npm run analyze",
     "build:aot:prod": "npm run clean:dist && npm run clean:aot && webpack --config config/webpack.prod.js  --progress --profile --bail",
     "build:aot": "npm run build:aot:prod",
     "build:dev": "npm run clean:dist && webpack --config config/webpack.dev.js --progress --profile",
@@ -94,6 +94,7 @@
     "moment": "2.18.1",
     "ng2-charts": "^1.6.0",
     "ngx-bootstrap": "^1.9.3",
+    "ngx-clipboard": "^8.1.0",
     "perfect-scrollbar": "0.7.1",
     "primeng": "4.0.0",
     "reflect-metadata": "^0.1.10",

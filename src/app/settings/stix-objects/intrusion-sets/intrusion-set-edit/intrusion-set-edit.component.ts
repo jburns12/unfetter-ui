@@ -130,7 +130,9 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         let relationship = new Relationship();
         relationship.attributes.source_ref = source_ref;
         relationship.attributes.target_ref = target_ref;
-        relationship.attributes.description = description;
+        if(description != ''){
+          relationship.attributes.description = description;
+        }
         relationship.attributes.relationship_type = "uses";
         if(id != ''){
             relationship.id = id;

@@ -25,6 +25,7 @@ import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.compon
 import { LabelComponent } from './labels/label.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { ClipboardModule } from 'ngx-clipboard';
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
@@ -62,7 +63,8 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     CheckboxModule,
     MdCheckboxModule,
     BsDropdownModule.forRoot(),
-    CollapseModule.forRoot()
+    CollapseModule.forRoot(),
+    ClipboardModule
   ],
   exports: [
     PageHeaderComponent,

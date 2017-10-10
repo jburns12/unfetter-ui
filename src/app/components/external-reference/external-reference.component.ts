@@ -5,7 +5,8 @@ import { ExternalReference } from '../../models';
 
 @Component({
   selector: 'external-reference',
-  templateUrl: './external-reference.component.html'
+  templateUrl: './external-reference.component.html',
+  styleUrls: ['./external-reference.component.scss']
 })
 export class ExternalReferenceComponent {
 

@@ -7,6 +7,7 @@ import { Relationship } from '../models';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
 import { Constance } from '../utils/constance';
+import { AttackPattern } from '../models/attack-pattern';
 
 export class BaseStixComponent {
     public filteredItems: any[];

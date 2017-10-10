@@ -3,5 +3,6 @@
      public external_id: string;
      public description: string;
      public citation: string;
+     public citeref: string;
      public url: string;
 }

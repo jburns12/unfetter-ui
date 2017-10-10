@@ -26,6 +26,7 @@ export class ExternalReferenceComponent {
         let match = this.model.attributes.external_references.find((h) => h.source_name === citationStr);
         let index = this.model.attributes.external_references.indexOf(match);
         this.model.attributes.external_references[index].citation = "[[Citation: " + citationStr + "]]";
+        this.model.attributes.external_references[index].citeref = "[[CiteRef::" + citationStr + "]]";
     }
 
     public populateCitation(citationStr: string): void {

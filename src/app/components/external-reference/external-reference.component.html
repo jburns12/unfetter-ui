@@ -42,9 +42,19 @@
                             </md-card-content>
                             <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack'">
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="generateCitation(externalReference.source_name)"> Generate Citation Text</a>
-                                    <a class="" md-raised-button [ngxClipboard]="copyTarget"> Copy</a>
-                                    <input class="display-citation" size="120" #copyTarget value="{{ externalReference.citation }}">
+                                    <a class="" md-raised-button (click)="generateCitation(externalReference.source_name)"> Generate Citation Text</a><br>
+                                </div>
+                            </md-card-actions>
+                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citation">
+                                <div class="button-row">
+                                    <a class="" md-raised-button [ngxClipboard]="copyCitation"> Copy</a>
+                                    <input class="display-citation" size="100" #copyCitation value="{{ externalReference.citation }}">
+                                </div>
+                            </md-card-actions>
+                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeref">
+                                <div class="button-row">
+                                    <a class="" md-raised-button [ngxClipboard]="copyCiteRef"> Copy</a>
+                                    <input class="display-citation" size="100" #copyCiteRef value="{{ externalReference.citeref }}">
                                 </div>
                             </md-card-actions>
                             <md-card-actions>

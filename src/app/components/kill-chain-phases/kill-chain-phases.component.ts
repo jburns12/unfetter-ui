@@ -71,4 +71,31 @@ export class KillChainPhasesComponent implements OnChanges{
         });
         return found ? true : false;
     }
+
+    public selectAllTactics(): void {
+        let addedPhases = this.model.attributes.kill_chain_phases;
+        this.model.attributes.kill_chain_phases = [];
+        for (let i in this.tactics){
+            let killChainPhase = new KillChainPhase();
+            killChainPhase.kill_chain_name = 'mitre-attack';
+            killChainPhase.phase_name = this.tactics[i]['name'];
+            this.model.attributes.kill_chain_phases.push(killChainPhase);
+            this.tactics[i]['val'] = true;
+            if(!(addedPhases.find((h) => h.phase_name === this.tactics[i]['name']))){
+                this.emitTactic(this.tactics[i]['name'], true);
+            }
+        }
+        console.log(this.model.attributes.kill_chain_phases);
+    }
+
+    public removeAllTactics(): void{
+        for (let i in this.tactics){
+            this.tactics[i]['val'] = false;
+            if((this.model.attributes.kill_chain_phases.find((h) => h.phase_name === this.tactics[i]['name']))){
+                this.emitTactic(this.tactics[i]['name'], true);
+            }
+        }
+        this.model.attributes.kill_chain_phases = [];
+        console.log(this.model.attributes.kill_chain_phases);
+    }
 }

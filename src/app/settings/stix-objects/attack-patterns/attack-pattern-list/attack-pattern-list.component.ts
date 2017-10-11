@@ -34,7 +34,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         private ref: ChangeDetectorRef) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        this.phaseNameGroups['unspecified'] = [];
+        // this.phaseNameGroups['unspecified'] = [];
     }
 
     public ngOnInit() {

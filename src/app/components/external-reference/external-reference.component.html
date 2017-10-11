@@ -20,10 +20,10 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                             <md-input-container class="full-width">
-                                                <input mdInput placeholder="Name" [(ngModel)]="externalReference.source_name" (ngModelChange)="populateCitation(externalReference.source_name)" value="{{externalReference.source_name}}" [mdAutocomplete]="auto">
+                                                <input mdInput placeholder="Name" [(ngModel)]="externalReference.source_name" (ngModelChange)="currCitations = populateCitation(externalReference.source_name)" value="{{externalReference.source_name}}" [mdAutocomplete]="auto">
                                             </md-input-container>
                                             <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                            <md-option *ngFor="let citation of citations" [value]="citation.source_name">
+                                            <md-option *ngFor="let citation of currCitations" [value]="citation.source_name">
                                                 <span>{{ citation.source_name }}</span>
                                             </md-option>
                                             </md-autocomplete>

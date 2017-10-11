@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { StixService } from '../../../stix.service';
@@ -72,6 +73,14 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                }
            }
        );
+    }
+
+    public filterOptions: void(stringToMatch: string, listToParse: any) {
+        if(stringToMatch){
+            let filterVal = stringToMatch.toLowerCase();
+            return listToParse.filter((h) => h.toLowerCase().startsWith(filterVal));
+        }
+        return listToParse;
     }
 
     public getPlatforms(): void {
@@ -245,6 +254,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addDataSource(): void {
+        if(!('x_mitre_data_sources' in this.attackPattern.attributes)){
+            this.attackPattern.attributes.x_mitre_data_sources = [];
+        }
         let dataSource = '';
         this.attackPattern.attributes.x_mitre_data_sources.unshift(dataSource);
     }
@@ -254,6 +266,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addContributor(): void {
+        if(!('x_mitre_contributors' in this.attackPattern.attributes)){
+            this.attackPattern.attributes.x_mitre_contributors = [];
+        }
         let contributorName = '';
         this.attackPattern.attributes.x_mitre_contributors.unshift(contributorName);
     }

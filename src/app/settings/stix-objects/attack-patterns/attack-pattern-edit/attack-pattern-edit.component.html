@@ -51,8 +51,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                  <h4>Platforms
-                  <span style="color:#FE6131">*</span></h4>
+                  <h4>Platforms</h4>
                   <a href="javascript:;" (click)="selectAllPlatforms()">[ Select All ]</a>
                   <a href="javascript:;" (click)="removeAllPlatforms()">[ Select None ]</a><br><br>
                     <div class="row">
@@ -120,14 +119,14 @@
                                         <md-card-content>
                                             <div class="row">
                                               <div class="col-md-6">
-                                                      <md-input-container class="full-width">
-                                                          <input mdInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [mdAutocomplete]="auto">
-                                                      </md-input-container>
-                                                      <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                                      <md-option *ngFor="let dataSource of dataSources" [value]="dataSource">
-                                                          <span>{{ dataSource }}</span>
-                                                      </md-option>
-                                                  </md-autocomplete>
+                                                <md-input-container class="full-width">
+                                                    <input mdInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [mdAutocomplete]="auto" (ngModelChange)="currDataSources = filterOptions(attackPattern.attributes.x_mitre_data_sources[i], dataSources)">
+                                                </md-input-container>
+                                                <md-autocomplete name="auto" #auto="mdAutocomplete" >
+                                                  <md-option *ngFor="let dataSource of currDataSources" [value]="dataSource">
+                                                    <span>{{ dataSource }}</span>
+                                                  </md-option>
+                                                </md-autocomplete>
                                               </div>
                                             </div>
                                         </md-card-content>
@@ -153,14 +152,14 @@
                                         <md-card-content>
                                             <div class="row">
                                               <div class="col-md-6">
-                                                      <md-input-container class="full-width">
-                                                          <input mdInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [mdAutocomplete]="auto">
-                                                      </md-input-container>
-                                                      <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                                      <md-option *ngFor="let contributor of contributors" [value]="contributor">
-                                                          <span>{{ contributor }}</span>
-                                                      </md-option>
-                                                  </md-autocomplete>
+                                                <md-input-container class="full-width">
+                                                    <input mdInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [mdAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(attackPattern.attributes.x_mitre_contributors[i], contributors)">
+                                                </md-input-container>
+                                                <md-autocomplete name="auto" #auto="mdAutocomplete" >
+                                                <md-option *ngFor="let contributor of currContributors" [value]="contributor">
+                                                    <span>{{ contributor }}</span>
+                                                </md-option>
+                                                </md-autocomplete>
                                               </div>
                                             </div>
                                         </md-card-content>
@@ -178,7 +177,7 @@
                 <div class="col-md-12">
                     <div class="button-row pull-right">
                          <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
-                         <button type="submit"  class=" " md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name || !attackPattern.attributes.description || !attackPattern.attributes.kill_chain_phases || attackPattern.attributes.kill_chain_phases.length < 1 || attackPattern.attributes.x_mitre_platforms.length < 1"><i class="material-icons">save</i> SAVE & CLOSE</button>
+                         <button type="submit"  class=" " md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
 
                     </div>
                 </div>

@@ -33,9 +33,15 @@ export class ExternalReferenceComponent {
         let match = this.model.attributes.external_references.find((h) => h.source_name === citationStr);
         let index = this.model.attributes.external_references.indexOf(match);
         let citation = this.citations.find((h) => h.source_name === citationStr);
-        console.log(citationStr);
-        this.model.attributes.external_references[index].external_id = citation.external_id;
-        this.model.attributes.external_references[index].description = citation.description;
-        this.model.attributes.external_references[index].url = citation.url;
+        if(citation){
+            this.model.attributes.external_references[index].external_id = citation.external_id;
+            this.model.attributes.external_references[index].description = citation.description;
+            this.model.attributes.external_references[index].url = citation.url;
+        }
+        if(citationStr){
+            let filterVal = citationStr.toLowerCase();
+            return this.citations.filter((h) => h.source_name.toLowerCase().startsWith(filterVal));
+        }
+        return this.citations;
     }
 }

@@ -118,13 +118,13 @@
                                     <md-card-content>
                                         <div class="row">
                                           <div class="col-md-6">
-                                                  <md-input-container class="full-width">
-                                                      <input mdInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [mdAutocomplete]="auto">
-                                                  </md-input-container>
-                                                  <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                                  <md-option *ngFor="let dataSource of dataSources" [value]="dataSource">
-                                                      <span>{{ dataSource }}</span>
-                                                  </md-option>
+                                              <md-input-container class="full-width">
+                                                  <input mdInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [mdAutocomplete]="auto" (ngModelChange)="currDataSources = filterOptions(attackPattern.attributes.x_mitre_data_sources[i], dataSources)">
+                                              </md-input-container>
+                                              <md-autocomplete name="auto" #auto="mdAutocomplete" >
+                                                <md-option *ngFor="let dataSource of currDataSources" [value]="dataSource">
+                                                  <span>{{ dataSource }}</span>
+                                                </md-option>
                                               </md-autocomplete>
                                           </div>
                                         </div>
@@ -152,10 +152,10 @@
                                         <div class="row">
                                           <div class="col-md-6">
                                                   <md-input-container class="full-width">
-                                                      <input mdInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [mdAutocomplete]="auto">
+                                                      <input mdInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [mdAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(attackPattern.attributes.x_mitre_contributors[i], contributors)">
                                                   </md-input-container>
                                                   <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                                  <md-option *ngFor="let contributor of contributors" [value]="contributor">
+                                                  <md-option *ngFor="let contributor of currContributors" [value]="contributor">
                                                       <span>{{ contributor }}</span>
                                                   </md-option>
                                               </md-autocomplete>

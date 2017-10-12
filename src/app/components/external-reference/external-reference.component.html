@@ -40,21 +40,21 @@
                                     </div>
                                 </div>
                             </md-card-content>
-                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack'">
+                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton">
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="generateCitation(externalReference.source_name)"> Generate Citation Text</a><br>
+                                    <a class="" md-raised-button (click)="generateCitation(externalReference)"> {{ externalReference.citeButton }} </a><br>
                                 </div>
                             </md-card-actions>
-                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citation">
+                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton == 'Hide Citation Text'">
                                 <div class="button-row">
                                     <a class="" md-raised-button [ngxClipboard]="copyCitation"> Copy</a>
-                                    <input class="display-citation" size="100" #copyCitation value="{{ externalReference.citation }}">
+                                    <input class="display-citation" size="100" #copyCitation value="{{ externalReference.citation }}" [(ngModel)]=externalReference.citation>
                                 </div>
                             </md-card-actions>
-                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeref">
+                            <md-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton == 'Hide Citation Text'">
                                 <div class="button-row">
                                     <a class="" md-raised-button [ngxClipboard]="copyCiteRef"> Copy</a>
-                                    <input class="display-citation" size="100" #copyCiteRef value="{{ externalReference.citeref }}">
+                                    <input class="display-citation" size="100" #copyCiteRef value="{{ externalReference.citeref }}" [(ngModel)]=externalReference.citeref>
                                 </div>
                             </md-card-actions>
                             <md-card-actions>

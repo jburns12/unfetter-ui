@@ -17,8 +17,10 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public intrusionSet: IntrusionSet = new IntrusionSet();
     public aliases: any = [];
     public addedTechniques: any = [];
+    public currTechniques: any = [];
     public techniques: any = [];
     public addedSoftwares: any = [];
+    public currSoftwares: any = [];
     public softwares: any = [];
     public editComponent: boolean = false;
     public origRels: any = [];
@@ -92,13 +94,31 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 let target = data as Relationship[];
+                let i = 0;
                 target.forEach((relationship: Relationship) => {
                     if(relationship.attributes.relationship_type == "uses"){
                         if(technique){
-                            this.getTechniqueRels(relationship);
+                            let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
+                            if(tech.length > 0){
+                                this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
+                                this.origRels.push(relationship);
+                                this.currTechniques[i] = this.techniques;
+                                for(let index in this.currTechniques){
+                                    for(let j in this.addedTechniques){
+                                       if(j != index){
+                                           this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
+                                       }
+                                    }
+                                }
+                                i += 1;
+                            }
                         }
                         else{
-                            this.getSwRels(relationship);
+                            let sw = this.softwares.filter((h) => h.id === relationship.attributes.target_ref);
+                            if(sw.length > 0){
+                                this.origRels.push(relationship);
+                                this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
+                            }
                         }
                     }
                 });
@@ -114,22 +134,6 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    public getTechniqueRels(relationship: Relationship): void{
-        let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
-        if(tech.length > 0){
-            this.origRels.push(relationship);
-            this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
-        }
-    }
-
-    public getSwRels(relationship: Relationship): void{
-        let sw = this.softwares.filter((h) => h.id === relationship.attributes.target_ref);
-        if(sw.length > 0){
-            this.origRels.push(relationship);
-            this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
-        }
-    }
-
     public getTechniques(create: boolean): void{
         let subscription =  super.getByUrl(Constance.ATTACK_PATTERN_URL).subscribe(
             (data) => {
@@ -138,6 +142,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
                 });
                 this.techniques = this.techniques.sort((a,b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                this.currTechniques[0] = this.techniques;
                 if(!create){
                     this.findRelationships(true);
                 }

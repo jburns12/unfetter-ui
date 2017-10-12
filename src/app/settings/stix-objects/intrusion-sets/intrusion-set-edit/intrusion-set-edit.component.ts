@@ -114,15 +114,20 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public createRelationships(id: string): void {
         console.log(this.origRels);
+        console.log(this.addedTechniques);
         for(let technique of this.addedTechniques){
             let currTechnique = this.techniques.filter((h) => h.name === technique.name);
-            this.saveRelationship(id, currTechnique[0].id, technique.description, technique.relationship);
-            this.origRels = this.origRels.filter((h) => h.id !== technique.relationship);
+            if(currTechnique.length > 0){
+                this.saveRelationship(id, currTechnique[0].id, technique.description, technique.relationship);
+                this.origRels = this.origRels.filter((h) => h.id !== technique.relationship);
+            }
         }
         for(let software of this.addedSoftwares){
             let currSoftware = this.softwares.filter((h) => h.name === software.name);
-            this.saveRelationship(id, currSoftware[0].id, software.description, software.relationship);
-            this.origRels = this.origRels.filter((h) => h.id !== software.relationship);
+            if(currSoftware.length > 0){
+                this.saveRelationship(id, currSoftware[0].id, software.description, software.relationship);
+                this.origRels = this.origRels.filter((h) => h.id !== software.relationship);
+            }
         }
     }
 
@@ -186,10 +191,29 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         currTechnique['description'] = '';
         currTechnique['relationship'] = '';
         this.addedTechniques.push(currTechnique);
+        if(this.addedTechniques.length == 1){
+            this.currTechniques[0] = this.techniques;
+        }
+        else{
+            this.currTechniques[this.addedTechniques.length - 1] = this.techniques;
+            for(let i in this.addedTechniques){
+                this.currTechniques[this.addedTechniques.length - 1] = this.currTechniques[this.addedTechniques.length - 1].filter((h) => h.name !== this.addedTechniques[i].name)
+            }
+        }
+        console.log(this.currTechniques);
     }
 
-    public removeTechnique(technique): void {
+    public removeTechnique(technique: string, i: number): void {
         this.addedTechniques = this.addedTechniques.filter((h) => h.name !== technique);
+        this.currTechniques.splice(i, 1);
+        for(let index in this.currTechniques){
+            this.currTechniques[index] = this.techniques;
+            for(let j in this.addedTechniques){
+                if(j != index){
+                    this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
+                }
+            }
+        }
     }
 
     public addSoftware(): void {
@@ -213,6 +237,18 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public removeAlias(alias): void {
         this.aliases = this.aliases.filter((h) => h.name !== alias);
+    }
+
+    public checkAddedTechniques(): void {
+        for(let index in this.currTechniques){
+            this.currTechniques[index] = this.techniques;
+            for(let i in this.addedTechniques){
+                if(i != index){
+                    this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[i].name)
+                }
+            }
+        }
+        console.log(this.currTechniques);
     }
 
     private found(list: any[], object: any): any {

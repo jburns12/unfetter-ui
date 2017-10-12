@@ -146,10 +146,29 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         currTechnique['description'] = '';
         currTechnique['relationship'] = '';
         this.addedTechniques.push(currTechnique);
+        if(this.addedTechniques.length == 1){
+            this.currTechniques[0] = this.techniques;
+        }
+        else{
+            this.currTechniques[this.addedTechniques.length - 1] = this.techniques;
+            for(let i in this.addedTechniques){
+                this.currTechniques[this.addedTechniques.length - 1] = this.currTechniques[this.addedTechniques.length - 1].filter((h) => h.name !== this.addedTechniques[i].name)
+            }
+        }
+        console.log(this.currTechniques);
     }
 
-    public removeTechnique(technique): void {
+    public removeTechnique(technique: string, i: number): void {
         this.addedTechniques = this.addedTechniques.filter((h) => h.name !== technique);
+        this.currTechniques.splice(i, 1);
+        for(let index in this.currTechniques){
+            this.currTechniques[index] = this.techniques;
+            for(let j in this.addedTechniques){
+                if(j != index){
+                    this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
+                }
+            }
+        }
     }
 
     public loadRelationships(filter: any): void {
@@ -178,57 +197,16 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         );
     }
 
-     // add chip
-    public add(event: any): void {
-        let relationship = new Relationship();
-        this.newRelationships.push(relationship);
-        relationship.attributes.source_ref = this.tool.id;
-
-        if (event.type === Constance.ATTACK_PATTERN_TYPE && !this.found(this.attackPatterns, event)) {
-            let attackPattern = new AttackPattern(event);
-            relationship.attributes.relationship_type = 'uses';
-            relationship.attributes.target_ref = attackPattern.id;
-
-            this.attackPatterns.push(attackPattern);
-        } else if (event.type === Constance.INTRUSION_SET_TYPE && !this.found(this.intrusionSets, event)) {
-            let intrusionSet = new IntrusionSet(event);
-            relationship.attributes.relationship_type = 'uses';
-            relationship.attributes.target_ref = intrusionSet.id;
-
-            this.intrusionSets.push(intrusionSet);
-        } else if (event.type === Constance.INDICATOR_TYPE  && !this.found(this.indicators, event)) {
-            let indicator = new Indicator(event);
-            relationship.attributes.relationship_type = 'uses';
-            relationship.attributes.target_ref = indicator.id;
-
-            this.indicators.push(indicator);
-        } else if (event.type === Constance.COURSE_OF_ACTION_TYPE  && !this.found(this.courseOfActions, event)) {
-            let courseOfAction = new CourseOfAction(event);
-            relationship.attributes.relationship_type = 'uses';
-            relationship.attributes.target_ref = courseOfAction.id;
-
-            this.courseOfActions.push(courseOfAction);
+    public checkAddedTechniques(): void {
+        for(let index in this.currTechniques){
+            this.currTechniques[index] = this.techniques;
+            for(let i in this.addedTechniques){
+                if(i != index){
+                    this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[i].name)
+                }
+            }
         }
-    }
-
-    // remove chip
-    public remove(object: any): void {
-        if (object.type === Constance.ATTACK_PATTERN_TYPE) {
-            this.attackPatterns = this.attackPatterns.filter((o) => o.id !== object.id);
-        } else if (object.type === Constance.INTRUSION_SET_TYPE) {
-            this.intrusionSets = this.intrusionSets.filter((o) => o.id !== object.id);
-        } else if (event.type === Constance.INDICATOR_TYPE) {
-            this.indicators = this.indicators.filter((o) => o.id !== object.id);
-        } else if (event.type === Constance.COURSE_OF_ACTION_TYPE) {
-            this.courseOfActions = this.courseOfActions.filter((o) => o.id !== object.id);
-        }
-
-        this.newRelationships = this.newRelationships.filter((relationship) => relationship.attributes.target_ref !== object.id );
-
-        let foundSavedRelationship = this.savedRelationships.find((relationship) => relationship.attributes.target_ref !== object.id );
-        if (foundSavedRelationship) {
-            this.deletedRelationships.push(foundSavedRelationship);
-        }
+        console.log(this.currTechniques);
     }
 
     public found(list: any[], object: any): any {

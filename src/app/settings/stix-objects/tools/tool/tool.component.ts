@@ -44,12 +44,13 @@ constructor(
    }
 
    public deleteButtonClicked(): void {
-       super.openDialog(this.tool).subscribe(
-           () => {
-              this.location.back();
-              this.deleteRels(this.tool.id);
-           }
-       );
+      let goBack = true;
+      super.openDialog(this.tool).subscribe(
+         () => {
+            let goBack = true;
+            this.deleteRels(this.tool.id, goBack);
+         }
+      );
    }
 
    public findRelationships(): void{

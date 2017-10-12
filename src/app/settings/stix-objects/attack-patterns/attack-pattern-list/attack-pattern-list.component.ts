@@ -99,7 +99,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
                 this.attackPattern.id = attackPattern.id;
-                this.deleteRels(this.attackPattern.id);
+                this.deleteRels(this.attackPattern.id, false);
                 // TODO determine if there is a better wya to do this
                 let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
                 delete this.attackPatternByPhaseMap[key];

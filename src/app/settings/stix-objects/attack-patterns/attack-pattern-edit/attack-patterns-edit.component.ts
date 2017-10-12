@@ -75,7 +75,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
        );
     }
 
-    public filterOptions: void(stringToMatch: string, listToParse: any) {
+    public filterOptions(stringToMatch: string, listToParse: any): void {
         if(stringToMatch){
             let filterVal = stringToMatch.toLowerCase();
             return listToParse.filter((h) => h.toLowerCase().startsWith(filterVal));
@@ -222,7 +222,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         this.attackPattern.attributes.x_mitre_platforms = [];
         for (let i in this.platforms){
             this.platforms[i]['val'] = true;
-            this.attackPattern.attributes.x_mitre_platforms.push(this.platforms[i]);
+            this.attackPattern.attributes.x_mitre_platforms.push(this.platforms[i].name);
         }
         console.log(this.attackPattern.attributes.x_mitre_platforms);
     }

@@ -279,7 +279,7 @@ export class BaseStixComponent {
             }
         );
     }
-    public deleteRels(id: string): void {
+    public deleteRels(id: string, goBack: boolean): void {
         let uri = Constance.RELATIONSHIPS_URL
         let subscription =  this.getByUrl(uri).subscribe(
             (data) => {
@@ -298,6 +298,9 @@ export class BaseStixComponent {
                             () => {
                             }
                         );
+                    }
+                    if(goBack){
+                        this.location.back();
                     }
                 }
                }, (error) => {

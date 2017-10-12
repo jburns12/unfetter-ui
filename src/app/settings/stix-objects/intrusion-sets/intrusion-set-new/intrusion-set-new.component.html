@@ -102,8 +102,8 @@
                                <div class="row">
                                    <div class="col-md-6">
                                        <form>
-                                           <md-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" placeholder="Software" class="full-width">
-                                             <md-option *ngFor="let software of softwares" [value]="software.name">
+                                           <md-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
+                                             <md-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
                                                    <span>{{ software.name }}</span>
                                              </md-option>
                                            </md-select>
@@ -118,7 +118,7 @@
                             </md-card-content>
                             <md-card-actions>
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="removeSoftware(addedSoftwares[i].name)"><i class="material-icons">delete</i> REMOVE</a>
+                                    <a class="" md-raised-button (click)="removeSoftware(addedSoftwares[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
                                 </div>
                             </md-card-actions>
                     </md-card>

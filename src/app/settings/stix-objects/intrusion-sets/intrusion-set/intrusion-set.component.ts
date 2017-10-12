@@ -118,6 +118,15 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                             if(sw.length > 0){
                                 this.origRels.push(relationship);
                                 this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
+                                this.currSoftwares[i] = this.softwares;
+                                for(let index in this.currSoftwares){
+                                    for(let j in this.addedSoftwares){
+                                       if(j != index){
+                                           this.currSoftwares[index] = this.currSoftwares[index].filter((h) => h.name !== this.addedSoftwares[j].name)
+                                       }
+                                    }
+                                }
+                                i += 1;
                             }
                         }
                     }
@@ -142,7 +151,6 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
                 });
                 this.techniques = this.techniques.sort((a,b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-                this.currTechniques[0] = this.techniques;
                 if(!create){
                     this.findRelationships(true);
                 }

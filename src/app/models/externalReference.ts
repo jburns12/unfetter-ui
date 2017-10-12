@@ -4,5 +4,6 @@
      public description: string;
      public citation: string;
      public citeref: string;
+     public citeButton: string;
      public url: string;
 }

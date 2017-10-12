@@ -222,10 +222,29 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         currSoftware['description'] = '';
         currSoftware['relationship'] = '';
         this.addedSoftwares.push(currSoftware);
+        if(this.addedSoftwares.length == 1){
+            this.currSoftwares[0] = this.softwares;
+        }
+        else{
+            this.currSoftwares[this.addedSoftwares.length - 1] = this.softwares;
+            for(let i in this.addedSoftwares){
+                this.currSoftwares[this.addedSoftwares.length - 1] = this.currSoftwares[this.addedSoftwares.length - 1].filter((h) => h.name !== this.addedSoftwares[i].name)
+            }
+        }
+        console.log(this.currSoftwares);
     }
 
-    public removeSoftware(software): void {
+    public removeSoftware(software: string, i: number): void {
         this.addedSoftwares = this.addedSoftwares.filter((h) => h.name !== software);
+        this.currSoftwares.splice(i, 1);
+        for(let index in this.currSoftwares){
+            this.currSoftwares[index] = this.softwares;
+            for(let j in this.addedSoftwares){
+                if(j != index){
+                    this.currSoftwares[index] = this.currSoftwares[index].filter((h) => h.name !== this.addedSoftwares[j].name)
+                }
+            }
+        }
     }
 
     public addAlias(): void {
@@ -249,6 +268,18 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
             }
         }
         console.log(this.currTechniques);
+    }
+
+    public checkAddedSoftwares(): void {
+        for(let index in this.currSoftwares){
+            this.currSoftwares[index] = this.softwares;
+            for(let i in this.addedSoftwares){
+                if(i != index){
+                    this.currSoftwares[index] = this.currSoftwares[index].filter((h) => h.name !== this.addedSoftwares[i].name)
+                }
+            }
+        }
+        console.log(this.currSoftwares);
     }
 
     private found(list: any[], object: any): any {

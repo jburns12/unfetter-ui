@@ -23,7 +23,7 @@ export class ExternalReferenceComponent {
         this.model.attributes.external_references = this.model.attributes.external_references.filter((h) => h !== externalReference);
     }
 
-    public generateCitation(extRef: string): void {
+    public generateCitation(extRef: ExternalReference): void {
         if(extRef.citeButton == "Generate Citation Text"){
             extRef.citeButton = "Hide Citation Text";
         }

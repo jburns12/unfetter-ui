@@ -60,8 +60,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public deleteButtonClicked(): void {
         super.openDialog(this.attackPattern).subscribe(
             () => {
-                this.location.back();
-                this.deleteRels(this.attackPattern.id);
+                let goBack = true;
+                this.deleteRels(this.attackPattern.id, goBack);
             }
         );
     }

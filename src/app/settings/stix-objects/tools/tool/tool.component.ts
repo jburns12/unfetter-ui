@@ -19,6 +19,7 @@ export class ToolComponent extends BaseStixComponent implements OnInit {
 public tool: Tool = new Tool();
 public aliases: any = [];
 public addedTechniques: any = [];
+public currTechniques: any = [];
 public techniques: any = [];
 public origRels: any = [];
 
@@ -59,29 +60,32 @@ constructor(
        let subscription =  super.getByUrl(uri).subscribe(
            (data) => {
                let target = data as Relationship[];
+               let i = 0;
                target.forEach((relationship: Relationship) => {
                    if(relationship.attributes.relationship_type == "uses"){
-                      this.origRels.push(relationship);
-                      this.getTechniqueRels(relationship);
+                       let tech = this.techniques.filter((h) => h.id === relationship.attributes.source_ref);
+                       if(tech.length > 0){
+                           this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
+                           this.origRels.push(relationship);
+                           this.currTechniques[i] = this.techniques;
+                           for(let index in this.currTechniques){
+                               for(let j in this.addedTechniques){
+                                  if(j != index){
+                                      this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
+                                  }
+                               }
+                           }
+                           i += 1;
+                       }
                    }
-               });
-              }, (error) => {
-               // handle errors here
-                console.log('error ' + error);
-           }, () => {
+                 });
+              }, () => {
                // prevent memory links
                if (subscription) {
                    subscription.unsubscribe();
                }
            }
        );
-   }
-
-   public getTechniqueRels(relationship: Relationship): void{
-       let tech = this.techniques.filter((h) => h.id === relationship.attributes.source_ref);
-       if(tech.length > 0){
-           this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
-       }
    }
 
    public getTechniques(create: boolean): void{
@@ -92,6 +96,7 @@ constructor(
                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
                });
                this.techniques = this.techniques.sort((a,b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+               this.currTechniques[0] = this.techniques;
                if(!create){
                    this.findRelationships();
                }

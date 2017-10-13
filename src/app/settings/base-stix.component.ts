@@ -158,7 +158,7 @@ export class BaseStixComponent {
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
-                    if('name' in item.attributes && item.type != 'course-of-action'){
+                    if ('name' in item.attributes && item.type !== 'course-of-action') {
                         this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
                             duration: this.duration,
                             extraClasses: ['snack-bar-background-success']
@@ -182,36 +182,12 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                if('name' in item.attributes && item.type != 'course-of-action'){
+                if ('name' in item.attributes && item.type !== 'course-of-action') {
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
                         extraClasses: ['snack-bar-background-success']
                     });
                 }
-                // data.url = item.url;
-                // let sub = this.service.update(data).subscribe(
-                //     (resullts) => {
-                //         observer.next(data);
-                //         observer.complete();
-                //         this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
-                //             duration: this.duration,
-                //             extraClasses: ['snack-bar-background-success']
-                //         });
-                //     } , (error) => {
-                //         // handle errors here
-                //         // roollback create
-                //         this.deleteItem(data, observer);
-                //         this.snackBar.open('Error ' + error , '', {
-                //             duration: this.duration,
-                //             extraClasses: ['snack-bar-background-error']
-                //         });
-                //     }, () => {
-                //         // prevent memory links
-                //         if (sub) {
-                //             sub.unsubscribe();
-                //         }
-                //     }
-                // );
             }, (error) => {
                 // handle errors here
                 this.snackBar.open('Error ' + error , '', {
@@ -232,7 +208,7 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                if('name' in item.attributes && item.type != 'course-of-action'){
+                if ('name' in item.attributes && item.type !== 'course-of-action') {
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
                         extraClasses: ['snack-bar-background-success']
@@ -260,13 +236,13 @@ export class BaseStixComponent {
                 let techniques = data as AttackPattern[];
                 console.log(techniques);
                 techniques.forEach((attackPattern: AttackPattern) => {
-                    for (let i in attackPattern.attributes.external_references){
-                        if(!(attackPattern.attributes.external_references[i].external_id)){
+                    for (let i in attackPattern.attributes.external_references) {
+                        if (!(attackPattern.attributes.external_references[i].external_id)) {
                             this.allCitations.push(attackPattern.attributes.external_references[i]);
                         }
                     }
                 });
-                this.allCitations = this.allCitations.sort((a,b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                 this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
                 console.log(this.allCitations);
                }, (error) => {
@@ -287,11 +263,11 @@ export class BaseStixComponent {
                 this.allRels = data as Relationship[];
                 console.log(id);
                 console.log(this.allRels);
-                if(this.allRels.length > 0){
+                if (this.allRels.length > 0) {
                     let allRelationships = this.allRels.filter((r) => {
                         return r.attributes.source_ref === id || r.attributes.target_ref === id ;
                     });
-                    for(let relationship of allRelationships){
+                    for (let relationship of allRelationships) {
                         console.log(relationship);
                         relationship.url = Constance.RELATIONSHIPS_URL;
                         relationship.id = relationship.attributes.id;
@@ -300,7 +276,7 @@ export class BaseStixComponent {
                             }
                         );
                     }
-                    if(goBack){
+                    if (goBack) {
                         this.location.back();
                     }
                 }

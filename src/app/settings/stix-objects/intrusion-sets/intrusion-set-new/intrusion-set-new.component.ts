@@ -33,13 +33,13 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
     }
 
     public getIdString(ids: any): string {
-      let idStr = "";
-      idStr = "" + (parseInt(ids[ids.length - 1].substr(1)) + 1);
+      let idStr = '';
+      idStr = '' + (parseInt(ids[ids.length - 1].substr(1)) + 1);
       let numZeroes = 4 - idStr.length;
-      for(let i=0; i < numZeroes; i++){
-        idStr = "0" + idStr;
+      for (let i = 0; i < numZeroes; i++) {
+        idStr = '0' + idStr;
       }
-      idStr = "G" + idStr;
+      idStr = 'G' + idStr;
       return idStr;
     }
 
@@ -50,15 +50,14 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
                 let ids = [];
                 let allIds = [];
                 this.groups.forEach((group: IntrusionSet) => {
-                    for (let i in group.attributes.external_references){
-                        if(group.attributes.external_references[i].external_id){
+                    for (let i in group.attributes.external_references) {
+                        if (group.attributes.external_references[i].external_id) {
                             ids.push(group.attributes.external_references[i].external_id);
                         }
                     }
                 });
-                allIds = ids.filter(function(elem, index, self){
-                    return index == self.indexOf(elem);
-                }).sort().filter(Boolean);
+                allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                    ).sort().filter(Boolean);
                 this.id = this.getIdString(allIds);
                 console.log(this.id);
             }, (error) => {

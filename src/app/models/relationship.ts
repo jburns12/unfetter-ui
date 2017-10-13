@@ -46,8 +46,8 @@ export class Relationship {
             // relationship_type: '',
             // source_ref: '',
             // target_ref: ''
-            created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-            object_marking_refs: ["marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"]
+            created_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
+            object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168']
         };
     }
 }

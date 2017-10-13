@@ -35,32 +35,31 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
     }
 
     public getIdString(ids: any): string {
-      let idStr = "";
-      idStr = "" + (parseInt(ids[ids.length - 1].substr(1)) + 1);
+      let idStr = '';
+      idStr = '' + (parseInt(ids[ids.length - 1].substr(1)) + 1);
       let numZeroes = 4 - idStr.length;
-      for(let i=0; i < numZeroes; i++){
-        idStr = "0" + idStr;
+      for (let i = 0; i < numZeroes; i++) {
+        idStr = '0' + idStr;
       }
-      idStr = "S" + idStr;
+      idStr = 'S' + idStr;
       return idStr;
     }
 
-    public getToolIds(ids: any){
+    public getToolIds(ids: any) {
         this.stixService.url = Constance.TOOL_URL;
         let subscription = super.load().subscribe(
             (data) => {
                 this.tools = data as Tool[];
                 let allIds = [];
                 this.tools.forEach((tool: Tool) => {
-                    for (let i in tool.attributes.external_references){
-                        if(tool.attributes.external_references[i].external_id){
+                    for (let i in tool.attributes.external_references) {
+                        if (tool.attributes.external_references[i].external_id) {
                             ids.push(tool.attributes.external_references[i].external_id);
                         }
                     }
                 });
-                allIds = ids.filter(function(elem, index, self){
-                    return index == self.indexOf(elem);
-                }).sort().filter(Boolean);
+                allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                    ).sort().filter(Boolean);
                 this.id = this.getIdString(allIds);
                 this.stixService.url = Constance.TOOL_URL;
             }, (error) => {
@@ -83,8 +82,8 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
                 let ids = [];
                 let allIds = [];
                 this.malwares.forEach((malware: Malware) => {
-                    for (let i in malware.attributes.external_references){
-                        if(malware.attributes.external_references[i].external_id){
+                    for (let i in malware.attributes.external_references) {
+                        if (malware.attributes.external_references[i].external_id) {
                             ids.push(malware.attributes.external_references[i].external_id);
                         }
                     }

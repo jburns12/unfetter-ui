@@ -45,7 +45,6 @@ constructor(
    }
 
    public deleteButtonClicked(): void {
-      let goBack = true;
       super.openDialog(this.tool).subscribe(
          () => {
             let goBack = true;
@@ -54,7 +53,7 @@ constructor(
       );
    }
 
-   public findRelationships(): void{
+   public findRelationships(): void {
        let filter = { 'stix.target_ref': this.tool.id };
        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
        let subscription =  super.getByUrl(uri).subscribe(
@@ -62,15 +61,15 @@ constructor(
                let target = data as Relationship[];
                let i = 0;
                target.forEach((relationship: Relationship) => {
-                   if(relationship.attributes.relationship_type == "uses"){
+                   if (relationship.attributes.relationship_type === 'uses') {
                        let tech = this.techniques.filter((h) => h.id === relationship.attributes.source_ref);
-                       if(tech.length > 0){
+                       if (tech.length > 0) {
                            this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
                            this.origRels.push(relationship);
                            this.currTechniques[i] = this.techniques;
-                           for(let index in this.currTechniques){
-                               for(let j in this.addedTechniques){
-                                  if(j != index){
+                           for (let index in this.currTechniques) {
+                               for (let j in this.addedTechniques) {
+                                  if (j !== index) {
                                       this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
                                   }
                                }
@@ -88,16 +87,16 @@ constructor(
        );
    }
 
-   public getTechniques(create: boolean): void{
+   public getTechniques(create: boolean): void {
        let subscription =  super.getByUrl(Constance.ATTACK_PATTERN_URL).subscribe(
            (data) => {
                let target = data as AttackPattern[];
                target.forEach((attackPattern: AttackPattern) => {
                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
                });
-               this.techniques = this.techniques.sort((a,b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+               this.techniques = this.techniques.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                this.currTechniques[0] = this.techniques;
-               if(!create){
+               if (!create) {
                    this.findRelationships();
                }
                console.log(this.techniques);
@@ -113,12 +112,12 @@ constructor(
        );
    }
 
-   public getAllAliases(): void{
+   public getAllAliases(): void {
        this.tool.attributes.x_mitre_aliases.shift();
-       for(let alias of this.tool.attributes.x_mitre_aliases){
+       for (let alias of this.tool.attributes.x_mitre_aliases) {
            let description = '';
            let extRef = this.tool.attributes.external_references.filter(((h) => h.source_name === alias));
-           if(extRef.length > 0){
+           if (extRef.length > 0) {
                this.tool.attributes.external_references = this.tool.attributes.external_references.filter(((h) => h.source_name !== alias));
                description = extRef[0].description;
            }

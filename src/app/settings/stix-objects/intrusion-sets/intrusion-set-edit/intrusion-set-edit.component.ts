@@ -189,14 +189,10 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         currTechnique['name'] = '';
         currTechnique['description'] = '';
         currTechnique['relationship'] = '';
-        this.addedTechniques.push(currTechnique);
-        if (this.addedTechniques.length === 1) {
-            this.currTechniques[0] = this.techniques;
-        } else {
-            this.currTechniques[this.addedTechniques.length - 1] = this.techniques;
-            for (let i in this.addedTechniques) {
-                this.currTechniques[this.addedTechniques.length - 1] = this.currTechniques[this.addedTechniques.length - 1].filter((h) => h.name !== this.addedTechniques[i].name)
-            }
+        this.addedTechniques.unshift(currTechnique);
+        this.currTechniques.unshift(this.techniques);
+        for (let i in this.addedTechniques) {
+            this.currTechniques[0] = this.currTechniques[0].filter((h) => h.name !== this.addedTechniques[i].name);
         }
         console.log(this.currTechniques);
     }
@@ -219,14 +215,10 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         currSoftware['name'] = '';
         currSoftware['description'] = '';
         currSoftware['relationship'] = '';
-        this.addedSoftwares.push(currSoftware);
-        if (this.addedSoftwares.length === 1) {
-            this.currSoftwares[0] = this.softwares;
-        } else {
-            this.currSoftwares[this.addedSoftwares.length - 1] = this.softwares;
-            for (let i in this.addedSoftwares) {
-                this.currSoftwares[this.addedSoftwares.length - 1] = this.currSoftwares[this.addedSoftwares.length - 1].filter((h) => h.name !== this.addedSoftwares[i].name)
-            }
+        this.addedSoftwares.unshift(currSoftware);
+        this.currSoftwares.unshift(this.softwares);
+        for (let i in this.addedSoftwares) {
+            this.currSoftwares[0] = this.currSoftwares[0].filter((h) => h.name !== this.addedSoftwares[i].name);
         }
         console.log(this.currSoftwares);
     }
@@ -248,7 +240,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         let alias = {};
         alias['name'] = '';
         alias['description'] = '';
-        this.aliases.push(alias);
+        this.aliases.unshift(alias);
     }
 
     public removeAlias(alias): void {

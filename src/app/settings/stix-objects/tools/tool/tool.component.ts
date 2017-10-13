@@ -95,7 +95,6 @@ constructor(
                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
                });
                this.techniques = this.techniques.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-               this.currTechniques[0] = this.techniques;
                if (!create) {
                    this.findRelationships();
                }

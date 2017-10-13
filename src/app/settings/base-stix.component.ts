@@ -267,6 +267,7 @@ export class BaseStixComponent {
                     }
                 });
                 this.allCitations = this.allCitations.sort((a,b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
                 console.log(this.allCitations);
                }, (error) => {
                 // handle errors here

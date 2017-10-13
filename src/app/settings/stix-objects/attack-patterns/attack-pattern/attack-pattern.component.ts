@@ -48,7 +48,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
        this.loadAttackPattern();
     }
 
-    trackByFunction(index: number, obj: any): any {
+    public trackByFunction(index: number, obj: any): any {
       return index;
     }
 
@@ -135,25 +135,24 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
 
     public permsReqExist(): boolean {
       let found = true;
-      if(this.attackPattern.attributes.x_mitre_permissions_required){
-        if(!this.attackPattern.attributes.x_mitre_permissions_required.length){
+      if (this.attackPattern.attributes.x_mitre_permissions_required) {
+        if (!this.attackPattern.attributes.x_mitre_permissions_required.length) {
           found = false
         }
-      }
-      else{
+      } else {
         found = false;
       }
       return found ? true : false;
     }
 
-    public findCoA(): void{
+    public findCoA(): void {
         let filter = { 'stix.target_ref': this.attackPattern.id };
         let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 this.target = data as Relationship;
                 this.target.forEach((relationship: Relationship) => {
-                    if(relationship.attributes.relationship_type == "mitigates"){
+                    if (relationship.attributes.relationship_type === 'mitigates') {
                         this.getMitigation(relationship.attributes.source_ref);
                     }
                 });
@@ -169,7 +168,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    public getMitigation(coaId: string){
+    public getMitigation(coaId: string) {
         let uri = Constance.COURSE_OF_ACTION_URL + '/' + coaId;
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
@@ -190,8 +189,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public saveCourseOfAction(attackPatternId: string): void {
-        if(this.coaId != ''){
-            if(this.mitigation != this.coaMitigator.attributes.description){
+        if (this.coaId !== '') {
+            if (this.mitigation !== this.coaMitigator.attributes.description) {
                 this.coaMitigator.attributes.description = this.mitigation;
                 this.stixService.url = Constance.COURSE_OF_ACTION_URL;
                 let subscription = super.save(this.coaMitigator).subscribe(
@@ -208,11 +207,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     }
                 );
             }
-        }
-        else{
-            if(this.mitigation != ''){
+        } else {
+            if (this.mitigation !== '') {
                this.courseOfAction.attributes.description = this.mitigation;
-               this.courseOfAction.attributes.name = this.attackPattern.attributes.name + " Mitigation";
+               this.courseOfAction.attributes.name = this.attackPattern.attributes.name + ' Mitigation';
                let subscription = super.create(this.courseOfAction).subscribe(
                     (stixObject) => {
                         this.saveRelationship(attackPatternId, stixObject[0].id);
@@ -233,7 +231,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public saveRelationship(attackPatternId: string, coaId: string): void {
         this.relationship.attributes.source_ref = coaId;
         this.relationship.attributes.target_ref = attackPatternId;
-        this.relationship.attributes.relationship_type = "mitigates";
+        this.relationship.attributes.relationship_type = 'mitigates';
         console.log(this.relationship);
         let subscription = super.create(this.relationship).subscribe(
             (data) => {

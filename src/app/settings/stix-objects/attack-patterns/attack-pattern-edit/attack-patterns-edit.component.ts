@@ -76,7 +76,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public filterOptions(stringToMatch: string, listToParse: any): void {
-        if(stringToMatch){
+        if (stringToMatch) {
             let filterVal = stringToMatch.toLowerCase();
             return listToParse.filter((h) => h.toLowerCase().startsWith(filterVal));
         }
@@ -88,35 +88,32 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         let uniqPlatforms = [];
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let currPlatforms = attackPattern.attributes.x_mitre_platforms;
-            for (let i in currPlatforms){
+            for (let i in currPlatforms) {
                 allPlatforms = allPlatforms.concat(currPlatforms[i]);
             }
-            uniqPlatforms = allPlatforms.filter(function(elem, index, self){
-                return index == self.indexOf(elem);
-            }).sort().filter(Boolean);
+            uniqPlatforms = allPlatforms.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                ).sort().filter(Boolean);
         });
-
-        for(let currPlatform of uniqPlatforms){
-            if(('x_mitre_platforms' in this.attackPattern.attributes) && this.attackPattern.attributes.x_mitre_platforms.includes(currPlatform)){
+        for (let currPlatform of uniqPlatforms) {
+            if (('x_mitre_platforms' in this.attackPattern.attributes) && this.attackPattern.attributes.x_mitre_platforms.includes(currPlatform)) {
                 this.platforms.push({'name': currPlatform, 'val': true});
-            }
-            else{
+            } else {
                 this.platforms.push({'name': currPlatform, 'val': false});
             }
         }
     }
 
     public assignPerms(): void {
-        if('x_mitre_permissions_required' in this.attackPattern.attributes){
-            for (let i in this.permissions_req){
-                if(this.foundPermission(this.permissions_req[i]['name'])){
+        if ('x_mitre_permissions_required' in this.attackPattern.attributes) {
+            for (let i in this.permissions_req) {
+                if (this.foundPermission(this.permissions_req[i]['name'])) {
                     this.permissions_req[i]['val'] = true;
                 }
             }
         }
-        if('x_mitre_effective_permissions' in this.attackPattern.attributes){
-            for (let i in this.effective_perms){
-                if(this.foundEffectivePerm(this.effective_perms[i]['name'])){
+        if ('x_mitre_effective_permissions' in this.attackPattern.attributes) {
+            for (let i in this.effective_perms) {
+                if (this.foundEffectivePerm(this.effective_perms[i]['name'])) {
                     this.effective_perms[i]['val'] = true;
                 }
             }
@@ -126,72 +123,68 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public getDataSources(): void {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let currDataSources = attackPattern.attributes.x_mitre_data_sources;
-            for (let i in currDataSources){
+            for (let i in currDataSources) {
                 this.dataSources = this.dataSources.concat(currDataSources[i]);
             }
-            this.dataSources = this.dataSources.filter(function(elem, index, self){
-                return index == self.indexOf(elem);
-            }).sort().filter(Boolean);
+            this.dataSources = this.dataSources.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                ).sort().filter(Boolean);
         });
     }
 
     public getContributors(): void {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let currContributors = attackPattern.attributes.x_mitre_contributors;
-            for (let i in currContributors){
+            for (let i in currContributors) {
                 this.contributors = this.contributors.concat(currContributors[i]);
             }
-            this.contributors = this.contributors.filter(function(elem, index, self){
-                return index == self.indexOf(elem);
-            }).sort().filter(Boolean);
+            this.contributors = this.contributors.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                ).sort().filter(Boolean);
         });
     }
 
-    public getId(): void{
+    public getId(): void {
         let ids = [];
         let allIds = [];
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            for (let i in attackPattern.attributes.external_references){
-                if(attackPattern.attributes.external_references[i].external_id){
+            for (let i in attackPattern.attributes.external_references) {
+                if (attackPattern.attributes.external_references[i].external_id) {
                     ids.push(attackPattern.attributes.external_references[i].external_id);
                 }
             }
         });
-        allIds = ids.filter(function(elem, index, self){
-            return index == self.indexOf(elem);
-        }).sort().filter(Boolean);
+        allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+            ).sort().filter(Boolean);
         this.id = 'T' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
         console.log(this.id);
     }
 
-    public tacticChange(tactics){
+    public tacticChange(tactics) {
       this.tacticBools = tactics;
-      if(!this.tacticBools['privEsc']){
+      if (!this.tacticBools['privEsc']) {
         delete this.attackPattern.attributes['x_mitre_effective_permissions'];
-        for(let i in this.effective_perms){
+        for (let i in this.effective_perms) {
             this.effective_perms[i]['val'] = false;
         }
       }
-      if(!this.tacticBools['execution']){
+      if (!this.tacticBools['execution']) {
         delete this.attackPattern.attributes['x_mitre_remote_support'];
       }
-      if(!this.tacticBools['defEvas']){
+      if (!this.tacticBools['defEvas']) {
         delete this.attackPattern.attributes['x_mitre_defense_bypassed'];
       }
-      if(!this.tacticBools['exfil']){
+      if (!this.tacticBools['exfil']) {
         delete this.attackPattern.attributes['x_mitre_network_requirements'];
       }
     }
 
     public addRemovePlatform(platform: string) {
-        if (!('x_mitre_platforms' in this.attackPattern.attributes)){
+        if (!('x_mitre_platforms' in this.attackPattern.attributes)) {
             this.attackPattern.attributes.x_mitre_platforms = [];
             this.attackPattern.attributes.x_mitre_platforms.push(platform);
-        }
-        else{
+        } else {
             if ( this.foundPlatform(platform) ) {
                 this.attackPattern.attributes.x_mitre_platforms = this.attackPattern.attributes.x_mitre_platforms.filter((p) => p !== platform);
-                if(this.attackPattern.attributes.x_mitre_platforms.length == 0){
+                if (this.attackPattern.attributes.x_mitre_platforms.length === 0) {
                     this.attackPattern.attributes['x_mitre_platforms'] = [];
                     console.log(this.attackPattern.attributes.x_mitre_platforms);
                 }
@@ -202,14 +195,13 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addRemovePermission(permission: string) {
-        if (!('x_mitre_permissions_required' in this.attackPattern.attributes)){
+        if (!('x_mitre_permissions_required' in this.attackPattern.attributes)) {
             this.attackPattern.attributes.x_mitre_permissions_required = [];
             this.attackPattern.attributes.x_mitre_permissions_required.push(permission);
-        }
-        else{
+        } else {
             if ( this.foundPermission(permission) ) {
                 this.attackPattern.attributes.x_mitre_permissions_required = this.attackPattern.attributes.x_mitre_permissions_required.filter((p) => p !== permission);
-                if(this.attackPattern.attributes.x_mitre_permissions_required.length == 0){
+                if (this.attackPattern.attributes.x_mitre_permissions_required.length === 0) {
                     delete this.attackPattern.attributes['x_mitre_permissions_required'];
                 }
             } else {
@@ -220,15 +212,15 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public selectAllPlatforms(): void {
         this.attackPattern.attributes.x_mitre_platforms = [];
-        for (let i in this.platforms){
+        for (let i in this.platforms) {
             this.platforms[i]['val'] = true;
             this.attackPattern.attributes.x_mitre_platforms.push(this.platforms[i].name);
         }
         console.log(this.attackPattern.attributes.x_mitre_platforms);
     }
 
-    public removeAllPlatforms(): void{
-        for (let i in this.platforms){
+    public removeAllPlatforms(): void {
+        for (let i in this.platforms) {
             this.platforms[i]['val'] = false;
         }
         this.attackPattern.attributes['x_mitre_platforms'] = [];
@@ -237,14 +229,13 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addRemoveEffectivePerm(permission: string) {
-        if (!('x_mitre_effective_permissions' in this.attackPattern.attributes)){
+        if (!('x_mitre_effective_permissions' in this.attackPattern.attributes)) {
             this.attackPattern.attributes.x_mitre_effective_permissions = [];
             this.attackPattern.attributes.x_mitre_effective_permissions.push(permission);
-        }
-        else{
+        } else {
             if ( this.foundEffectivePerm(permission) ) {
                 this.attackPattern.attributes.x_mitre_effective_permissions = this.attackPattern.attributes.x_mitre_effective_permissions.filter((p) => p !== permission);
-                if(this.attackPattern.attributes.x_mitre_effective_permissions.length == 0){
+                if (this.attackPattern.attributes.x_mitre_effective_permissions.length === 0) {
                     delete this.attackPattern.attributes['x_mitre_effective_permissions'];
                 }
             } else {
@@ -254,7 +245,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addDataSource(): void {
-        if(!('x_mitre_data_sources' in this.attackPattern.attributes)){
+        if (!('x_mitre_data_sources' in this.attackPattern.attributes)) {
             this.attackPattern.attributes.x_mitre_data_sources = [];
         }
         let dataSource = '';
@@ -266,7 +257,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addContributor(): void {
-        if(!('x_mitre_contributors' in this.attackPattern.attributes)){
+        if (!('x_mitre_contributors' in this.attackPattern.attributes)) {
             this.attackPattern.attributes.x_mitre_contributors = [];
         }
         let contributorName = '';
@@ -277,19 +268,19 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((h) => h !== contributor)
     }
 
-    public removeEmpties(): void{
-        if('x_mitre_contributors' in this.attackPattern.attributes){
-            if(this.attackPattern.attributes.x_mitre_contributors.length == 0){
+    public removeEmpties(): void {
+        if ('x_mitre_contributors' in this.attackPattern.attributes) {
+            if (this.attackPattern.attributes.x_mitre_contributors.length === 0) {
                 delete this.attackPattern.attributes['x_mitre_contributors'];
             }
         }
-        if('x_mitre_data_sources' in this.attackPattern.attributes){
-            if(this.attackPattern.attributes.x_mitre_data_sources.length == 0){
+        if ('x_mitre_data_sources' in this.attackPattern.attributes) {
+            if (this.attackPattern.attributes.x_mitre_data_sources.length === 0) {
                 delete this.attackPattern.attributes['x_mitre_data_sources'];
             }
         }
-        if('x_mitre_detection' in this.attackPattern.attributes){
-            if(this.attackPattern.attributes.x_mitre_detection == ''){
+        if ('x_mitre_detection' in this.attackPattern.attributes) {
+            if (this.attackPattern.attributes.x_mitre_detection === '') {
                 delete this.attackPattern.attributes['x_mitre_detection'];
             }
         }

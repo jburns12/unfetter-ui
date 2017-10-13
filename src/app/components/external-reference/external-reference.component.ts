@@ -15,7 +15,7 @@ export class ExternalReferenceComponent {
 
     public addExternalReferenceButtonClicked(): void {
         let externalReference = new ExternalReference();
-        externalReference.citeButton = "Generate Citation Text";
+        externalReference.citeButton = 'Generate Citation Text';
         this.model.attributes.external_references.unshift(externalReference);
     }
 
@@ -24,11 +24,10 @@ export class ExternalReferenceComponent {
     }
 
     public generateCitation(extRef: ExternalReference): void {
-        if(extRef.citeButton == "Generate Citation Text"){
-            extRef.citeButton = "Hide Citation Text";
-        }
-        else{
-            extRef.citeButton = "Generate Citation Text";
+        if (extRef.citeButton === 'Generate Citation Text') {
+            extRef.citeButton = 'Hide Citation Text';
+        } else {
+            extRef.citeButton = 'Generate Citation Text';
         }
     }
 
@@ -36,19 +35,18 @@ export class ExternalReferenceComponent {
         let match = this.model.attributes.external_references.find((h) => h.source_name === citationStr);
         let index = this.model.attributes.external_references.indexOf(match);
         let citation = this.citations.find((h) => h.source_name === citationStr);
-        if(citation){
+        if (citation) {
             this.model.attributes.external_references[index].external_id = citation.external_id;
             this.model.attributes.external_references[index].description = citation.description;
             this.model.attributes.external_references[index].url = citation.url;
-        }
-        else{
+        } else {
             this.model.attributes.external_references[index].external_id = '';
             this.model.attributes.external_references[index].description = '';
             this.model.attributes.external_references[index].url = '';
         }
-        this.model.attributes.external_references[index].citation = "[[Citation: " + citationStr + "]]";
-        this.model.attributes.external_references[index].citeref = "[[CiteRef::" + citationStr + "]]";
-        if(citationStr){
+        this.model.attributes.external_references[index].citation = '[[Citation: ' + citationStr + ']]';
+        this.model.attributes.external_references[index].citeref = '[[CiteRef::' + citationStr + ']]';
+        if (citationStr) {
             let filterVal = citationStr.toLowerCase();
             return this.citations.filter((h) => h.source_name.toLowerCase().startsWith(filterVal));
         }

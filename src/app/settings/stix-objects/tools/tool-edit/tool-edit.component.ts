@@ -51,13 +51,13 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         );
     }
 
-    public addAliasesToTool(): void{
+    public addAliasesToTool(): void {
         this.tool.attributes.x_mitre_aliases.push(this.tool.attributes.name);
         for (let alias of this.aliases){
             this.tool.attributes.x_mitre_aliases.push(alias.name);
         }
-        for (let alias of this.aliases){
-            if(alias.description != ''){
+        for (let alias of this.aliases) {
+            if (alias.description !== '') {
                 let extRef = new ExternalReference();
                 extRef.source_name = alias.name;
                 extRef.description = alias.description;
@@ -67,9 +67,9 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public createRelationships(id: string): void {
-        for(let technique of this.addedTechniques){
+        for (let technique of this.addedTechniques) {
             let currTechnique = this.techniques.filter((h) => h.name === technique.name);
-            if(currTechnique.length > 0){
+            if (currTechnique.length > 0) {
                 this.saveRelationship(currTechnique[0].id, id, technique.description, technique.relationship);
             }
             console.log(technique.relationship);
@@ -82,11 +82,11 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         let relationship = new Relationship();
         relationship.attributes.source_ref = source_ref;
         relationship.attributes.target_ref = target_ref;
-        if(description != ''){
+        if (description !== '') {
           relationship.attributes.description = description;
         }
-        relationship.attributes.relationship_type = "uses";
-        if(id != ''){
+        relationship.attributes.relationship_type = 'uses';
+        if (id !== '') {
             relationship.id = id;
             console.log(relationship);
             this.stixService.url = Constance.RELATIONSHIPS_URL;
@@ -103,8 +103,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                     }
                 }
             );
-        }
-        else{
+        } else {
             let subscription = super.create(relationship).subscribe(
                 (data) => {
                     console.log(data);
@@ -146,12 +145,11 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         currTechnique['description'] = '';
         currTechnique['relationship'] = '';
         this.addedTechniques.push(currTechnique);
-        if(this.addedTechniques.length == 1){
+        if (this.addedTechniques.length === 1) {
             this.currTechniques[0] = this.techniques;
-        }
-        else{
+        } else {
             this.currTechniques[this.addedTechniques.length - 1] = this.techniques;
-            for(let i in this.addedTechniques){
+            for (let i in this.addedTechniques) {
                 this.currTechniques[this.addedTechniques.length - 1] = this.currTechniques[this.addedTechniques.length - 1].filter((h) => h.name !== this.addedTechniques[i].name)
             }
         }
@@ -161,10 +159,10 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     public removeTechnique(technique: string, i: number): void {
         this.addedTechniques = this.addedTechniques.filter((h) => h.name !== technique);
         this.currTechniques.splice(i, 1);
-        for(let index in this.currTechniques){
+        for (let index in this.currTechniques) {
             this.currTechniques[index] = this.techniques;
-            for(let j in this.addedTechniques){
-                if(j != index){
+            for (let j in this.addedTechniques) {
+                if (j !== index) {
                     this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
                 }
             }
@@ -198,10 +196,10 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public checkAddedTechniques(): void {
-        for(let index in this.currTechniques){
+        for (let index in this.currTechniques) {
             this.currTechniques[index] = this.techniques;
-            for(let i in this.addedTechniques){
-                if(i != index){
+            for (let i in this.addedTechniques) {
+                if (i !== index) {
                     this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[i].name)
                 }
             }
@@ -227,7 +225,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public removeRelationships(id: string): void {
-        for(let rel of this.origRels){
+        for (let rel of this.origRels) {
             rel.url = Constance.RELATIONSHIPS_URL;
             rel.id = rel.attributes.id;
             this.delete(rel).subscribe(

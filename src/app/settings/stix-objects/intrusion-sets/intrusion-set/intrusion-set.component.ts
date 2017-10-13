@@ -74,12 +74,12 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         });
     }
 
-    public getAllAliases(): void{
+    public getAllAliases(): void {
         this.intrusionSet.attributes.aliases.shift();
-        for(let alias of this.intrusionSet.attributes.aliases){
+        for (let alias of this.intrusionSet.attributes.aliases) {
             let description = '';
             let extRef = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name === alias));
-            if(extRef.length > 0){
+            if (extRef.length > 0) {
                 this.intrusionSet.attributes.external_references = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name !== alias));
                 description = extRef[0].description;
             }
@@ -88,7 +88,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         }
     }
 
-    public findRelationships(technique: boolean): void{
+    public findRelationships(technique: boolean): void {
         let filter = { 'stix.source_ref': this.intrusionSet.id };
         let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let subscription =  super.getByUrl(uri).subscribe(
@@ -96,32 +96,31 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 let target = data as Relationship[];
                 let i = 0;
                 target.forEach((relationship: Relationship) => {
-                    if(relationship.attributes.relationship_type == "uses"){
-                        if(technique){
+                    if (relationship.attributes.relationship_type === 'uses') {
+                        if (technique) {
                             let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
-                            if(tech.length > 0){
+                            if (tech.length > 0) {
                                 this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
                                 this.origRels.push(relationship);
                                 this.currTechniques[i] = this.techniques;
-                                for(let index in this.currTechniques){
-                                    for(let j in this.addedTechniques){
-                                       if(j != index){
+                                for (let index in this.currTechniques) {
+                                    for (let j in this.addedTechniques) {
+                                       if (j !== index) {
                                            this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
                                        }
                                     }
                                 }
                                 i += 1;
                             }
-                        }
-                        else{
+                        } else {
                             let sw = this.softwares.filter((h) => h.id === relationship.attributes.target_ref);
-                            if(sw.length > 0){
+                            if (sw.length > 0) {
                                 this.origRels.push(relationship);
                                 this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
                                 this.currSoftwares[i] = this.softwares;
-                                for(let index in this.currSoftwares){
-                                    for(let j in this.addedSoftwares){
-                                       if(j != index){
+                                for (let index in this.currSoftwares) {
+                                    for (let j in this.addedSoftwares) {
+                                       if (j !== index) {
                                            this.currSoftwares[index] = this.currSoftwares[index].filter((h) => h.name !== this.addedSoftwares[j].name)
                                        }
                                     }
@@ -143,15 +142,15 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    public getTechniques(create: boolean): void{
+    public getTechniques(create: boolean): void {
         let subscription =  super.getByUrl(Constance.ATTACK_PATTERN_URL).subscribe(
             (data) => {
                 let target = data as AttackPattern[];
                 target.forEach((attackPattern: AttackPattern) => {
                     this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
                 });
-                this.techniques = this.techniques.sort((a,b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-                if(!create){
+                this.techniques = this.techniques.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                if (!create) {
                     this.findRelationships(true);
                 }
                 console.log(this.techniques);
@@ -194,8 +193,8 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 target.forEach((tool: Tool) => {
                     this.softwares.push({'name': tool.attributes.name, 'id': tool.id});
                 });
-                this.softwares = this.softwares.sort((a,b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
-                if(!create){
+                this.softwares = this.softwares.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
+                if (!create) {
                     this.findRelationships(false);
                 }
                 console.log(this.softwares);
@@ -217,15 +216,10 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 this.intrusionSet = new IntrusionSet(data);
                 this.getTechniques(false);
                 this.getSoftware(false);
-                if(this.editComponent){
+                if (this.editComponent) {
                     this.getAllAliases();
                 }
                 super.getCitations();
-                //let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));
-                // this.loadRelationships(filter);
-
-                //filter = 'filter=' + encodeURIComponent(JSON.stringify({ source_ref: this.intrusionSet.id }));
-                // this.loadRelationships(filter);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

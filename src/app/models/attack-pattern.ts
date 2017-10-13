@@ -51,14 +51,14 @@ export class AttackPattern {
             // labels: [],
             external_references: [],
             kill_chain_phases: [],
-            object_marking_refs: ["marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"],
+            object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
             x_mitre_platforms: [],
             x_mitre_contributors: [],
             x_mitre_data_sources: [],
             // x_mitre_permissions_required: [],
             // x_mitre_effective_permissions: [],
             x_mitre_detection: '',
-            created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"
+            created_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5'
             // x_unfetter_sophistication_level: -1
         };
     }

@@ -52,18 +52,20 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public addAliasesToTool(): void {
-        this.tool.attributes.x_mitre_aliases.push(this.tool.attributes.name);
-        for (let alias of this.aliases){
-            this.tool.attributes.x_mitre_aliases.push(alias.name);
-        }
-        for (let alias of this.aliases) {
-            if (alias.description !== '') {
-                let extRef = new ExternalReference();
-                extRef.source_name = alias.name;
-                extRef.description = alias.description;
-                this.tool.attributes.external_references.push(extRef);
+        if (this.aliases.length > 0){
+            this.tool.attributes.x_mitre_aliases = [];
+            this.tool.attributes.x_mitre_aliases.push(this.tool.attributes.name);
+            for (let alias of this.aliases){
+                this.tool.attributes.x_mitre_aliases.push(alias.name);
+                if (alias.description !== '') {
+                    let extRef = new ExternalReference();
+                    extRef.source_name = alias.name;
+                    extRef.description = alias.description;
+                    this.tool.attributes.external_references.push(extRef);
+                }
             }
         }
+        console.log(this.tool.attributes.x_mitre_aliases);
     }
 
     public createRelationships(id: string): void {

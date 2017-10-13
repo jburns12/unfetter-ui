@@ -112,16 +112,18 @@ constructor(
    }
 
    public getAllAliases(): void {
-       this.tool.attributes.x_mitre_aliases.shift();
-       for (let alias of this.tool.attributes.x_mitre_aliases) {
-           let description = '';
-           let extRef = this.tool.attributes.external_references.filter(((h) => h.source_name === alias));
-           if (extRef.length > 0) {
-               this.tool.attributes.external_references = this.tool.attributes.external_references.filter(((h) => h.source_name !== alias));
-               description = extRef[0].description;
+       if ('x_mitre_aliases' in this.tool.attributes) {
+           this.tool.attributes.x_mitre_aliases.shift();
+           for (let alias of this.tool.attributes.x_mitre_aliases) {
+               let description = '';
+               let extRef = this.tool.attributes.external_references.filter(((h) => h.source_name === alias));
+               if (extRef.length > 0) {
+                   this.tool.attributes.external_references = this.tool.attributes.external_references.filter(((h) => h.source_name !== alias));
+                   description = extRef[0].description;
+               }
+               this.aliases.push({'name': alias, 'description': description});
+               this.tool.attributes.x_mitre_aliases = [];
            }
-           this.aliases.push({'name': alias, 'description': description});
-           this.tool.attributes.x_mitre_aliases = [];
        }
    }
 

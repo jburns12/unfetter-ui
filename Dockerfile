@@ -1,4 +1,7 @@
-FROM node:8.5-alpine
+FROM node:6.9.1
+
+LABEL MAINTAINER="UNFETTER"
+LABEL Description="UNFETTER user interface, Angular app"
 
 # Create Application Directory
 ENV WORKING_DIRECTORY /usr/share/unfetter-ui

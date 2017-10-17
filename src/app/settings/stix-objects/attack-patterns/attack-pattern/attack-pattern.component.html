@@ -19,7 +19,7 @@
                       </md-card-header>
                         <div class="row">
                            <div class="col-md-12">
-                                <h5 [innerHTML]="cleanWhitespace(attackPattern.attributes.description)"></h5>
+                                <h5 [innerHTML]="formatText(attackPattern.attributes.description)"></h5>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_detection" class="row">
@@ -37,7 +37,7 @@
                         <div *ngIf="mitigation" class="row">
                             <div class="col-md-12">
                                 <label>Mitigation</label>
-                                <h5 [innerHTML]="cleanWhitespaceMitigation(mitigation)"></h5><br>
+                                <h5 [innerHTML]="formatText(mitigation)"></h5><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_platforms && attackPattern.attributes.x_mitre_platforms.length" class="row">

@@ -52,10 +52,10 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         this.deletButtonClicked.emit(item);
     }
 
-    public cleanWhitespace(inputString): string {
-        return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
+    public formatText(inputString): string {
+        return FormatHelpers.formatAll(inputString);
     }
-    
+
     private  notLastIndex(): boolean {
         this.isLastRow = this.index < this.model.length ? true : false;
         this.index = this.index + 1;

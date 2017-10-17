@@ -9,14 +9,14 @@
                         <a routerLink="{{element.id}}">{{element.name}}</a>
                         <md-chip-list *ngIf="element.external_references" class="inlineFlex">
                             <md-chip *ngFor="let external_reference of element.external_references.slice(0,3)" class="chipListChip">
-                                <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                                <a target="_blank" [attr.href]="external_reference.url" *ngIf="external_reference.url" (click)="visitExtRef(external_reference.url)"> {{external_reference.source_name}}</a>
                                 <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
                             </md-chip>
                         </md-chip-list>
-                        <small *ngIf="element.external_references && element.external_references.length > 3" 
-                            class="text-muted" 
+                        <small *ngIf="element.external_references && element.external_references.length > 3"
+                            class="text-muted"
                             mdTooltip="{{ externalReferencesToolTipGen(element.external_references.slice(3)) }}"
-                            mdTooltipPosition="after"> 
+                            mdTooltipPosition="after">
                             + {{ element.external_references.length - 3 }} more
                         </small>
                     </span>
@@ -28,7 +28,7 @@
                             <i class="material-icons">delete</i>
                         </button>
                     </span>
-                </div>                               
+                </div>
             </md-cell>
         </ng-container>
 

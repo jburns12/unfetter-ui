@@ -251,4 +251,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public formatText(inputString): string {
         return FormatHelpers.formatAll(inputString);
     }
+
+    public visitExtRef(url): void {
+        window.open(url, "_blank");
+    }
 }

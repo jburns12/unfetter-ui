@@ -165,4 +165,8 @@ constructor(
    public formatText(inputString): string {
        return FormatHelpers.formatAll(inputString);
    }
+
+   public visitExtRef(url): void {
+       window.open(url, "_blank");
+   }
 }

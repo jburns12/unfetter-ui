@@ -42,5 +42,9 @@ export class StixTableComponent implements OnInit {
             .map((er) => er.source_name)
             .join(', ');
     }
-   
+
+    public visitExtRef(url): void {
+        window.open(url, "_blank");
+    }
+
 }

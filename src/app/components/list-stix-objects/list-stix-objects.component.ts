@@ -61,4 +61,8 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         this.index = this.index + 1;
         return this.isLastRow;
     }
+
+    public visitExtRef(url): void {
+        window.open(url, "_blank");
+    }
 }

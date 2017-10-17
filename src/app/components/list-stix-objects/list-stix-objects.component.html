@@ -29,7 +29,11 @@
                                 </md-chip-list>
 
                                 <md-chip-list class="pull-left" *ngIf="showExternalReferences">
-                                    <md-chip selected="true"  color="primary" *ngFor="let external_reference of data.attributes.external_references">{{external_reference.source_name}}</md-chip>
+                                  <md-chip *ngFor="let external_reference of data.attributes.external_references"
+                                      selected="true">
+                                      <a style="color: white" target="_blank" [attr.href]="external_reference.url" *ngIf="external_reference.url" (click)="visitExtRef(external_reference.url)"> {{external_reference.source_name}}</a>
+                                      <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                                  </md-chip>
                                 </md-chip-list>
                             </div>
                             <div class="col-lg-3 col-xs-12">

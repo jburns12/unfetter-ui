@@ -29,6 +29,18 @@
                                 </md-chip>
                             </md-chip-list>
                         </div>
+                    </div><br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>External References</label>
+                            <md-chip-list>
+                              <md-chip *ngFor="let external_reference of intrusionSet.attributes.external_references"
+                                  selected="true">
+                                  <a style="color: white" target="_blank" [attr.href]="external_reference.url" *ngIf="external_reference.url" (click)="visitExtRef(external_reference.url)"> {{external_reference.source_name}}</a>
+                                  <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                              </md-chip>
+                            </md-chip-list>
+                        </div>
                     </div>
             </md-card-content>
         </md-card>

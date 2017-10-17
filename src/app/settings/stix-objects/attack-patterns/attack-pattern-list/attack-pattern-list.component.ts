@@ -118,7 +118,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             }
             if (!killChainPhases || killChainPhases.length === 0) {
                 let attackPatternsProxies = this.phaseNameGroups['unspecified'];
-                attackPatternsProxies.push(attackPattern);
+                if(attackPatternsProxies){
+                    attackPatternsProxies.push(attackPattern);
+                }
             } else {
                 killChainPhases.forEach((killChainPhase: KillChainPhase) => {
                     let phaseName = killChainPhase.phase_name.toLowerCase();

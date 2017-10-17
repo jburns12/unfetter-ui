@@ -248,11 +248,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    public cleanWhitespace(inputString): string {
-        return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
-    }
-
-    public cleanWhitespaceMitigation(inputString): string {
-        return FormatHelpers.mitreCiteRefToHtml(FormatHelpers.whitespaceToBreak(inputString));
+    public formatText(inputString): string {
+        return FormatHelpers.formatAll(inputString);
     }
 }

@@ -10,4 +10,8 @@ export class FormatHelpers {
     public static mitreCiteRefToHtml(inputString: string): string {
         return inputString ? inputString.replace(/\[\[CiteRef::([^\]\]]*)\]\]/g, `&nbsp;<small><cite class="text-muted">($1)</cite></small>`) : '';
     }
+
+    public static formatAll(inputString) {
+        return FormatHelpers.whitespaceToBreak(FormatHelpers.mitreCitationsToHtml(FormatHelpers.mitreCiteRefToHtml(inputString)));
+    }
 }

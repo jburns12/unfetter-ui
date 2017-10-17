@@ -232,7 +232,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    public cleanWhitespace(inputString): string {
-        return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
+    public formatText(inputString): string {
+        return FormatHelpers.formatAll(inputString);
     }
 }

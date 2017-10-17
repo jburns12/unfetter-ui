@@ -52,7 +52,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public addAliasesToTool(): void {
-        if (this.aliases.length > 0){
+        if (this.aliases.length > 0) {
             this.tool.attributes.x_mitre_aliases = [];
             this.tool.attributes.x_mitre_aliases.push(this.tool.attributes.name);
             for (let alias of this.aliases){

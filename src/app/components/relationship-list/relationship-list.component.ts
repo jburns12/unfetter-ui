@@ -46,6 +46,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
                     }
                 }
             );
+            console.log(this.relationshipMapping);
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -98,6 +99,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
                 this.relationshipMapping.push(data);
+                this.relationshipMapping = this.relationshipMapping.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
             }, (error) => {
                 console.log(error);
             }, () => {

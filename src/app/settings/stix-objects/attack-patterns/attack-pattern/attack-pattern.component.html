@@ -14,6 +14,9 @@
         <div class="col-md-12">
             <div *ngIf="history">
               <md-card>
+                <md-card-header style="border-bottom: 1px solid lightgray;">
+                  <md-card-title><h3>History Log</h3></md-card-title>
+                </md-card-header>
                 <md-card-content *ngFor="let historyStr of historyArr">
                   {{historyStr}}
                 </md-card-content>

@@ -69,7 +69,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 (data) => {
                     let pattern = data as AttackPattern;
                     this.diff = JSON.stringify(data.attributes.previous_versions);
-                    this.getHistory(pattern);
+                    super.getHistory(pattern, this.historyArr);
                     this.history = !this.history;
                     this.historyFound = true;
                    }, (error) => {
@@ -85,47 +85,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         }
         else {
             this.history = !this.history;
-        }
-    }
-
-    public getHistoryLine(currArr: any, modDate: any): void {
-        if(!currArr.path || (currArr.path[0] !== "previous_versions" && currArr.path[0] !== "modified") {
-            switch(currArr.kind) {
-                case "N":
-                    this.historyArr.push(modDate + ":  Added '" + currArr.path[0] + "' " + JSON.stringify(currArr.rhs));
-                    break;
-                case "D":
-                    this.historyArr.push(modDate + ":  Deleted '" + currArr.path[0] + "' value " + JSON.stringify(currArr.lhs));
-                    break;
-                case "E":
-                    this.historyArr.push(modDate + ":  Changed '" + currArr.path[0] + "' from " + JSON.stringify(currArr.lhs) + " to " + JSON.stringify(currArr.rhs));
-                    break;
-                case "A":
-                    currArr.item.path = currArr.path;
-                    this.getHistoryLine(currArr.item, modDate);
-                    break;
-            }
-        }
-    }
-
-    public getHistory(pattern: any): void {
-        console.log(pattern.attributes.previous_versions);
-
-        if (pattern.attributes.previous_versions && (pattern.attributes.previous_versions.length > 0) ) {
-            let currDiff = diff(pattern.attributes.previous_versions[0], pattern.attributes);
-            for (let currArr of currDiff) {
-               this.getHistoryLine(currArr, pattern.attributes.modified, pattern);
-            }
-            for (let i = 0; (i+1) < pattern.attributes.previous_versions.length; i++) {
-                let currDiff = diff(pattern.attributes.previous_versions[i+1], pattern.attributes.previous_versions[i])
-                for (let currArr of currDiff) {
-                   this.getHistoryLine(currArr, pattern.attributes.previous_versions[i].modified);
-                }
-                console.log(currDiff);
-            }
-            this.historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ":  " + this.attackPattern.id + " created");
-        } else {
-            this.historyArr.push(pattern.attributes.created + ":  " + this.attackPattern.id + " created");
         }
     }
 

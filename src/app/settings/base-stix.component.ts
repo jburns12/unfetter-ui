@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/
 import { BaseStixService } from './base-stix.service';
 import { Constance } from '../utils/constance';
 import { AttackPattern } from '../models/attack-pattern';
+import diff from 'deep-diff';
 
 export class BaseStixComponent {
     public filteredItems: any[];
@@ -290,5 +291,47 @@ export class BaseStixComponent {
                 }
             }
         );
+    }
+
+    public getHistoryLine(currArr: any, historyArr: string[], modDate: any): void {
+        if(!currArr.path || (currArr.path[0] !== "previous_versions" && currArr.path[0] !== "modified")) {
+            switch(currArr.kind) {
+                case "N":
+                    historyArr.push(modDate + ":  Added '" + currArr.path[0] + "' " + JSON.stringify(currArr.rhs));
+                    break;
+                case "D":
+                    historyArr.push(modDate + ":  Deleted '" + currArr.path[0] + "' value " + JSON.stringify(currArr.lhs));
+                    break;
+                case "E":
+                    historyArr.push(modDate + ":  Changed '" + currArr.path[0] + "' from " + JSON.stringify(currArr.lhs) + " to " + JSON.stringify(currArr.rhs));
+                    break;
+                case "A":
+                    currArr.item.path = currArr.path;
+                    this.getHistoryLine(currArr.item, historyArr, modDate);
+                    break;
+            }
+        }
+    }
+
+    public getHistory(pattern: any, historyArr: string[]): void {
+        console.log(pattern.attributes.previous_versions);
+
+        if (pattern.attributes.previous_versions && (pattern.attributes.previous_versions.length > 0) ) {
+            let currDiff = diff(pattern.attributes.previous_versions[0], pattern.attributes);
+            for (let currArr of currDiff) {
+               this.getHistoryLine(currArr, historyArr, pattern.attributes.modified);
+            }
+            for (let i = 0; (i+1) < pattern.attributes.previous_versions.length; i++) {
+                let currDiff = diff(pattern.attributes.previous_versions[i+1], pattern.attributes.previous_versions[i])
+                for (let currArr of currDiff) {
+                   this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified);
+                }
+                console.log(currDiff);
+            }
+            historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ":  " + pattern.id + " created");
+            historyArr.reverse();
+        } else {
+            historyArr.push(pattern.attributes.created + ":  " + pattern.id + " created");
+        }
     }
 }

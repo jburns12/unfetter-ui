@@ -5,14 +5,21 @@
                 <div class="button-row">
                     <button  class="mat-primary" md-raised-button (click)="editButtonClicked(attackPattern)"><i class="material-icons">create</i> EDIT</button>
                     <button class="mat-primary" md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="material-icons">delete</i> DELETE</button>
+                    <button class="mat-primary" md-raised-button (click)="historyButtonClicked(attackPattern)">HISTORY</button>
                 </div>
 
         </div>
     </div>
       <div class="row" style="margin-top: 15px;" *ngIf="attackPattern">
         <div class="col-md-12">
+            <div *ngIf="history">
+              <md-card>
+                <md-card-content *ngFor="let historyStr of historyArr">
+                  {{historyStr}}
+                </md-card-content>
+              </md-card>
+            </div>
             <md-card>
-
                 <md-card-content>
                       <md-card-header style="border-bottom: 1px solid lightgray;">
                           <md-card-title><h3>{{ attackPattern.attributes.name }}</h3></md-card-title>

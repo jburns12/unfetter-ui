@@ -8,7 +8,6 @@ import { AttackPattern, CourseOfAction, Relationship } from '../../../../models'
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
 import { FormatHelpers } from '../../../../global/static/format-helpers'
-import diff from 'deep-diff';
 
 @Component({
   selector: 'attack-pattern',

@@ -22,6 +22,10 @@ public addedTechniques: any = [];
 public currTechniques: any = [];
 public techniques: any = [];
 public origRels: any = [];
+public diff: any;
+public history: boolean = false;
+public historyArr: string[] = [];
+public historyFound: boolean = false;
 
 constructor(
      public stixService: StixService,
@@ -51,6 +55,32 @@ constructor(
             this.deleteRels(this.tool.id, goBack);
          }
       );
+   }
+
+   public historyButtonClicked(): void {
+       if (!this.historyFound) {
+           let uri = this.stixService.url + '/' + this.tool.id + '?previousversions=true';
+           let subscription =  super.getByUrl(uri).subscribe(
+               (data) => {
+                   let pattern = data as Tool;
+                   this.diff = JSON.stringify(data.attributes.previous_versions);
+                   super.getHistory(pattern, this.historyArr);
+                   this.history = !this.history;
+                   this.historyFound = true;
+                  }, (error) => {
+                   // handle errors here
+                    console.log('error ' + error);
+               }, () => {
+                   // prevent memory links
+                   if (subscription) {
+                       subscription.unsubscribe();
+                   }
+               }
+           );
+       }
+       else {
+           this.history = !this.history;
+       }
    }
 
    public findRelationships(): void {
@@ -150,6 +180,7 @@ constructor(
        let sub = super.get().subscribe(
          (data) => {
            this.tool =  new Tool(data);
+           this.tool.attributes.external_references.reverse();
          }, (error) => {
                  // handle errors here
                   console.log('error ' + error);

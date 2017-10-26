@@ -78,8 +78,24 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         this.intrusionSet.attributes.labels.push(label);
     }
 
+    public removeCitations(): void {
+        for (let i in this.intrusionSet.attributes.external_references){
+            if('citeButton' in this.intrusionSet.attributes.external_references[i]) {
+                delete this.intrusionSet.attributes.external_references[i].citeButton;
+            }
+            if('citation' in this.intrusionSet.attributes.external_references[i]) {
+                delete this.intrusionSet.attributes.external_references[i].citation;
+            }
+            if('citeref' in this.intrusionSet.attributes.external_references[i]) {
+                delete this.intrusionSet.attributes.external_references[i].citeref;
+            }
+        }
+    }
+
     public saveIdentity(): void {
          this.addAliasesToIntrusionSet();
+         this.removeCitations();
+         this.intrusionSet.attributes.external_references.reverse();
          const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

@@ -35,6 +35,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.tool = new Tool(data);
+                this.tool.attributes.external_references.reverse();
                 console.log(this.tool);
                 this.getTechniques(false);
                 this.getAllAliases();
@@ -122,8 +123,24 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
+    public removeCitations(): void {
+        for (let i in this.tool.attributes.external_references){
+            if('citeButton' in this.tool.attributes.external_references[i]) {
+                delete this.tool.attributes.external_references[i].citeButton;
+            }
+            if('citation' in this.tool.attributes.external_references[i]) {
+                delete this.tool.attributes.external_references[i].citation;
+            }
+            if('citeref' in this.tool.attributes.external_references[i]) {
+                delete this.tool.attributes.external_references[i].citeref;
+            }
+        }
+    }
+
     public saveTool(): void {
         this.addAliasesToTool();
+        this.removeCitations();
+        this.tool.attributes.external_references.reverse();
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

@@ -96,6 +96,7 @@
     "ng2-charts": "^1.6.0",
     "ngx-bootstrap": "^1.9.3",
     "ngx-clipboard": "^8.1.0",
+    "odiff": "0.0.2",
     "perfect-scrollbar": "0.7.1",
     "primeng": "4.0.0",
     "reflect-metadata": "^0.1.10",

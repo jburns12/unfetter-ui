@@ -284,19 +284,31 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 delete this.attackPattern.attributes['x_mitre_detection'];
             }
         }
+        for (let i in this.attackPattern.attributes.external_references){
+            if('citeButton' in this.attackPattern.attributes.external_references[i]) {
+                delete this.attackPattern.attributes.external_references[i].citeButton;
+            }
+            if('citation' in this.attackPattern.attributes.external_references[i]) {
+                delete this.attackPattern.attributes.external_references[i].citation;
+            }
+            if('citeref' in this.attackPattern.attributes.external_references[i]) {
+                delete this.attackPattern.attributes.external_references[i].citeref;
+            }
+        }
     }
 
     public saveAttackPattern(): void {
-         this.removeEmpties();
-         console.log(this.attackPattern);
-         let sub = super.saveButtonClicked().subscribe(
+        this.attackPattern.attributes.external_references.reverse();
+        this.removeEmpties();
+        console.log(this.attackPattern);
+        let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log(data);
                 this.saveCourseOfAction(data.id);
                 this.location.back();
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                console.log('error ' + error);
             }, () => {
                 // prevent memory links
                 if (sub) {

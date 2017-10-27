@@ -24,6 +24,11 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public softwares: any = [];
     public editComponent: boolean = false;
     public origRels: any = [];
+    public diff: any;
+    public history: boolean = false;
+    public historyArr: string[] = [];
+    public relHistoryArr: any = [];
+    public historyFound: boolean = false;
 
      constructor(
         public stixService: StixService,
@@ -72,6 +77,33 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     }
                 );
         });
+    }
+
+    public historyButtonClicked(): void {
+        if (!this.historyFound) {
+            let uri = this.stixService.url + '/' + this.intrusionSet.id + '?previousversions=true&metaproperties=true';
+            let subscription =  super.getByUrl(uri).subscribe(
+                (data) => {
+                    let pattern = data as Tool;
+                    this.diff = JSON.stringify(data.attributes.previous_versions);
+                    super.getHistory(pattern, this.historyArr);
+                    super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
+                    this.history = !this.history;
+                    this.historyFound = true;
+                   }, (error) => {
+                    // handle errors here
+                     console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (subscription) {
+                        subscription.unsubscribe();
+                    }
+                }
+            );
+        }
+        else {
+            this.history = !this.history;
+        }
     }
 
     public getAllAliases(): void {
@@ -220,6 +252,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     this.getAllAliases();
                 }
                 super.getCitations();
+                this.intrusionSet.attributes.external_references.reverse();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

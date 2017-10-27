@@ -3,12 +3,28 @@
 
                 <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
                 <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
+                <a class="mat-primary" md-raised-button (click)="historyButtonClicked()">HISTORY</a>
                 <!-- <button md-raised-button routerLink="/relationships/intrusion-uses-attack/{{intrusionSet.id}}">Intrusion Set</button> -->
 
        </div>
 </div>
  <div class="row" style="margin-top: 15px;">
     <div class="col-md-12">
+      <div *ngIf="history">
+        <md-card>
+          <md-card-header style="border-bottom: 1px solid lightgray;">
+            <md-card-title><h3>History Log</h3></md-card-title>
+          </md-card-header>
+          <h4>Object History</h4>
+          <md-card-content *ngFor="let historyStr of historyArr">
+            {{historyStr}}
+          </md-card-content><br>
+          <h4>Relationship History</h4>
+          <md-card-content *ngFor="let relHistoryStr of relHistoryArr">
+            {{relHistoryStr}}
+          </md-card-content>
+        </md-card>
+      </div>
         <md-card>
             <md-card-content>
               <md-card-header style="border-bottom: 1px solid lightgray;">

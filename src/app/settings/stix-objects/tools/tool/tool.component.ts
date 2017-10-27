@@ -22,6 +22,11 @@ public addedTechniques: any = [];
 public currTechniques: any = [];
 public techniques: any = [];
 public origRels: any = [];
+public diff: any;
+public history: boolean = false;
+public historyArr: string[] = [];
+public relHistoryArr: any = [];
+public historyFound: boolean = false;
 
 constructor(
      public stixService: StixService,
@@ -53,6 +58,33 @@ constructor(
       );
    }
 
+   public historyButtonClicked(): void {
+       if (!this.historyFound) {
+           let uri = this.stixService.url + '/' + this.tool.id + '?previousversions=true&metaproperties=true';
+           let subscription =  super.getByUrl(uri).subscribe(
+               (data) => {
+                   let pattern = data as Tool;
+                   this.diff = JSON.stringify(data.attributes.previous_versions);
+                   super.getHistory(pattern, this.historyArr);
+                   super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
+                   this.history = !this.history;
+                   this.historyFound = true;
+                  }, (error) => {
+                   // handle errors here
+                    console.log('error ' + error);
+               }, () => {
+                   // prevent memory links
+                   if (subscription) {
+                       subscription.unsubscribe();
+                   }
+               }
+           );
+       }
+       else {
+           this.history = !this.history;
+       }
+   }
+
    public findRelationships(): void {
        let filter = { 'stix.target_ref': this.tool.id };
        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
@@ -78,6 +110,7 @@ constructor(
                        }
                    }
                  });
+                 console.log(this.origRels);
               }, () => {
                // prevent memory links
                if (subscription) {
@@ -150,6 +183,8 @@ constructor(
        let sub = super.get().subscribe(
          (data) => {
            this.tool =  new Tool(data);
+           this.tool.attributes.external_references.reverse();
+           this.getTechniques(false);
          }, (error) => {
                  // handle errors here
                   console.log('error ' + error);

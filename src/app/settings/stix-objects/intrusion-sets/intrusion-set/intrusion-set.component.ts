@@ -27,6 +27,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public diff: any;
     public history: boolean = false;
     public historyArr: string[] = [];
+    public relHistoryArr: any = [];
     public historyFound: boolean = false;
 
      constructor(
@@ -80,12 +81,13 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
 
     public historyButtonClicked(): void {
         if (!this.historyFound) {
-            let uri = this.stixService.url + '/' + this.intrusionSet.id + '?previousversions=true';
+            let uri = this.stixService.url + '/' + this.intrusionSet.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
                 (data) => {
                     let pattern = data as Tool;
                     this.diff = JSON.stringify(data.attributes.previous_versions);
                     super.getHistory(pattern, this.historyArr);
+                    super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
                     this.history = !this.history;
                     this.historyFound = true;
                    }, (error) => {

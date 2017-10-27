@@ -25,6 +25,7 @@ public origRels: any = [];
 public diff: any;
 public history: boolean = false;
 public historyArr: string[] = [];
+public relHistoryArr: any = [];
 public historyFound: boolean = false;
 
 constructor(
@@ -59,12 +60,13 @@ constructor(
 
    public historyButtonClicked(): void {
        if (!this.historyFound) {
-           let uri = this.stixService.url + '/' + this.tool.id + '?previousversions=true';
+           let uri = this.stixService.url + '/' + this.tool.id + '?previousversions=true&metaproperties=true';
            let subscription =  super.getByUrl(uri).subscribe(
                (data) => {
                    let pattern = data as Tool;
                    this.diff = JSON.stringify(data.attributes.previous_versions);
                    super.getHistory(pattern, this.historyArr);
+                   super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
                    this.history = !this.history;
                    this.historyFound = true;
                   }, (error) => {
@@ -108,6 +110,7 @@ constructor(
                        }
                    }
                  });
+                 console.log(this.origRels);
               }, () => {
                // prevent memory links
                if (subscription) {
@@ -181,6 +184,7 @@ constructor(
          (data) => {
            this.tool =  new Tool(data);
            this.tool.attributes.external_references.reverse();
+           this.getTechniques(false);
          }, (error) => {
                  // handle errors here
                   console.log('error ' + error);

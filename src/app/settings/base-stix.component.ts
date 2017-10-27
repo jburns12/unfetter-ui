@@ -315,7 +315,7 @@ export class BaseStixComponent {
     }
 
     public getHistoryLine(currArr: any, historyArr: string[], modDate: any, revDiff: any): void {
-        if(currArr.path[0] !== "previous_versions" && currArr.path[0] !== "modified") {
+        if(currArr.path[0] !== "previous_versions" && currArr.path[0] !== "modified" && currArr.path[0] !== "deletedRelationships") {
             switch(currArr.type) {
                 case "add":
                     for (let val of currArr.vals) {
@@ -364,6 +364,43 @@ export class BaseStixComponent {
             historyArr.reverse();
         } else {
             historyArr.push(pattern.attributes.created + ":  " + pattern.id + " created");
+        }
+    }
+
+    public getRelHistory(pattern: any, relHistoryArr: any, relationships: any): void {
+        let dateArr = [];
+        console.log(pattern);
+        if(pattern.attributes.deletedRelationships !== undefined) {
+            for (let currRel of pattern.attributes.deletedRelationships) {
+                let createdHash = {};
+                createdHash['date'] = currRel.created;
+                createdHash['action'] = "created";
+                createdHash['ref'] = currRel.ref;
+                dateArr.push(createdHash);
+
+                let deletedHash = {};
+                deletedHash['date'] = currRel.deleted;
+                deletedHash['action'] = "deleted";
+                deletedHash['ref'] = currRel.ref;
+                dateArr.push(deletedHash);
+            }
+        }
+
+        for (let rel of relationships) {
+            let relHash = {};
+            relHash['date'] = rel.attributes.created;
+            relHash['action'] = "created";
+
+            if(rel.attributes.target_ref === pattern.id) {
+                relHash['ref'] = rel.attributes.source_ref;
+            } else {
+                relHash['ref'] = rel.attributes.target_ref;
+            }
+            dateArr.push(relHash);
+        }
+        dateArr = dateArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
+        for (let currArr of dateArr) {
+            relHistoryArr.push(currArr.date + ":  " + "Relationship with " + currArr.ref + " " + currArr.action);
         }
     }
 }

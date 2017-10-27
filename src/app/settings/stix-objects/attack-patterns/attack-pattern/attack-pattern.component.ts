@@ -26,8 +26,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public target: any;
     public history: boolean = false;
     public historyArr: string[] = [];
+    public relHistoryArr: any = [];
     public historyFound: boolean = false;
     public diff: any;
+    public allRels: any = [];
 
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
@@ -63,12 +65,13 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
 
     public historyButtonClicked(): void {
         if (!this.historyFound) {
-            let uri = this.stixService.url + '/' + this.attackPattern.id + '?previousversions=true';
+            let uri = this.stixService.url + '/' + this.attackPattern.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
                 (data) => {
                     let pattern = data as AttackPattern;
                     this.diff = JSON.stringify(data.attributes.previous_versions);
                     super.getHistory(pattern, this.historyArr);
+                    super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
                     this.history = !this.history;
                     this.historyFound = true;
                    }, (error) => {
@@ -102,6 +105,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 this.attackPattern = data as AttackPattern;
                 this.attackPattern.attributes.external_references.reverse();
                 this.findCoA();
+                this.findSourceRels();
                 console.log(this.attackPattern);
             }, (error) => {
                 // handle errors here
@@ -186,6 +190,28 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     if (relationship.attributes.relationship_type === 'mitigates') {
                         this.getMitigation(relationship.attributes.source_ref);
                     }
+                    this.allRels.push(relationship);
+                });
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public findSourceRels(): void {
+        let filter = { 'stix.source_ref': this.attackPattern.id };
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                this.target = data as Relationship;
+                this.target.forEach((relationship: Relationship) => {
+                    this.allRels.push(relationship);
                 });
                }, (error) => {
                 // handle errors here

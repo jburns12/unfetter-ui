@@ -89,7 +89,7 @@ constructor(
 
    public findRelationships(): void {
        let filter = { 'stix.target_ref': this.tool.id };
-       let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+       let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
        let subscription =  super.getByUrl(uri).subscribe(
            (data) => {
                let target = data as Relationship[];

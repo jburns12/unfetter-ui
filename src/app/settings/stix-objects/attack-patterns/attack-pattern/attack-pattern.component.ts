@@ -106,10 +106,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
          let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
+                console.log(this.attackPattern);
                 this.attackPattern.attributes.external_references.reverse();
                 this.findCoA();
                 this.findSourceRels();
-                console.log(this.attackPattern);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -184,9 +184,9 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public findCoA(): void {
-        let filter = 'filter=' + encodeURIComponent(JSON.stringify({ 'stix.target_ref': this.attackPattern.id }));
-        this.stixService.url = Constance.RELATIONSHIPS_URL;
-        let subscription =  super.load(filter).subscribe(
+        let filter = { 'stix.target_ref': this.attackPattern.id };
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
+        let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 this.stixService.url = Constance.ATTACK_PATTERN_URL;
                 this.target = data as Relationship[];
@@ -210,7 +210,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
 
     public findSourceRels(): void {
         let filter = { 'stix.source_ref': this.attackPattern.id };
-        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 this.target = data as Relationship;
@@ -293,7 +293,9 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         this.relationship.attributes.source_ref = coaId;
         this.relationship.attributes.target_ref = attackPatternId;
         this.relationship.attributes.relationship_type = 'mitigates';
-        console.log(this.relationship);
+        if (this.authService !== undefined) {
+            this.relationship.attributes.x_mitre_id = this.authService.getUser().identity.id;
+        }
         let subscription = super.create(this.relationship).subscribe(
             (data) => {
                 console.log(data);

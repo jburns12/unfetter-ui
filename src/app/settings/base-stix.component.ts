@@ -407,6 +407,9 @@ export class BaseStixComponent {
                 createdHash['date'] = currRel.created;
                 createdHash['action'] = "created";
                 createdHash['ref'] = currRel.ref;
+                if(currRel.id !== undefined) {
+                    createdHash['id'] = currRel.id;
+                }
                 dateArr.push(createdHash);
 
                 let deletedHash = {};
@@ -421,6 +424,9 @@ export class BaseStixComponent {
             let relHash = {};
             relHash['date'] = rel.attributes.created;
             relHash['action'] = "created";
+            if(rel.attributes.mitreId !== undefined) {
+                relHash['id'] = rel.attributes.mitreId;
+            }
 
             if(rel.attributes.target_ref === pattern.id) {
                 relHash['ref'] = rel.attributes.source_ref;
@@ -431,7 +437,11 @@ export class BaseStixComponent {
         }
         dateArr = dateArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
         for (let currArr of dateArr) {
-            relHistoryArr.push(currArr.date + ":  " + "Relationship with " + currArr.ref + " " + currArr.action);
+            if(currArr.id !== undefined) {
+                relHistoryArr.push(currArr.date + ":  " + "Relationship with " + currArr.ref + " " + currArr.action + " by " + currArr.id);
+            } else {
+                relHistoryArr.push(currArr.date + ":  " + "Relationship with " + currArr.ref + " " + currArr.action);
+            }
         }
     }
 }

@@ -124,7 +124,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
 
     public findRelationships(technique: boolean): void {
         let filter = { 'stix.source_ref': this.intrusionSet.id };
-        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 let target = data as Relationship[];

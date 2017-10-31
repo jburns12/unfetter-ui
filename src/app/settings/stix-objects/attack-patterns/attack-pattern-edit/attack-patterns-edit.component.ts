@@ -305,7 +305,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             this.attackPattern.attributes.x_mitre_id = this.authService.getUser().identity.id;
         }
         this.removeEmpties();
-        console.log(this.attackPattern);
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log(data);

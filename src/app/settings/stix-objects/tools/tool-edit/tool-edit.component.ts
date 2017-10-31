@@ -91,6 +91,9 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
           relationship.attributes.description = description;
         }
         relationship.attributes.relationship_type = 'uses';
+        if (this.authService !== undefined) {
+            relationship.attributes.x_mitre_id = this.authService.getUser().identity.id;
+        }
         if (id !== '') {
             relationship.id = id;
             console.log(relationship);

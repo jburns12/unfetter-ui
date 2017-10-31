@@ -5,123 +5,123 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <md-input-container class="full-width">
-        <input mdInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="">
-        </md-input-container>
+        <mat-input-container class="full-width">
+        <input matInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="">
+        </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <md-input-container class="full-width">
-            <input mdInput placeholder="Description" required [(ngModel)]="intrusionSet.attributes.description" value="">
-        </md-input-container>
+        <mat-input-container class="full-width">
+            <input matInput placeholder="Description" required [(ngModel)]="intrusionSet.attributes.description" value="">
+        </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
         <h4>Aliases</h4>
               <div class="button-row">
-                    <a class=" " md-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
+                    <a class=" " mat-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
               </div>
           </div>
         </div>
          <div class="row">
             <div class="col-md-12">
-                     <md-card *ngFor="let alias of aliases; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                            <md-card-content>
+                     <mat-card *ngFor="let alias of aliases; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                            <mat-card-content>
                                 <div class="row">
                                   <div class="col-md-4">
-                                          <md-input-container class="full-width">
-                                              <input mdInput placeholder="Alias" [(ngModel)]="aliases[i].name">
-                                          </md-input-container>
+                                          <mat-input-container class="full-width">
+                                              <input matInput placeholder="Alias" [(ngModel)]="aliases[i].name">
+                                          </mat-input-container>
                                   </div>
                                   <div class="col-md-4">
-                                          <md-input-container class="full-width">
-                                              <input mdInput placeholder="Description" [(ngModel)]="aliases[i].description">
-                                          </md-input-container>
+                                          <mat-input-container class="full-width">
+                                              <input matInput placeholder="Description" [(ngModel)]="aliases[i].description">
+                                          </mat-input-container>
                                   </div>
                                 </div>
-                            </md-card-content>
-                            <md-card-actions>
+                            </mat-card-content>
+                            <mat-card-actions>
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="removeAlias(aliases[i].name)"><i class="material-icons">delete</i> REMOVE</a>
+                                    <a class="" mat-raised-button (click)="removeAlias(aliases[i].name)"><i class="material-icons">delete</i> REMOVE</a>
                                 </div>
-                            </md-card-actions>
-                    </md-card>
+                            </mat-card-actions>
+                    </mat-card>
             </div>
 </div><br>
 <div class="row">
     <div class="col-md-12">
         <h4>Techniques</h4>
               <div class="button-row">
-                    <a class=" " md-raised-button (click)="addTechnique()"><i class="material-icons">add</i> ADD</a>
+                    <a class=" " mat-raised-button (click)="addTechnique()"><i class="material-icons">add</i> ADD</a>
               </div>
           </div>
         </div>
          <div class="row">
             <div class="col-md-12">
-                     <md-card *ngFor="let addedTechnique of addedTechniques; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                            <md-card-content>
+                     <mat-card *ngFor="let addedTechnique of addedTechniques; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                            <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-6">
                                       <form>
-                                          <md-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
-                                            <md-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
+                                          <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
+                                            <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
                                                   <span>{{ technique.name }}</span>
-                                            </md-option>
-                                          </md-select>
+                                            </mat-option>
+                                          </mat-select>
                                       </form><br>
                                     </div>
                                     <div class="col-md-12">
-                                            <md-input-container class="full-width">
-                                                <textarea mdInput mdTextareaAutosize placeholder="Description" [(ngModel)]="addedTechniques[i].description"></textarea>
-                                            </md-input-container>
+                                            <mat-input-container class="full-width">
+                                                <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="addedTechniques[i].description"></textarea>
+                                            </mat-input-container>
                                     </div>
                                   </div>
-                            </md-card-content>
-                            <md-card-actions>
+                            </mat-card-content>
+                            <mat-card-actions>
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="removeTechnique(addedTechniques[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
+                                    <a class="" mat-raised-button (click)="removeTechnique(addedTechniques[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
                                 </div>
-                            </md-card-actions>
-                    </md-card>
+                            </mat-card-actions>
+                    </mat-card>
             </div>
 </div><br>
 <div class="row">
     <div class="col-md-12">
         <h4>Software</h4>
               <div class="button-row">
-                    <a class=" " md-raised-button (click)="addSoftware()"><i class="material-icons">add</i> ADD</a>
+                    <a class=" " mat-raised-button (click)="addSoftware()"><i class="material-icons">add</i> ADD</a>
               </div>
           </div>
         </div>
          <div class="row">
             <div class="col-md-12">
-                     <md-card *ngFor="let addedSoftware of addedSoftwares; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                            <md-card-content>
+                     <mat-card *ngFor="let addedSoftware of addedSoftwares; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                            <mat-card-content>
                                <div class="row">
                                    <div class="col-md-6">
                                        <form>
-                                           <md-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
-                                             <md-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
+                                           <mat-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
+                                             <mat-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
                                                    <span>{{ software.name }}</span>
-                                             </md-option>
-                                           </md-select>
+                                             </mat-option>
+                                           </mat-select>
                                        </form><br>
                                    </div>
                                    <div class="col-md-12">
-                                           <md-input-container class="full-width">
-                                               <textarea mdInput mdTextareaAutosize placeholder="Description" [(ngModel)]="addedSoftwares[i].description"></textarea>
-                                           </md-input-container>
+                                           <mat-input-container class="full-width">
+                                               <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="addedSoftwares[i].description"></textarea>
+                                           </mat-input-container>
                                    </div>
                                  </div>
-                            </md-card-content>
-                            <md-card-actions>
+                            </mat-card-content>
+                            <mat-card-actions>
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="removeSoftware(addedSoftwares[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
+                                    <a class="" mat-raised-button (click)="removeSoftware(addedSoftwares[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
                                 </div>
-                            </md-card-actions>
-                    </md-card>
+                            </mat-card-actions>
+                    </mat-card>
             </div>
 </div><br>
 
@@ -130,8 +130,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!intrusionSet.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                <a class=" " mat-raised-button (click)="saveButtonClicked()" [disabled]="!intrusionSet.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
         </div>
     </div>
 </div>

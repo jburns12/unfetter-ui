@@ -1,9 +1,10 @@
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
-import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReport } from './models/threat-report.model';
 import { BehaviorSubject } from 'rxjs';
+
+import { ThreatReport } from './models/threat-report.model';
+import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call
@@ -17,7 +18,7 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
 
     /**
      * @description listens to filter events and fetch/filters data accordingly
-     * @param collectionViewer 
+     * @param collectionViewer
      */
     public connect(collectionViewer: CollectionViewer): Observable<ThreatReport[]> {
         return this.filterChange
@@ -31,7 +32,7 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
 
                 return products$
                     .map((el) => {
-                        return el.filter((tro) => tro.name.trim().toLowerCase().includes(filterVal) 
+                        return el.filter((tro) => tro.name.trim().toLowerCase().includes(filterVal)
                             || tro.author.trim().toLowerCase().includes(filterVal));
                     });
             });

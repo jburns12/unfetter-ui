@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -7,6 +7,7 @@ import { AttackPatternComponent } from '../attack-pattern/attack-pattern.compone
 import { StixService } from '../../../stix.service';
 import { AttackPattern, ExternalReference, KillChainPhase } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
+import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
     selector: 'attack-pattern-edit',
@@ -43,15 +44,17 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar,
+        public authService: AuthService) {
 
-        super(stixService, route, router, dialog, location, snackBar);
+        super(stixService, route, router, dialog, location, snackBar, authService);
     }
 
     public ngOnInit() {
        super.loadAttackPattern();
+       console.log(this.authService);
        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
        let subscription = super.load(filter).subscribe(
            (data) => {
@@ -62,7 +65,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.assignPerms();
                this.findCoA();
                super.getCitations();
-               console.log(this.dataSources);
            }, (error) => {
                // handle errors here
                console.log('error ' + error);
@@ -299,6 +301,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public saveAttackPattern(): void {
         this.attackPattern.attributes.external_references.reverse();
+        if (this.authService !== undefined) {
+            this.attackPattern.attributes.x_mitre_id = this.authService.getUser().identity.id;
+        }
         this.removeEmpties();
         console.log(this.attackPattern);
         let sub = super.saveButtonClicked().subscribe(

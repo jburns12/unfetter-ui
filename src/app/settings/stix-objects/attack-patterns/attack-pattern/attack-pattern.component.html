@@ -3,9 +3,9 @@
        <div class="col-md-12">
 
                 <div class="button-row">
-                    <button  class="mat-primary" md-raised-button (click)="editButtonClicked(attackPattern)"><i class="material-icons">create</i> EDIT</button>
-                    <button class="mat-primary" md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="material-icons">delete</i> DELETE</button>
-                    <button class="mat-primary" md-raised-button (click)="historyButtonClicked()">HISTORY</button>
+                    <button  class="mat-primary" mat-raised-button (click)="editButtonClicked(attackPattern)"><i class="material-icons">create</i> EDIT</button>
+                    <button class="mat-primary" mat-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="material-icons">delete</i> DELETE</button>
+                    <button class="mat-primary" mat-raised-button (click)="historyButtonClicked()">HISTORY</button>
                 </div>
 
         </div>
@@ -13,25 +13,25 @@
       <div class="row" style="margin-top: 15px;" *ngIf="attackPattern">
         <div class="col-md-12">
           <div *ngIf="history">
-            <md-card>
-              <md-card-header style="border-bottom: 1px solid lightgray;">
-                <md-card-title><h3>History Log</h3></md-card-title>
-              </md-card-header>
+            <mat-card>
+              <mat-card-header style="border-bottom: 1px solid lightgray;">
+                <mat-card-title><h3>History Log</h3></mat-card-title>
+              </mat-card-header>
               <h4>Object History</h4>
-              <md-card-content *ngFor="let historyStr of historyArr">
+              <mat-card-content *ngFor="let historyStr of historyArr">
                 {{historyStr}}
-              </md-card-content><br>
+              </mat-card-content><br>
               <h4>Relationship History</h4>
-              <md-card-content *ngFor="let relHistoryStr of relHistoryArr">
+              <mat-card-content *ngFor="let relHistoryStr of relHistoryArr">
                 {{relHistoryStr}}
-              </md-card-content>
-            </md-card>
+              </mat-card-content>
+            </mat-card>
           </div>
-            <md-card>
-                <md-card-content>
-                      <md-card-header style="border-bottom: 1px solid lightgray;">
-                          <md-card-title><h3>{{ attackPattern.attributes.name }}</h3></md-card-title>
-                      </md-card-header>
+            <mat-card>
+                <mat-card-content>
+                      <mat-card-header style="border-bottom: 1px solid lightgray;">
+                          <mat-card-title><h3>{{ attackPattern.attributes.name }}</h3></mat-card-title>
+                      </mat-card-header>
                         <div class="row">
                            <div class="col-md-12">
                                 <h5 [innerHTML]="formatText(attackPattern.attributes.description)"></h5>
@@ -58,34 +58,34 @@
                         <div *ngIf="attackPattern.attributes.x_mitre_platforms && attackPattern.attributes.x_mitre_platforms.length" class="row">
                             <div class="col-md-12">
                                 <label>Platforms:</label>
-                                <md-chip-list>
-                                    <md-chip *ngFor="let platform of attackPattern.attributes.x_mitre_platforms"
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let platform of attackPattern.attributes.x_mitre_platforms"
                                         selected="true">
                                         {{platform}}
-                                    </md-chip>
-                                </md-chip-list><br>
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_permissions_required && attackPattern.attributes.x_mitre_permissions_required.length" class="row">
                             <div class="col-md-12">
                                 <label>Permissions Required:</label>
-                                <md-chip-list>
-                                    <md-chip *ngFor="let permission of attackPattern.attributes.x_mitre_permissions_required"
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let permission of attackPattern.attributes.x_mitre_permissions_required"
                                         selected="true">
                                         {{permission}}
-                                    </md-chip>
-                                </md-chip-list><br>
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_effective_permissions && attackPattern.attributes.x_mitre_effective_permissions.length" class="row">
                             <div class="col-md-12">
                                 <label>Effective Permissions:</label>
-                                <md-chip-list>
-                                    <md-chip *ngFor="let permission of attackPattern.attributes.x_mitre_effective_permissions"
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let permission of attackPattern.attributes.x_mitre_effective_permissions"
                                         selected="true">
                                         {{permission}}
-                                    </md-chip>
-                                </md-chip-list><br>
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_remote_support" class="row">
@@ -109,49 +109,49 @@
                         <div *ngIf="attackPattern.attributes.x_mitre_data_sources && attackPattern.attributes.x_mitre_data_sources.length" onloadedmetadata=""class="row">
                             <div class="col-md-12">
                                 <label>Data Sources:</label>
-                                <md-chip-list>
-                                    <md-chip *ngFor="let dataSource of attackPattern.attributes.x_mitre_data_sources"
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let dataSource of attackPattern.attributes.x_mitre_data_sources"
                                         selected="true">
                                         {{dataSource}}
-                                    </md-chip>
-                                </md-chip-list><br>
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_contributors && attackPattern.attributes.x_mitre_contributors.length" class="row">
                             <div class="col-md-12">
                                 <label>Contributors:</label>
-                                <md-chip-list>
-                                    <md-chip *ngFor="let contributor of attackPattern.attributes.x_mitre_contributors"
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let contributor of attackPattern.attributes.x_mitre_contributors"
                                         selected="true">
                                         {{contributor}}
-                                    </md-chip>
-                                </md-chip-list><br>
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.kill_chain_phases && attackPattern.attributes.kill_chain_phases.length" class="row">
                             <div class="col-md-12">
                                 <label>Tactics:</label>
-                                <md-chip-list>
-                                    <md-chip *ngFor="let kill_chain_phase of attackPattern.attributes.kill_chain_phases"
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let kill_chain_phase of attackPattern.attributes.kill_chain_phases"
                                         selected="true">
                                         {{kill_chain_phase.phase_name}}
-                                    </md-chip>
-                                </md-chip-list><br>
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div>
                         </div>
                            <div class="row">
                                 <div class="col-md-12">
                                     <label>External References:</label>
-                                    <md-chip-list>
-                                        <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references"
+                                    <mat-chip-list>
+                                        <mat-chip *ngFor="let external_reference of attackPattern.attributes.external_references"
                                             selected="true">
                                             <a style="color: white" target="_blank" [attr.href]="external_reference.url" *ngIf="external_reference.url" (click)="visitExtRef(external_reference.url)"> {{external_reference.source_name}}</a>
-                                        </md-chip>
-                                    </md-chip-list>
+                                        </mat-chip>
+                                    </mat-chip-list>
                                 </div>
                             </div>
-                </md-card-content>
-            </md-card>
+                </mat-card-content>
+            </mat-card>
         </div>
     </div>
 

@@ -3,17 +3,20 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FileUploadComponent } from './file-upload.component';
 import { UploadService } from './upload.service';
-import { MdIconModule, MdInputModule, MdButtonModule } from '@angular/material';
+import { MatIconModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatCardModule, MatListModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
 const components = [
   FileUploadComponent,
 ];
 
-const mdComponents = [
-    MdButtonModule,
-    MdIconModule,
-    MdInputModule,
+const materialModules = [
+    MatButtonModule,
+    MatCardModule,
+    MatListModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressBarModule,
 ];
 
 const services = [
@@ -28,7 +31,7 @@ imports: [
     CommonModule,
     FormsModule,
     HttpClientModule,
-    ...mdComponents,
+    ...materialModules,
   ],
   providers: [
     ...services

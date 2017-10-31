@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../../../stix.service';
 import { ExternalReference } from '../../../../models';
 import { Motivation } from '../../../../models/motivation.enum';
 import { ResourceLevel } from '../../../../models/resource-level.enum';
 import { SortHelper } from '../../../../assessments/assessments-summary/sort-helper';
+import { AuthService } from '../../../../global/services/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
@@ -54,11 +55,12 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar,
+        public authService: AuthService) {
 
-        super(stixService, route, router, dialog, location, snackBar);
+        super(stixService, route, router, dialog, location, snackBar, authService);
         this.motivationCtrl = new FormControl();
         this.resourceLevelCtrl = new FormControl();
     }
@@ -96,6 +98,9 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
          this.addAliasesToIntrusionSet();
          this.removeCitations();
          this.intrusionSet.attributes.external_references.reverse();
+         if (this.authService !== undefined) {
+             this.intrusionSet.attributes.x_mitre_id = this.authService.getUser().identity.id;
+         }
          const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

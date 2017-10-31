@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, ChangeDetectorRef  } from '@angular/core';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { AttackPattern, KillChainPhase } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
+import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
     selector: 'attack-pattern-list',
@@ -28,12 +29,13 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar,
-        private ref: ChangeDetectorRef) {
+        public snackBar: MatSnackBar,
+        private ref: ChangeDetectorRef,
+        public authService: AuthService) {
 
-        super(stixService, route, router, dialog, location, snackBar);
+        super(stixService, route, router, dialog, location, snackBar, authService);
         // this.phaseNameGroups['unspecified'] = [];
     }
 

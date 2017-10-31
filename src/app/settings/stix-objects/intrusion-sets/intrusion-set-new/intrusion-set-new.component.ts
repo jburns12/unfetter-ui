@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { IntrusionSetEditComponent } from '../intrusion-set-edit/intrusion-set-edit.component';
 import { StixService } from '../../../stix.service';
 import { ExternalReference } from '../../../../models';
 import { IntrusionSet } from '../../../../models';
+import { AuthService } from '../../../../global/services/auth.service';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -20,9 +21,10 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
     public ids: any;
 
     constructor(public stixService: StixService, public route: ActivatedRoute,
-                public router: Router, public dialog: MdDialog,
-                public location: Location, public snackBar: MdSnackBar) {
-        super(stixService, route, router, dialog, location, snackBar);
+                public router: Router, public dialog: MatDialog,
+                public location: Location, public snackBar: MatSnackBar,
+                public authService: AuthService) {
+        super(stixService, route, router, dialog, location, snackBar, authService);
     }
 
     public ngOnInit() {
@@ -80,6 +82,9 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         this.addAliasesToIntrusionSet();
         this.removeCitations();
         this.intrusionSet.attributes.external_references.reverse();
+        if (this.authService !== undefined) {
+            this.intrusionSet.attributes.x_mitre_id = this.authService.getUser().identity.id;
+        }
         const observable = super.create(this.intrusionSet);
         const sub = observable
             .subscribe(

@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AttackPattern, KillChainPhase, Tool } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { Constance } from '../../../../utils/constance';
+import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
   selector: 'tool-list',
@@ -21,10 +22,11 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
-        super(stixService, route, router, dialog, location, snackBar);
+        public snackBar: MatSnackBar,
+        public authService: AuthService) {
+        super(stixService, route, router, dialog, location, snackBar, authService);
         stixService.url = Constance.TOOL_URL;
         this.url = stixService.url;
     }

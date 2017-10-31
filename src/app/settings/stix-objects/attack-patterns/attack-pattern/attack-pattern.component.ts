@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Location } from '@angular/common';
@@ -7,7 +7,8 @@ import { BaseStixComponent } from '../../../base-stix.component';
 import { AttackPattern, CourseOfAction, Relationship } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
-import { FormatHelpers } from '../../../../global/static/format-helpers'
+import { FormatHelpers } from '../../../../global/static/format-helpers';
+import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
   selector: 'attack-pattern',
@@ -42,11 +43,12 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar,
+        public authService: AuthService) {
 
-        super(stixService, route, router, dialog, location, snackBar);
+        super(stixService, route, router, dialog, location, snackBar, authService);
         stixService.url = Constance.ATTACK_PATTERN_URL;
     }
 
@@ -69,6 +71,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             let subscription =  super.getByUrl(uri).subscribe(
                 (data) => {
                     let pattern = data as AttackPattern;
+                    console.log(pattern);
                     this.diff = JSON.stringify(data.attributes.previous_versions);
                     super.getHistory(pattern, this.historyArr);
                     super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
@@ -181,11 +184,12 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public findCoA(): void {
-        let filter = { 'stix.target_ref': this.attackPattern.id };
-        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
-        let subscription =  super.getByUrl(uri).subscribe(
+        let filter = 'filter=' + encodeURIComponent(JSON.stringify({ 'stix.target_ref': this.attackPattern.id }));
+        this.stixService.url = Constance.RELATIONSHIPS_URL;
+        let subscription =  super.load(filter).subscribe(
             (data) => {
-                this.target = data as Relationship;
+                this.stixService.url = Constance.ATTACK_PATTERN_URL;
+                this.target = data as Relationship[];
                 this.target.forEach((relationship: Relationship) => {
                     if (relationship.attributes.relationship_type === 'mitigates') {
                         this.getMitigation(relationship.attributes.source_ref);

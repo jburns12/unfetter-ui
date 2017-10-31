@@ -65,7 +65,7 @@ label {
     bottom: 0;
     width: 100%;
     /* Set the fixed height of the footer here */
-    height: 30px;
+    height: auto;
     background-color: $nav-background-color;
     z-index: 1;
     padding-top: 5px;
@@ -137,12 +137,25 @@ label {
     display: inline-flex;
 }
 
+.inlineBlock {
+    display: inline-block;
+}
+
 .margin-top {
     margin-top: 10px;
 }
 
+.smallAvatar {
+    width: 26px;
+    border-radius: 15%;
+}
+
 .margin-bottom {
     margin-bottom: 15px;
+}
+
+.overFlowHidden  {
+    overflow: hidden;
 }
 
 // Margin top & bottom helpers in increments of 3 or 5
@@ -161,16 +174,16 @@ label {
     }
 }
 
-// Used to match the padding of md-card elements
+// Used to match the padding of mat-card elements
 .mat-card-padding {
     padding-left: 8px;
     padding-right: 8px;
 }
 
-.attack-pattern-div {
-    font-size: .9em;
-    padding: 5px; // background: pink;
-}
+// .attack-pattern-div {
+//     font-size: .9em;
+//     padding: 5px; // background: pink;
+// }
 
 .snack-bar-background-success {
     background: $accent-alt-color !important;
@@ -246,11 +259,11 @@ a {
     padding-bottom: 10px;
 }
 
-.mdSelectBotMargin {
+.matSelectBotMargin {
     margin-bottom: 0.43em;
 }
 
-.md-24 {
+.mat-24 {
     font-size: 24px;
 }
 
@@ -265,6 +278,10 @@ a {
 
 .flex {
     display: flex;
+}
+
+.flexImportant {
+    display: flex !important;
 }
 
 .flexItemsCenter {
@@ -311,7 +328,7 @@ a {
     flex-flow: column;
 }
 
-.loading md-spinner {
+.loading mat-spinner {
     margin: auto auto;
     flex: 1 0 auto;
 }
@@ -373,6 +390,11 @@ a {
     }
 }
 
+.lightH3 {
+    font-size: 22px;
+    font-weight: 300;
+}
+
 // ~~~ Angular Material helpers, *NOT* overrides ~~~
 .buttonGrp .mat-button {
     font-size: 2.5rem;
@@ -381,10 +403,33 @@ a {
 .chipListChip {
     margin-top: 3px !important;
     margin-bottom: 3px !important;
+}
+
+.chipListChip+.chipListChip {
     margin-left: 5px !important;
 }
 
-// ~~~ Angular Material Themes: *ALWAYS* nest in a class, *NOT* overrides ~~~
+.chipListPadding .mat-chip-list-wrapper {
+    padding: 0 5px;
+}
+
+// ~~~ Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides ~~~
+#indicatorSharingList {
+    .mat-card-header-text {
+        margin: 0 !important;
+        .mat-card-title {
+            font-size: 22px;
+            font-weight: 300;
+        }
+    }
+    .mat-card-actions {
+        text-align: right;
+    }
+    .mat-tab-body-content {
+        padding: 10px 3px 5px;
+    }
+}
+
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
         transition: box-shadow 0.3s ease-in-out;
@@ -426,4 +471,21 @@ a {
     .mat-select-trigger {
         height: 23px !important;
     }
+}
+
+// Color helpers
+.textPrimary {
+    color: $primary-color;
+}
+.textAccent {
+    color: $accent-color;
+}
+.textAccentAlt{
+    color: $accent-alt-color;
+}
+.textWarn {
+    color: $warn-color;
+}
+.textNeutral {
+    color: $neutral-color;
 }

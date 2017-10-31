@@ -2,7 +2,7 @@ import { Component, Input, Output, OnInit, ViewChild, EventEmitter } from '@angu
 import { Router, ActivatedRoute } from '@angular/router';
 import { Constance } from '../../../utils/constance';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
@@ -17,7 +17,7 @@ export class StixTableComponent implements OnInit {
 
     @Input('stixData') public stixData: any[];
     @Output() public delete: EventEmitter<any> = new EventEmitter();
-    @ViewChild('paginator') public paginator: MdPaginator;
+    @ViewChild('paginator') public paginator: MatPaginator;
 
     public dataSource: any;
     public displayedColumns: string[] = ['stix'];
@@ -46,5 +46,4 @@ export class StixTableComponent implements OnInit {
     public visitExtRef(url): void {
         window.open(url, "_blank");
     }
-
 }

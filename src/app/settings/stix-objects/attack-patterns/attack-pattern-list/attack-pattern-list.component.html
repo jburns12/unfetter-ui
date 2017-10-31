@@ -2,7 +2,7 @@
     <div class="col-md-12">
 
         <div class="button-row">
-            <a md-raised-button routerLink="./new" class="mat-primary">NEW</a>
+            <a mat-raised-button routerLink="./new" class="mat-primary">NEW</a>
             <!--<a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>-->
         </div>
         <div class="pull-right">
@@ -14,22 +14,22 @@
 <div class="row height-100-percent">
 
     <div class="col-md-12 scroll-area">
-        <md-accordion class="unfetterAngularMaterialAccordion">
-            <md-expansion-panel *ngFor="let key of phaseNameGroupKeys">
-                <md-expansion-panel-header>
-                    <md-panel-title>
+        <mat-accordion class="unfetterAngularMaterialAccordion">
+            <mat-expansion-panel *ngFor="let key of phaseNameGroupKeys">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
                         {{key | capitalize }}&nbsp;
                         <span *ngIf="attackPatternByPhaseMap[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap[key].length}}</span>
                         <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>
-                    </md-panel-title>
-                </md-expansion-panel-header>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
 
                 <div class="example-container" *ngIf="attackPatternByPhaseMap !== undefined && attackPatternByPhaseMap[key] !== undefined">
                     <stix-table [stixData]="attackPatternByPhaseMap[key]" (delete)="deletButtonClicked($event, key)"></stix-table>
                 </div>
 
-            </md-expansion-panel>
-        </md-accordion>
+            </mat-expansion-panel>
+        </mat-accordion>
 
         <br>
         <!-- <p-accordion (onOpen)="onTabShow($event)">

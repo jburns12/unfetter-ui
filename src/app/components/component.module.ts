@@ -4,7 +4,7 @@ import { HttpModule } from '@angular/http';
 import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
 import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 'primeng/primeng';
-import { MatButtonModule, MatListModule, MatCardModule,
+import { MatButtonModule, MatListModule, MatCardModule, MatFormFieldModule,
   MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatCheckboxModule, MatIconModule } from '@angular/material';
 import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
 import { PageHeaderComponent } from './page/page-header.component';
@@ -60,6 +60,7 @@ import { GlobalModule } from '../global/global.module';
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatFormFieldModule,
     MatChipsModule,
     DataListModule,
     CheckboxModule,

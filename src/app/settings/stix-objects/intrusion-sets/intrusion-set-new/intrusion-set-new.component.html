@@ -64,13 +64,13 @@
                             <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-6">
-                                      <form>
+                                      <mat-form-field style="width: auto;">
                                           <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
                                             <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
                                                   <span>{{ technique.name }}</span>
                                             </mat-option>
                                           </mat-select>
-                                      </form><br>
+                                      </mat-form-field><br>
                                     </div>
                                     <div class="col-md-12">
                                             <mat-input-container class="full-width">
@@ -101,13 +101,13 @@
                             <mat-card-content>
                                <div class="row">
                                    <div class="col-md-6">
-                                       <form>
+                                       <mat-form-field style="width: auto;">
                                            <mat-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
                                              <mat-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
                                                    <span>{{ software.name }}</span>
                                              </mat-option>
                                            </mat-select>
-                                       </form><br>
+                                       </mat-form-field><br>
                                    </div>
                                    <div class="col-md-12">
                                            <mat-input-container class="full-width">

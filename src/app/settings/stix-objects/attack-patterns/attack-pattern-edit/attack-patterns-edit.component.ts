@@ -286,6 +286,11 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 delete this.attackPattern.attributes['x_mitre_detection'];
             }
         }
+        if ('x_mitre_system_requirements' in this.attackPattern.attributes) {
+            if (this.attackPattern.attributes.x_mitre_system_requirements === '') {
+                delete this.attackPattern.attributes['x_mitre_system_requirements'];
+            }
+        }
         for (let i in this.attackPattern.attributes.external_references){
             if('citeButton' in this.attackPattern.attributes.external_references[i]) {
                 delete this.attackPattern.attributes.external_references[i].citeButton;

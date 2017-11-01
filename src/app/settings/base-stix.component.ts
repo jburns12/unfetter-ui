@@ -405,17 +405,20 @@ export class BaseStixComponent {
             for (let currRel of pattern.attributes.deletedRelationships) {
                 let createdHash = {};
                 createdHash['date'] = currRel.created;
-                createdHash['action'] = "created";
+                createdHash['action'] = "CREATED";
                 createdHash['ref'] = currRel.ref;
-                if(currRel.id !== undefined) {
-                    createdHash['id'] = currRel.id;
+                if(currRel.created_id !== undefined) {
+                    createdHash['id'] = currRel.created_id;
                 }
                 dateArr.push(createdHash);
 
                 let deletedHash = {};
                 deletedHash['date'] = currRel.deleted;
-                deletedHash['action'] = "deleted";
+                deletedHash['action'] = "DELETED";
                 deletedHash['ref'] = currRel.ref;
+                if(currRel.deleted_id !== undefined) {
+                    deletedHash['id'] = currRel.deleted_id;
+                }
                 dateArr.push(deletedHash);
             }
         }
@@ -423,7 +426,7 @@ export class BaseStixComponent {
         for (let rel of relationships) {
             let relHash = {};
             relHash['date'] = rel.attributes.created;
-            relHash['action'] = "created";
+            relHash['action'] = "CREATED";
             if(rel.attributes.mitreId !== undefined) {
                 relHash['id'] = rel.attributes.mitreId;
             }

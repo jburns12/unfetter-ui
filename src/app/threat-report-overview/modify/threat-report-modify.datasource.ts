@@ -3,7 +3,7 @@ import { CollectionViewer } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from './models/threat-report.model';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -12,10 +12,12 @@ import { BehaviorSubject } from 'rxjs';
  */
 export class ThreatReportModifyDataSource extends DataSource<{}> {
     public curDisplayLen = -1;
-    protected filterChange = new BehaviorSubject('');
+    protected dataChange: BehaviorSubject<any[]>;
+    protected readonly filterChange = new BehaviorSubject('');
 
-    constructor(public csvImportData: any[], public paginator: MdPaginator) {
+    constructor(public csvImportData: any[], public paginator: MatPaginator) {
         super();
+        this.dataChange = new BehaviorSubject<any[]>(this.csvImportData);
     }
 
     /**
@@ -25,7 +27,7 @@ export class ThreatReportModifyDataSource extends DataSource<{}> {
     public connect(collectionViewer: CollectionViewer): Observable<any[]> {
 
         const changes: Array<Observable<any>> = [
-            Observable.of(this.csvImportData),
+            this.dataChange,
             this.filterChange
         ];
 
@@ -34,14 +36,14 @@ export class ThreatReportModifyDataSource extends DataSource<{}> {
         }
 
         return Observable.merge(...changes).map(() => {
-            let data = this.csvImportData;
+            let data = this.dataChange.value;
             const value = this.filterChange.value.toLowerCase();
             if (value || value.trim().length > 0) {
                 data = data.filter((d) => {
                     let title;
                     let descrip;
                     if (d.data) {
-                        title = d.data.attributes.title;
+                        title = d.data.attributes.name;
                         descrip = d.data.attributes.description;
                     } else {
                         title = d.name;
@@ -70,6 +72,15 @@ export class ThreatReportModifyDataSource extends DataSource<{}> {
         filter = filter || '';
         filter = filter.trim();
         this.filterChange.next(filter);
+    }
+
+    /**
+     * @description trigger an event signaling a change to the csv table data
+     * @param data
+     * @return {void}
+     */
+    public nextDataChange(data: any[]): void {
+        this.dataChange.next(data);
     }
 
 }

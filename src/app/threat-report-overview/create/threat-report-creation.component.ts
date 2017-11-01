@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 
+import * as moment from 'moment';
+
 import { GenericApi } from '../../global/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
@@ -11,11 +13,9 @@ import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { UploadService } from '../file-upload/upload.service';
-
-// import * as UUID from 'uuid';
-import * as moment from 'moment';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
+import { Boundries } from '../models/boundries';
 
 @Component({
   selector: 'threat-report-creation',
@@ -27,17 +27,11 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   @ViewChild('fileUpload')
   public fileUpload: FileUploadComponent;
   public showCheckBoxes = true;
-  // public name: string;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
-  // public startDate;
-  // public endDate;
   public maxStartDate;
   public minEndDate;
   public reports;
-  // public readonly selectedInstrusions = new Set<string>();
-  // public readonly selectedMalware = new Set<string>();
-  // public readonly selectedTargets = new Set<string>();
   public threatReport = new ThreatReport();
   public dateError = {
     startDate: { isError: false },
@@ -45,13 +39,14 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     errorMessage: 'Not a valid date'
   };
   public readonly dateFormat = this.dateFormat;
-
+  public readonly path = `threat-dashboard`;
   private readonly subscriptions = [];
 
-  constructor(protected router: Router,
-              protected location: Location,
-              protected genericApi: GenericApi,
-              protected sharedService: ThreatReportSharedService) { }
+  constructor(
+    protected router: Router,
+    protected location: Location,
+    protected genericApi: GenericApi,
+    protected sharedService: ThreatReportSharedService) { }
 
   /**
    * @description fetch data for this component
@@ -99,7 +94,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description handle start date changed, does validation
-   * @param value 
+   * @param value
    */
   public startDateChanged(value: any): void {
     if (!value) {
@@ -121,7 +116,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description handle end date changed, does validation
-   * @param value 
+   * @param value
    */
   public endDateChanged(value: any): void {
     if (!value) {
@@ -157,12 +152,12 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {string} value
    * @param {string} stixType
    */
-  public addChip(value: string, stixType: string): void {
+  public addChip(value: any, stixType: string): void {
     if (!value || !stixType) {
       return;
     }
 
-    let chips: Set<string> | undefined;
+    let chips: Set<any> | undefined;
     switch (stixType) {
       case 'intrusion-set':
         chips = this.threatReport.boundries.intrusions;
@@ -176,8 +171,18 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     }
 
     if (chips) {
-      chips = chips.add(value);
+      if (typeof value === 'string') {
+        chips = chips.add(value);
+      } else {
+        if (!this.hasValue(chips, value)) {
+          chips = chips.add(value);
+        }
+      }
     }
+  }
+
+  public hasValue(chips: Set<{ any }>, option: any) {
+    return chips.has(option.value);
   }
 
   /**
@@ -185,7 +190,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {string} stixName
    * @param {string} stixType
    */
-  public removeChip(stixName: string, stixType: string) {
+  public removeChip(stixName: any, stixType: string) {
     if (!stixName || !stixType) {
       return;
     }
@@ -203,6 +208,16 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
         break;
     }
     chips.delete(stixName);
+
+    // if (chips) {
+    //   if ( typeof stixName === 'string') {
+    //     chips.delete(stixName);
+    //   } else {
+    //     if (!this.hasValue(chips, value)){
+    //       chips = chips.add(value);
+    //     }
+    //   }
+    // }
   }
 
   /**
@@ -218,12 +233,9 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event optional
    */
   public save(event: UIEvent): void {
-    console.log(event);
-    console.log(this.fileUpload.value());
-
     this.threatReport.reports = this.reports || [];
     this.sharedService.threatReportOverview = this.threatReport;
-    this.router.navigate([`/tro/modify`, this.threatReport.id]);
+    this.router.navigate([`/${this.path}/modify`, this.threatReport.id]);
   }
 
   /**
@@ -254,13 +266,15 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   private clone(): void {
-    this.threatReport = JSON.parse(JSON.stringify(this.sharedService.threatReportOverview));
-
-    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<string>();
-
+    // remember to new up an object, otherwise object method will not exist, using just an object literal copy
+    const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
+    this.threatReport = tmp;
+    this.reports = this.sharedService.threatReportOverview.reports || [];
+    // this is needed to make sure boundries is acutally and object and not an object literal at runtime
+    this.threatReport.boundries = new Boundries();
+    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<{ any }>();
     this.threatReport.boundries.targets = this.sharedService.threatReportOverview.boundries.targets || new Set<string>();
-
-    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<string>();
+    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<{ any }>();
     if (this.sharedService.threatReportOverview.boundries.startDate) {
       this.threatReport.boundries.startDate = new Date(this.sharedService.threatReportOverview.boundries.startDate);
     }

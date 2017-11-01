@@ -26,6 +26,7 @@ export class IntrusionSet {
         timestamp_precision: string;
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+        x_mitre_id: string;
     };
 
     constructor(data?: IntrusionSet) {

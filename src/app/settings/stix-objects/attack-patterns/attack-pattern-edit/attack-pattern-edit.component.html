@@ -4,18 +4,18 @@
             <div class="row">
                 <div class="col-md-12">
                      <div class="form-group">
-                        <md-input-container class="full-width">
-                            <input mdInput class="form-control" required placeholder="Name" value="{{attackPattern.attributes.name}}"
+                        <mat-input-container class="full-width">
+                            <input matInput class="form-control" required placeholder="Name" value="{{attackPattern.attributes.name}}"
                                 [(ngModel)]="attackPattern.attributes.name">
-                        </md-input-container>
+                        </mat-input-container>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <md-input-container class="full-width">
-                        <textarea mdInput mdTextareaAutosize placeholder="Description" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
-                    </md-input-container>
+                    <mat-input-container class="full-width">
+                        <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
+                    </mat-input-container>
                 </div>
             </div>
 
@@ -23,30 +23,30 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <md-input-container class="full-width">
-                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_detection"  placeholder="Detection">{{attackPattern.attributes.x_mitre_detection}}</textarea>
-                    </md-input-container>
+                    <mat-input-container class="full-width">
+                        <textarea matInput [(ngModel)]="attackPattern.attributes.x_mitre_detection"  placeholder="Detection">{{attackPattern.attributes.x_mitre_detection}}</textarea>
+                    </mat-input-container>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <md-input-container class="full-width">
-                        <textarea mdInput mdTextareaAutosize placeholder="Mitigation" [(ngModel)]="mitigation">{{mitigation}}</textarea>
-                    </md-input-container>
+                    <mat-input-container class="full-width">
+                        <textarea matInput matTextareaAutosize placeholder="Mitigation" [(ngModel)]="mitigation">{{mitigation}}</textarea>
+                    </mat-input-container>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <md-input-container class="full-width">
-                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_system_requirements"  placeholder="System Requirements">{{attackPattern.attributes.x_mitre_system_requirements}}</textarea>
-                    </md-input-container>
+                    <mat-input-container class="full-width">
+                        <textarea matInput [(ngModel)]="attackPattern.attributes.x_mitre_system_requirements"  placeholder="System Requirements">{{attackPattern.attributes.x_mitre_system_requirements}}</textarea>
+                    </mat-input-container>
                 </div>
             </div>
             <div *ngIf="tacticBools['defEvas']" class="row">
                 <div class="col-md-12">
-                    <md-input-container class="full-width">
-                        <textarea mdInput [(ngModel)]="attackPattern.attributes.x_mitre_defense_bypassed"  placeholder="Defense Bypassed">{{attackPattern.attributes.x_mitre_defense_bypasseds}}</textarea>
-                    </md-input-container>
+                    <mat-input-container class="full-width">
+                        <textarea matInput [(ngModel)]="attackPattern.attributes.x_mitre_defense_bypassed"  placeholder="Defense Bypassed">{{attackPattern.attributes.x_mitre_defense_bypasseds}}</textarea>
+                    </mat-input-container>
                 </div>
             </div>
             <div class="row">
@@ -56,7 +56,7 @@
                   <a href="javascript:;" (click)="removeAllPlatforms()">[ Select None ]</a><br><br>
                     <div class="row">
                         <div class="col-md-4" *ngFor="let platform of platforms">
-                                <md-checkbox class="identity-margin" (change)="addRemovePlatform(platform.name)" [(ngModel)]="platform.val">{{platform.name}}</md-checkbox>
+                                <mat-checkbox class="identity-margin" (change)="addRemovePlatform(platform.name)" [(ngModel)]="platform.val">{{platform.name}}</mat-checkbox>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                   <h4>Permissions Required</h4>
                     <div class="row">
                         <div class="col-md-4" *ngFor="let perm of permissions_req">
-                                <md-checkbox class="identity-margin" (change)="addRemovePermission(perm.name)" [checked]="perm.val">{{perm.name}}</md-checkbox>
+                                <mat-checkbox class="identity-margin" (change)="addRemovePermission(perm.name)" [checked]="perm.val">{{perm.name}}</mat-checkbox>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                   <h4>Effective Permissions</h4>
                     <div class="row">
                         <div class="col-md-4" *ngFor="let perm of effective_perms">
-                                <md-checkbox class="identity-margin" (change)="addRemoveEffectivePerm(perm.name)" [checked]="perm.val">{{perm.name}}</md-checkbox>
+                                <mat-checkbox class="identity-margin" (change)="addRemoveEffectivePerm(perm.name)" [checked]="perm.val">{{perm.name}}</mat-checkbox>
                         </div>
                     </div>
                 </div>
@@ -85,11 +85,11 @@
               <h4>Supports Remote</h4>
               <div class="row">
                 <div class="col-md-6">
-                    <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_remote_support">
-                      <md-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
+                    <mat-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_remote_support">
+                      <mat-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
                           {{boolVal.label}}<br>
-                      </md-radio-button>
-                    </md-radio-group>
+                      </mat-radio-button>
+                    </mat-radio-group>
                 </div>
               </div>
             </div>
@@ -97,11 +97,11 @@
               <h4>Requires Network</h4>
               <div class="row">
                   <div class="col-md-6">
-                      <md-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_network_requirements">
-                        <md-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
+                      <mat-radio-group layout="row" [(ngModel)]="attackPattern.attributes.x_mitre_network_requirements">
+                        <mat-radio-button *ngFor="let boolVal of supportsRemoteReqNet" [value]="boolVal.value">
                             {{boolVal.label}}<br>
-                        </md-radio-button>
-                      </md-radio-group>
+                        </mat-radio-button>
+                      </mat-radio-group>
                   </div>
               </div>
             </div><br>
@@ -109,66 +109,66 @@
                 <div class="col-md-12">
                     <h4>Data Sources</h4>
                           <div class="button-row">
-                                <a class=" " md-raised-button (click)="addDataSource()"><i class="material-icons">add</i> ADD</a>
+                                <a class=" " mat-raised-button (click)="addDataSource()"><i class="material-icons">add</i> ADD</a>
                           </div>
                       </div>
                     </div>
                      <div class="row">
                         <div class="col-md-12">
-                                 <md-card *ngFor="let dataSource of attackPattern.attributes.x_mitre_data_sources; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                                        <md-card-content>
+                                 <mat-card *ngFor="let dataSource of attackPattern.attributes.x_mitre_data_sources; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                        <mat-card-content>
                                             <div class="row">
                                               <div class="col-md-6">
-                                                <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [mdAutocomplete]="auto" (ngModelChange)="currDataSources = filterOptions(attackPattern.attributes.x_mitre_data_sources[i], dataSources)">
-                                                </md-input-container>
-                                                <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                                  <md-option *ngFor="let dataSource of currDataSources" [value]="dataSource">
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [matAutocomplete]="auto" (ngModelChange)="currDataSources = filterOptions(attackPattern.attributes.x_mitre_data_sources[i], dataSources)">
+                                                </mat-input-container>
+                                                <mat-autocomplete name="auto" #auto="matAutocomplete" >
+                                                  <mat-option *ngFor="let dataSource of currDataSources" [value]="dataSource">
                                                     <span>{{ dataSource }}</span>
-                                                  </md-option>
-                                                </md-autocomplete>
+                                                  </mat-option>
+                                                </mat-autocomplete>
                                               </div>
                                             </div>
-                                        </md-card-content>
-                                        <md-card-actions>
+                                        </mat-card-content>
+                                        <mat-card-actions>
                                             <div class="button-row">
-                                                <a class="" md-raised-button (click)="removeDataSource(dataSource)"><i class="material-icons">delete</i> REMOVE</a>
+                                                <a class="" mat-raised-button (click)="removeDataSource(dataSource)"><i class="material-icons">delete</i> REMOVE</a>
                                             </div>
-                                        </md-card-actions>
-                                </md-card>
+                                        </mat-card-actions>
+                                </mat-card>
                         </div>
             </div><br>
             <div class="row">
                 <div class="col-md-12">
                     <h4>Contributors</h4>
                           <div class="button-row">
-                                <a class=" " md-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
+                                <a class=" " mat-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
                           </div>
                       </div>
                     </div>
                      <div class="row">
                         <div class="col-md-12">
-                                 <md-card *ngFor="let contributor of attackPattern.attributes.x_mitre_contributors; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                                        <md-card-content>
+                                 <mat-card *ngFor="let contributor of attackPattern.attributes.x_mitre_contributors; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                        <mat-card-content>
                                             <div class="row">
                                               <div class="col-md-6">
-                                                <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [mdAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(attackPattern.attributes.x_mitre_contributors[i], contributors)">
-                                                </md-input-container>
-                                                <md-autocomplete name="auto" #auto="mdAutocomplete" >
-                                                <md-option *ngFor="let contributor of currContributors" [value]="contributor">
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [matAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(attackPattern.attributes.x_mitre_contributors[i], contributors)">
+                                                </mat-input-container>
+                                                <mat-autocomplete name="auto" #auto="matAutocomplete" >
+                                                <mat-option *ngFor="let contributor of currContributors" [value]="contributor">
                                                     <span>{{ contributor }}</span>
-                                                </md-option>
-                                                </md-autocomplete>
+                                                </mat-option>
+                                                </mat-autocomplete>
                                               </div>
                                             </div>
-                                        </md-card-content>
-                                        <md-card-actions>
+                                        </mat-card-content>
+                                        <mat-card-actions>
                                             <div class="button-row">
-                                                <a class="" md-raised-button (click)="removeContributor(contributor)"><i class="material-icons">delete</i> REMOVE</a>
+                                                <a class="" mat-raised-button (click)="removeContributor(contributor)"><i class="material-icons">delete</i> REMOVE</a>
                                             </div>
-                                        </md-card-actions>
-                                </md-card>
+                                        </mat-card-actions>
+                                </mat-card>
                         </div>
             </div><br>
             <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>
@@ -176,8 +176,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="button-row pull-right">
-                         <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
-                         <button type="submit"  class=" " md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
+                         <button  class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
+                         <button type="submit"  class=" " mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
 
                     </div>
                 </div>

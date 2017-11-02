@@ -6,7 +6,6 @@ import { AttackPatternComponent } from '../attack-pattern/attack-pattern.compone
 import { AttackPattern, KillChainPhase } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
     selector: 'attack-pattern-list',
@@ -32,10 +31,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         public dialog: MatDialog,
         public location: Location,
         public snackBar: MatSnackBar,
-        private ref: ChangeDetectorRef,
-        public authService: AuthService) {
+        private ref: ChangeDetectorRef) {
 
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        super(stixService, route, router, dialog, location, snackBar);
         // this.phaseNameGroups['unspecified'] = [];
     }
 

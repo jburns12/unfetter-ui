@@ -9,7 +9,6 @@ import { ExternalReference } from '../../../../models';
 import { Motivation } from '../../../../models/motivation.enum';
 import { ResourceLevel } from '../../../../models/resource-level.enum';
 import { SortHelper } from '../../../../assessments/assessments-summary/sort-helper';
-import { AuthService } from '../../../../global/services/auth.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
@@ -57,10 +56,9 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
+        public snackBar: MatSnackBar) {
 
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        super(stixService, route, router, dialog, location, snackBar);
         this.motivationCtrl = new FormControl();
         this.resourceLevelCtrl = new FormControl();
     }
@@ -98,9 +96,6 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
          this.addAliasesToIntrusionSet();
          this.removeCitations();
          this.intrusionSet.attributes.external_references.reverse();
-         if (this.authService !== undefined) {
-             this.intrusionSet.attributes.x_mitre_id = this.authService.getUser().identity.id;
-         }
          const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();
@@ -160,9 +155,6 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
           relationship.attributes.description = description;
         }
         relationship.attributes.relationship_type = 'uses';
-        if (this.authService !== undefined) {
-            relationship.attributes.x_mitre_id = this.authService.getUser().identity.id;
-        }
         if (id !== '') {
             relationship.id = id;
             console.log(relationship);

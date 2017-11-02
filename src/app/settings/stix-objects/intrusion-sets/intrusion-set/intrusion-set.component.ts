@@ -8,7 +8,6 @@ import { StixService } from '../../../stix.service';
 import { AttackPattern, IntrusionSet, Relationship, ExternalReference, Malware, Tool } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
     selector: 'intrusion-set',
@@ -37,10 +36,9 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
+        public snackBar: MatSnackBar) {
 
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.INTRUSION_SET_URL;
     }
 

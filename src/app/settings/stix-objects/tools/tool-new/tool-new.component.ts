@@ -6,7 +6,6 @@ import { ToolEditComponent } from '../tool-edit/tool-edit.component';
 import { StixService } from '../../../stix.service';
 import { Tool, AttackPattern, Indicator, IntrusionSet, CourseOfAction, Filter, Relationship, Malware, ExternalReference } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
     selector: 'tool-new',
@@ -25,9 +24,8 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        public snackBar: MatSnackBar) {
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
@@ -112,9 +110,6 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
         this.tool.attributes.labels.push('tool');
         this.removeCitations();
         this.tool.attributes.external_references.reverse();
-        if (this.authService !== undefined) {
-           this.tool.attributes.x_mitre_id = this.authService.getUser().identity.id;
-        }
         let sub = super.create(this.tool).subscribe(
             (stixObject) => {
                 this.location.back();

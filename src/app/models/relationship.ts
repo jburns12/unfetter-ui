@@ -21,7 +21,6 @@ export class Relationship {
         relationship_type: string;
         source_ref: string;
         target_ref: string;
-        x_mitre_id: string;
     };
 
     constructor(data?: any) {

@@ -8,7 +8,6 @@ import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/
 import { BaseStixService } from './base-stix.service';
 import { Constance } from '../utils/constance';
 import { AttackPattern } from '../models/attack-pattern';
-import { AuthService } from '../global/services/auth.service';
 import { default as DD } from 'deep-diff';
 import odiff from 'odiff';
 
@@ -24,8 +23,7 @@ export class BaseStixComponent {
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar?: MatSnackBar,
-        public authService?: AuthService) {
+        public snackBar?: MatSnackBar) {
     }
 
      public load(filter?: any): Observable<any[]> {

@@ -6,7 +6,6 @@ import { ToolComponent } from '../tool/tool.component';
 import { StixService } from '../../../stix.service';
 import { Tool, AttackPattern, Indicator, IntrusionSet, CourseOfAction, Filter, Relationship, ExternalReference } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
   selector: 'tool-edit',
@@ -28,9 +27,8 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        public snackBar: MatSnackBar) {
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
@@ -91,9 +89,6 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
           relationship.attributes.description = description;
         }
         relationship.attributes.relationship_type = 'uses';
-        if (this.authService !== undefined) {
-            relationship.attributes.x_mitre_id = this.authService.getUser().identity.id;
-        }
         if (id !== '') {
             relationship.id = id;
             console.log(relationship);
@@ -146,9 +141,6 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         this.addAliasesToTool();
         this.removeCitations();
         this.tool.attributes.external_references.reverse();
-        if (this.authService !== undefined) {
-           this.tool.attributes.x_mitre_id = this.authService.getUser().identity.id;
-        }
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

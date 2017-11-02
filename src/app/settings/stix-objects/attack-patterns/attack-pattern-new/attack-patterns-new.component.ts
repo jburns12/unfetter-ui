@@ -6,7 +6,6 @@ import { AttackPatternEditComponent } from '../attack-pattern-edit/attack-patter
 import { StixService } from '../../../stix.service';
 import { AttackPattern, CourseOfAction, ExternalReference, Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
     selector: 'attack-pattern-new',
@@ -21,10 +20,9 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
+        public snackBar: MatSnackBar) {
 
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
@@ -55,9 +53,6 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
          idRef.source_name = 'mitre-attack';
          this.attackPattern.attributes.external_references.push(idRef);
          this.attackPattern.attributes.external_references.reverse();
-         if (this.authService !== undefined) {
-            this.attackPattern.attributes.x_mitre_id = this.authService.getUser().identity.id;
-        }
          this.removeEmpties();
          let sub = super.create(this.attackPattern).subscribe(
             (data) => {

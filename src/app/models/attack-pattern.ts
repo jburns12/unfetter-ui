@@ -30,7 +30,6 @@ export class AttackPattern {
         x_mitre_detection: string;
         x_mitre_permissions_required: string[];
         x_mitre_network_requirements: boolean;
-        x_mitre_id: string;
     };
 
     constructor(data?: AttackPattern) {

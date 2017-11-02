@@ -5,7 +5,6 @@ import { Location } from '@angular/common';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../../../stix.service';
 import { IntrusionSet } from '../../../../models';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
   selector: 'intrusion-set-list',
@@ -22,10 +21,9 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
+        public snackBar: MatSnackBar) {
 
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        super(stixService, route, router, dialog, location, snackBar);
         this.url = stixService.url;
 
     }

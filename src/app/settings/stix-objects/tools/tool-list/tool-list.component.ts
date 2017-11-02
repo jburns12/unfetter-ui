@@ -6,7 +6,6 @@ import { AttackPattern, KillChainPhase, Tool } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { Constance } from '../../../../utils/constance';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
   selector: 'tool-list',
@@ -24,9 +23,8 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        public snackBar: MatSnackBar) {
+        super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.TOOL_URL;
         this.url = stixService.url;
     }

@@ -7,7 +7,6 @@ import { AttackPatternComponent } from '../attack-pattern/attack-pattern.compone
 import { StixService } from '../../../stix.service';
 import { AttackPattern, ExternalReference, KillChainPhase } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
-import { AuthService } from '../../../../global/services/auth.service';
 
 @Component({
     selector: 'attack-pattern-edit',
@@ -46,15 +45,13 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar,
-        public authService: AuthService) {
+        public snackBar: MatSnackBar) {
 
-        super(stixService, route, router, dialog, location, snackBar, authService);
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
        super.loadAttackPattern();
-       console.log(this.authService);
        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
        let subscription = super.load(filter).subscribe(
            (data) => {
@@ -306,9 +303,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public saveAttackPattern(): void {
         this.attackPattern.attributes.external_references.reverse();
-        if (this.authService !== undefined) {
-            this.attackPattern.attributes.x_mitre_id = this.authService.getUser().identity.id;
-        }
         this.removeEmpties();
         let sub = super.saveButtonClicked().subscribe(
             (data) => {

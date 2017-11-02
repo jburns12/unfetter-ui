@@ -100,8 +100,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     }
                 }
             );
-        }
-        else {
+        } else {
             this.history = !this.history;
         }
     }

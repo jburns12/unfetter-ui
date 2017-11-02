@@ -288,14 +288,14 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 delete this.attackPattern.attributes['x_mitre_system_requirements'];
             }
         }
-        for (let i in this.attackPattern.attributes.external_references){
-            if('citeButton' in this.attackPattern.attributes.external_references[i]) {
+        for (let i in this.attackPattern.attributes.external_references) {
+            if ('citeButton' in this.attackPattern.attributes.external_references[i]) {
                 delete this.attackPattern.attributes.external_references[i].citeButton;
             }
-            if('citation' in this.attackPattern.attributes.external_references[i]) {
+            if ('citation' in this.attackPattern.attributes.external_references[i]) {
                 delete this.attackPattern.attributes.external_references[i].citation;
             }
-            if('citeref' in this.attackPattern.attributes.external_references[i]) {
+            if ('citeref' in this.attackPattern.attributes.external_references[i]) {
                 delete this.attackPattern.attributes.external_references[i].citeref;
             }
         }

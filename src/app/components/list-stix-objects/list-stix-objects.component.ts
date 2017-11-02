@@ -56,13 +56,13 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         return FormatHelpers.formatAll(inputString);
     }
 
+    public visitExtRef(url): void {
+        window.open(url, '_blank');
+    }
+    
     private  notLastIndex(): boolean {
         this.isLastRow = this.index < this.model.length ? true : false;
         this.index = this.index + 1;
         return this.isLastRow;
-    }
-
-    public visitExtRef(url): void {
-        window.open(url, "_blank");
     }
 }

@@ -85,8 +85,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     }
                 }
             );
-        }
-        else {
+        } else {
             this.history = !this.history;
         }
     }
@@ -311,6 +310,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public visitExtRef(url): void {
-        window.open(url, "_blank");
+        window.open(url, '_blank');
     }
 }

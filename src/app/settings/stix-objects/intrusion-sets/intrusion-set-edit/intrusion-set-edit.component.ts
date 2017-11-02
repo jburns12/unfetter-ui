@@ -79,14 +79,14 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
     public removeCitations(): void {
-        for (let i in this.intrusionSet.attributes.external_references){
-            if('citeButton' in this.intrusionSet.attributes.external_references[i]) {
+        for (let i in this.intrusionSet.attributes.external_references) {
+            if ('citeButton' in this.intrusionSet.attributes.external_references[i]) {
                 delete this.intrusionSet.attributes.external_references[i].citeButton;
             }
-            if('citation' in this.intrusionSet.attributes.external_references[i]) {
+            if ('citation' in this.intrusionSet.attributes.external_references[i]) {
                 delete this.intrusionSet.attributes.external_references[i].citation;
             }
-            if('citeref' in this.intrusionSet.attributes.external_references[i]) {
+            if ('citeref' in this.intrusionSet.attributes.external_references[i]) {
                 delete this.intrusionSet.attributes.external_references[i].citeref;
             }
         }

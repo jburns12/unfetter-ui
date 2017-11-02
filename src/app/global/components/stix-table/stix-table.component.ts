@@ -44,6 +44,6 @@ export class StixTableComponent implements OnInit {
     }
 
     public visitExtRef(url): void {
-        window.open(url, "_blank");
+        window.open(url, '_blank');
     }
 }

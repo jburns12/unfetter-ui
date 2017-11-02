@@ -79,8 +79,7 @@ constructor(
                    }
                }
            );
-       }
-       else {
+       } else {
            this.history = !this.history;
        }
    }
@@ -109,9 +108,8 @@ constructor(
                            i += 1;
                        }
                    }
-                 });
-                 console.log(this.origRels);
-              }, () => {
+               });
+           }, () => {
                // prevent memory links
                if (subscription) {
                    subscription.unsubscribe();
@@ -202,6 +200,6 @@ constructor(
    }
 
    public visitExtRef(url): void {
-       window.open(url, "_blank");
+       window.open(url, '_blank');
    }
 }

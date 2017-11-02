@@ -124,14 +124,14 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public removeCitations(): void {
-        for (let i in this.tool.attributes.external_references){
-            if('citeButton' in this.tool.attributes.external_references[i]) {
+        for (let i in this.tool.attributes.external_references) {
+            if ('citeButton' in this.tool.attributes.external_references[i]) {
                 delete this.tool.attributes.external_references[i].citeButton;
             }
-            if('citation' in this.tool.attributes.external_references[i]) {
+            if ('citation' in this.tool.attributes.external_references[i]) {
                 delete this.tool.attributes.external_references[i].citation;
             }
-            if('citeref' in this.tool.attributes.external_references[i]) {
+            if ('citeref' in this.tool.attributes.external_references[i]) {
                 delete this.tool.attributes.external_references[i].citeref;
             }
         }

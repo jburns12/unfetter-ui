@@ -118,7 +118,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             }
             if (!killChainPhases || killChainPhases.length === 0) {
                 let attackPatternsProxies = this.phaseNameGroups['unspecified'];
-                if(attackPatternsProxies){
+                if (attackPatternsProxies) {
                     attackPatternsProxies.push(attackPattern);
                 }
             } else {

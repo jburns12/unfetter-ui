@@ -108,7 +108,7 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
         this.tool.attributes.external_references.push(idRef);
         this.addAliasesToTool();
         this.tool.attributes.labels.push('tool');
-        this.removeCitations();
+        this.removeCitationsExtRefs();
         this.tool.attributes.external_references.reverse();
         let sub = super.create(this.tool).subscribe(
             (stixObject) => {

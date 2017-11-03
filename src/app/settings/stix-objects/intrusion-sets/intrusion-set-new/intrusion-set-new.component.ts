@@ -78,7 +78,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         idRef.source_name = 'mitre-attack';
         this.intrusionSet.attributes.external_references.push(idRef);
         this.addAliasesToIntrusionSet();
-        this.removeCitations();
+        this.removeCitationsExtRefs();
         this.intrusionSet.attributes.external_references.reverse();
         const observable = super.create(this.intrusionSet);
         const sub = observable

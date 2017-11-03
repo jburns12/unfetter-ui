@@ -299,6 +299,11 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 delete this.attackPattern.attributes.external_references[i].citeref;
             }
         }
+        for (let i = 0; i < this.attackPattern.attributes.external_references.length; i++) {
+            if (Object.keys(this.attackPattern.attributes.external_references[i]).length === 0) {
+                this.attackPattern.attributes.external_references.splice(i, 1);
+            }
+        }
     }
 
     public saveAttackPattern(): void {

@@ -275,6 +275,7 @@ export class BaseStixComponent {
                         relationship.id = relationship.attributes.id;
                         this.delete(relationship).subscribe(
                             () => {
+
                             }
                         );
                     }

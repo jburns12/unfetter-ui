@@ -123,7 +123,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
-    public removeCitations(): void {
+    public removeCitationsExtRefs(): void {
         for (let i in this.tool.attributes.external_references) {
             if ('citeButton' in this.tool.attributes.external_references[i]) {
                 delete this.tool.attributes.external_references[i].citeButton;
@@ -135,11 +135,16 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 delete this.tool.attributes.external_references[i].citeref;
             }
         }
+        for (let i = 0; i < this.tool.attributes.external_references.length; i++) {
+            if (Object.keys(this.tool.attributes.external_references[i]).length === 0) {
+                this.tool.attributes.external_references.splice(i, 1);
+            }
+        }
     }
 
     public saveTool(): void {
         this.addAliasesToTool();
-        this.removeCitations();
+        this.removeCitationsExtRefs();
         this.tool.attributes.external_references.reverse();
         let sub = super.saveButtonClicked().subscribe(
             (data) => {

@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
-import { AttackPattern, KillChainPhase } from '../../../../models';
+import { AttackPattern, KillChainPhase, CourseOfAction, Relationship } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
 
@@ -23,6 +23,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public numOfRows = 10;
     public displayedColumns: string[] = ['name', 'action'];
     public target: any;
+    public foundCoA: CourseOfAction;
 
     constructor(
         public stixService: StixService,
@@ -99,13 +100,58 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
                 this.attackPattern.id = attackPattern.id;
-                this.deleteRels(this.attackPattern.id, false);
+                this.deleteCoaAndRels();
                 // TODO determine if there is a better wya to do this
                 let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
                 delete this.attackPatternByPhaseMap[key];
                 this.ref.detectChanges();
                 this.attackPatternByPhaseMap[key] = temp;
 
+            }
+        );
+    }
+
+    public deleteCoaAndRels(): void {
+        let filter = { 'stix.target_ref': this.attackPattern.id };
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                this.stixService.url = Constance.ATTACK_PATTERN_URL;
+                this.target = data as Relationship[];
+                this.target.forEach((relationship: Relationship) => {
+                    if (relationship.attributes.relationship_type === 'mitigates') {
+                        let uri = Constance.COURSE_OF_ACTION_URL + '/' + relationship.attributes.source_ref;
+                        let subscription =  super.getByUrl(uri).subscribe(
+                            (data) => {
+                                this.foundCoA = new CourseOfAction();
+                                this.foundCoA = data as CourseOfAction;
+                                this.foundCoA.url = Constance.COURSE_OF_ACTION_URL;
+                                this.delete(this.foundCoA).subscribe(
+                                    () => {
+
+                                    }
+                                );
+                               }, (error) => {
+                                // handle errors here
+                                 console.log('error ' + error);
+                            }, () => {
+                                // prevent memory links
+                                if (subscription) {
+                                    subscription.unsubscribe();
+                                }
+                            }
+                        );
+                    }
+                });
+                this.deleteRels(this.attackPattern.id, false);
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
             }
         );
     }

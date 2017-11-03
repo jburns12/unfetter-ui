@@ -78,7 +78,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         this.intrusionSet.attributes.labels.push(label);
     }
 
-    public removeCitations(): void {
+    public removeCitationsExtRefs(): void {
         for (let i in this.intrusionSet.attributes.external_references) {
             if ('citeButton' in this.intrusionSet.attributes.external_references[i]) {
                 delete this.intrusionSet.attributes.external_references[i].citeButton;
@@ -90,11 +90,16 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
                 delete this.intrusionSet.attributes.external_references[i].citeref;
             }
         }
+        for (let i = 0; i < this.intrusionSet.attributes.external_references.length; i++) {
+            if (Object.keys(this.intrusionSet.attributes.external_references[i]).length === 0) {
+                this.intrusionSet.attributes.external_references.splice(i, 1);
+            }
+        }
     }
 
     public saveIdentity(): void {
          this.addAliasesToIntrusionSet();
-         this.removeCitations();
+         this.removeCitationsExtRefs();
          this.intrusionSet.attributes.external_references.reverse();
          const sub = super.saveButtonClicked().subscribe(
             (data) => {

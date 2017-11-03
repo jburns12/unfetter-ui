@@ -30,6 +30,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public historyFound: boolean = false;
     public diff: any;
     public allRels: any = [];
+    public deleteMitigation: boolean = false;
 
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
@@ -93,10 +94,23 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public deleteButtonClicked(): void {
         super.openDialog(this.attackPattern).subscribe(
             () => {
-                let goBack = true;
-                this.deleteRels(this.attackPattern.id, goBack);
+                this.deleteMitigation = true;
+                this.deleteCoAandRels();
             }
         );
+    }
+
+    public deleteCoAandRels(): void {
+        let goBack = true;
+        this.deleteRels(this.attackPattern.id, goBack);
+        if (this.coaMitigator !== undefined) {
+            this.coaMitigator.url = Constance.COURSE_OF_ACTION_URL;
+            this.delete(this.coaMitigator).subscribe(
+                () => {
+
+                }
+            );
+        }
     }
 
     public loadAttackPattern(): void {
@@ -269,6 +283,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             if (this.mitigation !== '') {
                this.courseOfAction.attributes.description = this.mitigation;
                this.courseOfAction.attributes.name = this.attackPattern.attributes.name + ' Mitigation';
+               console.log(this.courseOfAction);
                let subscription = super.create(this.courseOfAction).subscribe(
                     (stixObject) => {
                         this.saveRelationship(attackPatternId, stixObject[0].id);

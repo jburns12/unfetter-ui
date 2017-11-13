@@ -1,10 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { MatDialogRef } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
-import { MatDialogRef } from '@angular/material';
+import { AuthService } from '../../global/services/auth.service';
 
 @Component({
     selector: 'add-indicator',
@@ -12,23 +14,52 @@ import { MatDialogRef } from '@angular/material';
     styleUrls: ['add-indicator.component.scss'],
     animations: [
         trigger('collapseLevel', [
-            state('open', style({ opacity: 1, height: '*' })),
-            state('closed', style({ opacity: 0, height: 0 })),
-            transition('open <=> closed', animate('200ms ease-in-out')),
+            transition(':enter', [
+                style({ opacity: 0, height: 0, overflow: 'hidden' }),
+                animate('0.2s ease-in-out', style({ opacity: 1, height: '*' }))
+            ]),
+            transition(':leave', [
+                style({ opacity: 1, height: '*', overflow: 'hidden' }),
+                animate('0.2s ease-in-out', style({ opacity: 0, height: 0 }))
+            ])
         ])
     ]
 })
-
 export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup | any;
-    public showExternalReferences: boolean = false;
-    public showKillChainPhases: boolean = false;
+    public organizations: any;
 
-    constructor(public dialogRef: MatDialogRef<any>, private indicatorSharingService: IndicatorSharingService) { }    
+    constructor(
+        public dialogRef: MatDialogRef<any>,
+        private indicatorSharingService: IndicatorSharingService,
+        private authService: AuthService
+    ) { }    
 
     public ngOnInit() {
-        this.resetForm();     
+        this.resetForm();
+
+        const userId = this.authService.getUser()._id;
+        const getData$ = Observable.forkJoin(
+            this.indicatorSharingService.getIdentities(),
+            this.indicatorSharingService.getUserProfileById(userId)
+        ).subscribe(
+            (res) => {       
+                const identities = res[0].map((r) => r.attributes);
+                const userOrgs = res[1].attributes.organizations;
+                if (userOrgs && userOrgs.length) {
+                    this.organizations = userOrgs
+                        .filter((org) => org.approved)
+                        .map((org) => identities.find((identity) => identity.id === org.id));   
+                }                      
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                getData$.unsubscribe();
+            }
+        );
     }
 
     public resetForm(e = null) {
@@ -44,7 +75,7 @@ export class AddIndicatorComponent implements OnInit {
             .subscribe(
                 (res) => {                   
                     this.resetForm();
-                    this.dialogRef.close(true);
+                    this.dialogRef.close(res[0].attributes);
                 },
                 (err) => {
                     console.log(err);                    

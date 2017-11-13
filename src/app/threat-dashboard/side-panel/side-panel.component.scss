@@ -1,13 +1,7 @@
-$header_gradient_lighter: #009688;
-$header_gradient_darker: #00796B;
-$red_500: #F44336;
-$teal_200: #80CBC4;
-$teal_100: #B2DFDB;
-$teal_50: #E0F2F1;
-$white_87: rgba(255,255,255, .87);
+@import '../../../styles/_variables.scss';
 
 .header {
-    background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
+    background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light);
     height: 250px;
     padding: 24px;
     color: $white_87;
@@ -18,7 +12,7 @@ $white_87: rgba(255,255,255, .87);
     }
 
     .mat-subheader-1, .header-details {
-        color: $teal_200;
+        color: $threat-dashboard-primary-lighter;
     }
 
     svg {
@@ -37,9 +31,10 @@ $white_87: rgba(255,255,255, .87);
 }
 
 .boundries-fab {
-    margin-top: -24px;
-    position: fixed;
-    margin-left: 16px;
+    margin-top: -28px;
+    position: absolute;
+    right: 48px;
+    z-index: 99;
 }
 
 .mat-expansion-panel {
@@ -52,13 +47,16 @@ $white_87: rgba(255,255,255, .87);
     }
     
     .mat-list-item {
-        cursor: pointer;
         font-size: 13px;
         
     }
+    
+    .clickable {
+        cursor: pointer;
+    }
 
     .list-item-hover {
-        background-color: $teal_50;
+        background-color: $threat-dashboard-primary-lightest;
     }
 
     /deep/ .mat-expansion-panel-body {
@@ -67,6 +65,10 @@ $white_87: rgba(255,255,255, .87);
     
     /deep/ .mat-expanded {
         margin-bottom: 2px;
+    }
+
+    a {
+        color: $black_87;
     }
 }
 

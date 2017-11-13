@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
-import { Observable } from 'rxjs/Observable';
+import { ConfigService } from '../../global/services/config.service';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -16,17 +18,27 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public displayedIndicators: any;
     public allIndicators: any;
     public identities: any[];
+    public organizations: any[];
     public filteredIndicators: any;
     public DEFAULT_LENGTH: number = 10;
     public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
     public searchParameters: any = {
         labels: [],
-        activeLabels: []
+        activeLabels: [],
+        activeIdentities: [],
+        killChainPhases: [],
+        activeKillChainPhases: []
     };
     public SERVER_CALL_COMPLETE = false;
+    public sortBy: string = 'NEWEST';
+    public searchDebouncer: Subject<any> = new Subject();
 
-    constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MatDialog) { }
+    constructor(
+        private indicatorSharingService: IndicatorSharingService, 
+        public dialog: MatDialog,
+        private configService: ConfigService
+    ) { }
 
     public ngOnInit() { 
         const getData$ = Observable.forkJoin(
@@ -38,10 +50,12 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 // Identities
                 this.identities = results[0].map((r) => r.attributes); 
 
-                // Indicators
-                this.filteredIndicators = this.allIndicators = results[1].map((res) => res.attributes);
+                this.organizations = this.identities.filter((identity) => identity.identity_class === 'organization');
 
-                this.setDisplayedIndicators();
+                // Indicators
+                this.allIndicators = results[1].map((res) => res.attributes);
+
+                this.filterIndicators();
                 this.setIndicatorSearchParameters();         
                 
                 // Attack patterns
@@ -57,21 +71,64 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 getData$.unsubscribe();
             }
         );
+
+        this.configService.getConfigPromise()
+            .then((res) => {
+                const attackKillchain = res.killChains.find((kc) => kc.name === 'mitre-attack');
+                this.searchParameters.killChainPhases = attackKillchain.phase_names;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+        const searchEvents$ = this.searchDebouncer
+            .debounceTime(300)
+            .subscribe(
+                () => this.filterIndicators(),
+                (e) => console.log(e),
+                () => searchEvents$.unsubscribe()
+            );
     }
 
     public ngOnDestroy() {
         this.dialog.closeAll();
     }
 
-    public openDialog() {
-        this.dialog.open(AddIndicatorComponent, {
-            width: '800px',
-            height: 'calc(100vh - 140px)'
-        });
+    public updateIndicator(newIndicatorState) {
+        const indicatorIndex = this.allIndicators
+            .map((indicator) => indicator.id)
+            .indexOf(newIndicatorState.id);
+
+        if (indicatorIndex > -1) {
+            this.allIndicators[indicatorIndex] = newIndicatorState
+        } else {
+            console.log('Can not find indicator to update');
+        }
     }
 
-    public filterLabelChange(e) {        
-        this.searchParameters.activeLabels = e.value;
+    public openDialog() {
+        const dialogRef = this.dialog.open(AddIndicatorComponent, {
+            width: '800px',
+            height: 'calc(100vh - 50px)'
+        });
+
+        const dialogRefClose$ = dialogRef.afterClosed()
+            .subscribe((res) => {
+                    if (res) {
+                        this.allIndicators.push(res);
+                        this.filterIndicators();
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    dialogRefClose$.unsubscribe();
+                }
+            );
+    }
+
+    public filterIndicators() {
         if (this.searchParameters.activeLabels && this.searchParameters.activeLabels.length > 0) {
             this.filteredIndicators = this.allIndicators
                 .filter((indicator) => {
@@ -87,11 +144,62 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                     } else {
                         return false;
                     }
-                }); 
+                });
         } else {
             this.filteredIndicators = this.allIndicators;
-        }            
+        }
 
+        if (this.searchParameters.activeIdentities && this.searchParameters.activeIdentities.length > 0) {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => indicator.created_by_ref !== undefined && this.searchParameters.activeIdentities.includes(indicator.created_by_ref));
+        }
+
+        if (this.searchParameters.activeKillChainPhases && this.searchParameters.activeKillChainPhases.length > 0) {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => !!indicator.kill_chain_phases)
+                .filter((indicator) => {
+                    let found = false;
+                    indicator.kill_chain_phases.map((e) => e.phase_name).forEach((phase) => {
+                        if (this.searchParameters.activeKillChainPhases.includes(phase)) {
+                            found = true;
+                        }
+                    });
+                    return found;
+                });
+        }
+
+        this.sortIndicators();           
+    }
+
+    public sortByArrayLengthHelper(a, b, field) {
+        if (a[field] && !b[field]) {
+            return -1;
+        } else if (!a[field] && b[field]) {
+            return 1;
+        } else if (a[field] && b[field]) {
+            return b[field].length - a[field].length;
+        }
+    }
+
+    public sortIndicators() {
+        switch (this.sortBy) {
+            case 'NEWEST':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => {
+                    return (new Date(b.created) as any) - (new Date(a.created) as any);
+                });
+                break;
+            case 'OLDEST':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => {
+                    return (new Date(a.created) as any) - (new Date(b.created) as any);
+                });
+                break;
+            case 'LIKES':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => this.sortByArrayLengthHelper(a, b, 'likes'));
+                break;
+            case 'COMMENTS':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => this.sortByArrayLengthHelper(a, b, 'comments'));
+                break;
+        }        
         this.setDisplayedIndicators();
     }
 
@@ -108,8 +216,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             .reduce((prev, cur) => prev.concat(cur), [])
             .forEach((label) => labelSet.add(label));
         
-        this.searchParameters.labels = Array.from(labelSet);        
-        this.searchParameters.activeLabels = this.searchParameters.labels.slice();
+        this.searchParameters.labels = Array.from(labelSet);
     }
 
     public showMoreIndicators() {

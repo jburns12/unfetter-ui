@@ -34,6 +34,7 @@
 .navbar-inverse {
     background-color: $nav-background-color;
     border-bottom: none;
+    z-index: 800; // to put navbar under dialog
     .navbar-brand {
         color: #FFFFFF;      
         padding-top: 5px;  
@@ -47,6 +48,11 @@
 .nav-pills>li.active>a:focus,
 .nav-pills>li.active>a:hover {
     background-color: $primary-color !important;
+}
+
+code {
+    color: inherit;
+    background-color: rgba($primary-color, 0.15);
 }
 
 // WARNING if the primary color is not blue, delete this

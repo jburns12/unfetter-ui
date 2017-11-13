@@ -41,7 +41,14 @@ export class AuthService {
                 _id: '1234',
                 userName: 'Demo-User',
                 firstName: 'Demo',
-                lastName: 'User'
+                lastName: 'User',
+                organizations : [
+                    {
+                        'id': 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a',
+                        'approved': true,
+                        'role': 'STANDARD_USER'
+                    }
+                ],
             };
         } else {
             let user = localStorage.getItem('user');
@@ -66,6 +73,10 @@ export class AuthService {
         } else {
             return this.loggedIn() && this.getUser().role === 'ADMIN';
         }
+    }
+
+    public isOrgLeader() {
+        return this.loggedIn() && (this.getUser().role === 'ADMIN' || this.getUser().role === 'ORG_LEADER');
     }
 
     public pendingApproval() {

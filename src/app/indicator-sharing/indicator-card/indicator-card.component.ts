@@ -1,21 +1,16 @@
-import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
-import { trigger, state, transition, style, animate } from '@angular/animations';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter } from '@angular/core';
+import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
 import { AuthService } from '../../global/services/auth.service';
+import { heightCollapse } from '../../global/animations/height-collapse';
 
 @Component({
     selector: 'indicator-card',
     templateUrl: 'indicator-card.component.html',
-    animations: [
-        trigger('collapseLevel', [
-            state('open', style({ opacity: 1, height: '*' })),
-            state('closed', style({ opacity: 0, height: 0 })),
-            transition('open <=> closed', animate('200ms ease-in-out')),
-        ])
-    ],
+    animations: [heightCollapse],
     styleUrls: ['indicator-card.component.scss']
 })
 
@@ -24,15 +19,18 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
     @Input() public creator: string;
-    
+
+    @Output() public stateChange: EventEmitter<any> = new EventEmitter();
+
     public user;
     public showCommentTextArea: boolean = false;
-    public showAddLabel: boolean = false;
     public commentText: string = '';
-    public newLabelText: string = '';
     public message = '';
+    public messageTimeout: any;
     public alreadyLiked: boolean = false;
     public alreadyInteracted: boolean = false;
+
+    private readonly FLASH_MSG_TIMER: number = 1500;
 
     @ViewChild('card') private card: ElementRef;
 
@@ -61,7 +59,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngAfterViewInit() {
         // Only add listener for interactions if the user never interacted with it
-        if (!this.alreadyInteracted) {
+        if (!this.alreadyInteracted && RUN_MODE !== undefined && RUN_MODE === 'UAC') {
             const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
                 this.addInteraction();
                 // Remove listener after interaction
@@ -71,49 +69,47 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         }           
     }
 
+    public highlightPhase(phase) {
+        return this.searchParameters.activeKillChainPhases.length && this.searchParameters.activeKillChainPhases.includes(phase);
+    }
+
     public labelSelected(label) {
         return this.searchParameters.labels.length !== this.searchParameters.activeLabels.length && this.searchParameters.activeLabels.includes(label);
     }
 
-    public addLabel() {
-        if (this.newLabelText.length > 0) {
-            const newLabel = this.newLabelText;
-            this.newLabelText = '';
-            this.showAddLabel = false;
+    public addLabel(label) {
+        if (label.length > 0) {
+            const newLabel = label;
             const addLabel$ = this.indicatorSharingService.addLabel(newLabel, this.indicator.id)
                 .subscribe(
                     (res) => {
-                        this.indicator = res.attributes;
-                        this.message = 'Label sucessfully added.';
-                        setTimeout(() => this.message = '', 1500); 
+                        this.updateIndicatorState(res.attributes);
+                        this.flashMessage('Label sucessfully added.');
                     },
                     (err) => {
-                        console.log(err);          
-                        this.message = 'Unable to add label.';
-                        setTimeout(() => this.message = '', 1500);                                    
+                        this.flashMessage('Unable to add label.');
+                        console.log(err);                                
                     },
                     () => {
                         addLabel$.unsubscribe();
                     }
                 );            
-        }       
+        }      
     }
 
     public submitComment() {
         const comment = this.commentText;
         this.showCommentTextArea = false;
-        this.message = 'Comment Submitted...';
+        this.flashMessage('Comment Submitted...');
         const addComment$ = this.indicatorSharingService.addComment(comment, this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;
+                    this.updateIndicatorState(res.attributes);
+                    this.flashMessage('Comment sucessfully added.');
                     this.commentText = ''; 
-                    this.message = 'Comment sucessfully added.';
-                    setTimeout(() => this.message = '', 1500);
                 },
                 (err) => {
-                    this.message = 'Unable to add comment.';
-                    setTimeout(() => this.message = '', 1500); 
+                    this.flashMessage('Unable to add comment.');
                     console.log(err);                    
                 },
                 () => {
@@ -130,10 +126,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         const addLike$ = this.indicatorSharingService.addLike(this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;
+                    this.updateIndicatorState(res.attributes);
                     this.alreadyLiked = true;
                 },
                 (err) => {
+                    this.flashMessage('Unable to like indicator.');
                     console.log(err);                    
                 },
                 () => {
@@ -143,18 +140,30 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     }
 
     public addInteraction() {
+        // Set this to true immediantly to prevent errors from double clicking
+        this.alreadyInteracted = true;
         const addLike$ = this.indicatorSharingService.addInteraction(this.indicator.id)
             .subscribe(
-            (res) => {
-                this.indicator = res.attributes;
-                this.alreadyInteracted = true;
-            },
-            (err) => {
-                console.log(err);
-            },
-            () => {
-                addLike$.unsubscribe();
-            }
+                (res) => {
+                    this.indicator = res.attributes;                    
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    addLike$.unsubscribe();
+                }
             );
+    }
+
+    private flashMessage(msg: string) {
+        this.message = msg;
+        clearTimeout(this.messageTimeout);
+        this.messageTimeout = setTimeout(() => this.message = '', this.FLASH_MSG_TIMER); 
+    }
+
+    private updateIndicatorState(newIndicatorState) {
+        this.indicator = newIndicatorState;
+        this.stateChange.emit(this.indicator);
     }
 }

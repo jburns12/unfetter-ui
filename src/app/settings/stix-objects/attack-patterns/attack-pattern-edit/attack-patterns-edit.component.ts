@@ -264,16 +264,18 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public removeContributor(contributor): void {
-        this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((h) => h !== contributor)
+        this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((h) => h !== contributor);
     }
 
     public removeEmpties(): void {
         if ('x_mitre_contributors' in this.attackPattern.attributes) {
+            this.removeContributor("");
             if (this.attackPattern.attributes.x_mitre_contributors.length === 0) {
                 delete this.attackPattern.attributes['x_mitre_contributors'];
             }
         }
         if ('x_mitre_data_sources' in this.attackPattern.attributes) {
+            this.attackPattern.attributes.x_mitre_data_sources = this.attackPattern.attributes.x_mitre_data_sources.filter((h) => h !== "");
             if (this.attackPattern.attributes.x_mitre_data_sources.length === 0) {
                 delete this.attackPattern.attributes['x_mitre_data_sources'];
             }

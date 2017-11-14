@@ -339,7 +339,7 @@ export class BaseStixComponent {
                     break;
                 case 'set':
                     let origVal = this.getOrigVal(currArr.path[0], currArr.path[1], revDiff);
-                    if (origVal) {
+                    if (origVal && currArr.val) {
                         if (currArr.path[2]) {
                             if (mitreId !== undefined) {
                                 historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val) + ' by ' + mitreId);
@@ -351,6 +351,20 @@ export class BaseStixComponent {
                                 historyArr.push(modDate + ':  "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val) + ' by ' + mitreId);
                             } else {
                                 historyArr.push(modDate + ':  "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val));
+                            }
+                        }
+                    } else if (origVal && !currArr.val) {
+                        if (currArr.path[2]) {
+                            if (mitreId !== undefined) {
+                                historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" DELETED by ' + mitreId);
+                            } else {
+                                historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" DELETED');
+                            }
+                        } else {
+                            if (mitreId !== undefined) {
+                                historyArr.push(modDate + ':  "' + currArr.path[0] + '" DELETED by ' + mitreId);
+                            } else {
+                                historyArr.push(modDate + ':  "' + currArr.path[0] + '" DELETED');
                             }
                         }
                     } else {
@@ -370,6 +384,8 @@ export class BaseStixComponent {
         if (pattern.attributes.previous_versions && (pattern.attributes.previous_versions.length > 0) ) {
             let currDiff = odiff(pattern.attributes.previous_versions[0], pattern.attributes);
             let revDiff = odiff(pattern.attributes, pattern.attributes.previous_versions[0]);
+            console.log(currDiff);
+            console.log(revDiff);
             for (let currArr of currDiff) {
                this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId);
             }

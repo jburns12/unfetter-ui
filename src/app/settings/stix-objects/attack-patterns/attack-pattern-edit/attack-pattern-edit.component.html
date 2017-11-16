@@ -118,16 +118,15 @@
                                  <mat-card *ngFor="let dataSource of attackPattern.attributes.x_mitre_data_sources; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
                                         <mat-card-content>
                                             <div class="row">
-                                              <div class="col-md-6">
-                                                <mat-input-container class="full-width">
-                                                    <input matInput placeholder="Data Source" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" [matAutocomplete]="auto" (ngModelChange)="currDataSources = filterOptions(attackPattern.attributes.x_mitre_data_sources[i], dataSources)">
-                                                </mat-input-container>
-                                                <mat-autocomplete name="auto" #auto="matAutocomplete" >
-                                                  <mat-option *ngFor="let dataSource of currDataSources" [value]="dataSource">
-                                                    <span>{{ dataSource }}</span>
-                                                  </mat-option>
-                                                </mat-autocomplete>
-                                              </div>
+                                                <div class="col-md-6">
+                                                  <mat-form-field style="width: auto;">
+                                                      <mat-select name="allDataSources" [(ngModel)]="attackPattern.attributes.x_mitre_data_sources[i]" placeholder="Data Source" class="full-width">
+                                                        <mat-option *ngFor="let dataSource of dataSources" [value]="dataSource">
+                                                          <span>{{ dataSource }}</span>
+                                                        </mat-option>
+                                                      </mat-select>
+                                                  </mat-form-field><br>
+                                                </div>
                                             </div>
                                         </mat-card-content>
                                         <mat-card-actions>

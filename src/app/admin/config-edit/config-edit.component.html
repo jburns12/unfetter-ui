@@ -21,14 +21,14 @@
                             </mat-input-container>
                             <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i])"><i class="material-icons">save</i> SAVE DATA SOURCES</button>
                     </div>
-                    <div *ngIf="configData[i].configKey === 'tactics'">
+                    <!--<div *ngIf="configData[i].configKey === 'tactics'">
                         <div class="alert alert-info" *ngIf="messageType === 'tactics'">{{message}}</div>
                         <h3>Edit Tactics</h3>
                             <mat-input-container class="full-width">
                                 <textarea matInput matTextareaAutosize value="configData[i].configValue" [(ngModel)]="configData[i].configValue">{{data.configValue}}</textarea>
                             </mat-input-container>
                             <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i])"><i class="material-icons">save</i> SAVE TACTICS</button>
-                    </div>
+                    </div>-->
               </div>
               <br>
         </div>

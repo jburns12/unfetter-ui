@@ -19,6 +19,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public dataSources: string[] = [];
     public id: string;
     public attackPatterns: AttackPattern[];
+    public tacticConfig: string[] = [];
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exFil': false};
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
@@ -56,9 +57,8 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
        let subscription = super.load(filter).subscribe(
            (data) => {
                this.attackPatterns = data as AttackPattern[];
-               this.getPlatforms();
+               this.getPlatformsAndDataSources();
                this.getContributors();
-               this.getDataSources();
                this.assignPerms();
                this.findCoA();
                super.getCitations();
@@ -82,24 +82,42 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         return listToParse;
     }
 
-    public getPlatforms(): void {
-        let allPlatforms = [];
+    public getPlatformsAndDataSources(): void {
         let uniqPlatforms = [];
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            let currPlatforms = attackPattern.attributes.x_mitre_platforms;
-            for (let i in currPlatforms) {
-                allPlatforms = allPlatforms.concat(currPlatforms[i]);
-            }
-            uniqPlatforms = allPlatforms.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
-                ).sort().filter(Boolean);
-        });
-        for (let currPlatform of uniqPlatforms) {
-            if (('x_mitre_platforms' in this.attackPattern.attributes) && this.attackPattern.attributes.x_mitre_platforms.includes(currPlatform)) {
-                this.platforms.push({'name': currPlatform, 'val': true});
-            } else {
-                this.platforms.push({'name': currPlatform, 'val': false});
+        let uri = Constance.CONFIG_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (res) => {
+              if (res && res.length) {
+                  for (let currRes of res) {
+                      if (currRes.attributes.configKey === 'x_mitre_platforms') {
+                          console.log(currRes.attributes.configValue);
+                          uniqPlatforms = currRes.attributes.configValue;
+                      }
+
+                      if (currRes.attributes.configKey === 'x_mitre_data_sources') {
+                          console.log(currRes.attributes.configValue);
+                          this.dataSources = currRes.attributes.configValue;
+                      }
+                  }
+              }
+
+              for (let currPlatform of uniqPlatforms) {
+                  if (('x_mitre_platforms' in this.attackPattern.attributes) && this.attackPattern.attributes.x_mitre_platforms.includes(currPlatform)) {
+                      this.platforms.push({'name': currPlatform, 'val': true});
+                  } else {
+                      this.platforms.push({'name': currPlatform, 'val': false});
+                  }
+              }
+           }, (error) => {
+            // handle errors here
+             console.log('error ' + error);
+        }, () => {
+            // prevent memory links
+            if (subscription) {
+                subscription.unsubscribe();
             }
         }
+        );
     }
 
     public assignPerms(): void {
@@ -117,17 +135,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 }
             }
         }
-    }
-
-    public getDataSources(): void {
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            let currDataSources = attackPattern.attributes.x_mitre_data_sources;
-            for (let i in currDataSources) {
-                this.dataSources = this.dataSources.concat(currDataSources[i]);
-            }
-            this.dataSources = this.dataSources.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
-                ).sort().filter(Boolean);
-        });
     }
 
     public getContributors(): void {

@@ -30,9 +30,8 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
       let subscription = super.load(filter).subscribe(
           (data) => {
               this.attackPatterns = data as AttackPattern[];
-              this.getPlatforms();
+              this.getPlatformsAndDataSources();
               this.getContributors();
-              this.getDataSources();
               this.getId();
               super.getCitations();
           }, (error) => {

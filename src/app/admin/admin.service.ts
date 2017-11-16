@@ -7,9 +7,10 @@ import { Constance } from '../utils/constance';
 
 @Injectable()
 export class AdminService {
-    
+
     private adminUrl = Constance.ADMIN_URL;
     private identitiesUrl = Constance.IDENTITIES_URL;
+    private configUrl = Constance.CONFIG_URL;
 
     constructor(private genericApi: GenericApi) { }
 
@@ -31,6 +32,14 @@ export class AdminService {
 
     public processUserApproval(user): Observable<any> {
         return this.genericApi.post(`${this.adminUrl}/process-user-approval`, user);
+    }
+
+    public getConfig(): Observable<any> {
+        return this.genericApi.get(`${this.configUrl}`);
+    }
+
+    public processChangedData(data, id): Observable<any> {
+        return this.genericApi.patch(`${this.configUrl}/${id}`, data);
     }
 
     public getOrganizations(): Observable<any> {

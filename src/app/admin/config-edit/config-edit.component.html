@@ -1,0 +1,39 @@
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div *ngIf="configData && configData.length">
+              <div *ngFor="let data of configData; let i = index">
+                    <br>
+                    <div *ngIf="configData[i].configKey === 'x_mitre_platforms'">
+                        <div class="alert alert-info" *ngIf="messageType === 'x_mitre_platforms'">{{message}}</div>
+                        <h3>Edit Platforms</h3>
+                            <mat-input-container class="full-width">
+                                <textarea matInput matTextareaAutosize value="configData[i].configValue" [(ngModel)]="configData[i].configValue">{{data.configValue}}</textarea>
+                            </mat-input-container>
+                            <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i])"><i class="material-icons">save</i> SAVE PLATFORMS</button>
+                    </div>
+                    <div *ngIf="configData[i].configKey === 'x_mitre_data_sources'">
+                        <div class="alert alert-info" *ngIf="messageType === 'x_mitre_data_sources'">{{message}}</div>
+                        <h3>Edit Data Sources</h3>
+                            <mat-input-container class="full-width">
+                                <textarea matInput matTextareaAutosize value="configData[i].configValue" [(ngModel)]="configData[i].configValue">{{data.configValue}}</textarea>
+                            </mat-input-container>
+                            <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i])"><i class="material-icons">save</i> SAVE DATA SOURCES</button>
+                    </div>
+                    <div *ngIf="configData[i].configKey === 'tactics'">
+                        <div class="alert alert-info" *ngIf="messageType === 'tactics'">{{message}}</div>
+                        <h3>Edit Tactics</h3>
+                            <mat-input-container class="full-width">
+                                <textarea matInput matTextareaAutosize value="configData[i].configValue" [(ngModel)]="configData[i].configValue">{{data.configValue}}</textarea>
+                            </mat-input-container>
+                            <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i])"><i class="material-icons">save</i> SAVE TACTICS</button>
+                    </div>
+              </div>
+              <br>
+        </div>
+        <div *ngIf="!(configData && configData.length)" class="alert-alert-info">
+            There is no configuration data stored.
+        </div>
+      </div>
+    </div>

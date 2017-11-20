@@ -11,10 +11,10 @@ export class WebAnalyticsService {
     constructor(private genericApi: GenericApi) { }
 
     public recordVisit() {
-        const recordVisit$ = this.genericApi.get(`${this.webAnalyticsUrl}/visit`)
+        const recordVisit$ = this.genericApi.post(`${this.webAnalyticsUrl}/visit`, null)
             .subscribe(
                 (res) => {
-                    // Do nothing              
+                    // Do nothing
                 },
                 (err) => {
                     console.log(err);

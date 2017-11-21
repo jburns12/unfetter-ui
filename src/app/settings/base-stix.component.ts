@@ -396,8 +396,8 @@ export class BaseStixComponent {
                    this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId);
                 }
             }
-            if (pattern.attributes.mitreId !== undefined) {
-                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.id + ' CREATED by ' + pattern.attributes.mitreId);
+            if (pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId !== undefined) {
+                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.id + ' CREATED by ' + pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId);
             } else {
                 historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.id + ' CREATED');
             }

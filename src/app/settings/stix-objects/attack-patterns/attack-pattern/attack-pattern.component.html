@@ -91,16 +91,26 @@
                                 </mat-chip-list><br>
                             </div>
                         </div>
-                        <div *ngIf="attackPattern.attributes.x_mitre_remote_support" class="row">
+                        <div *ngIf="attackPattern.attributes.x_mitre_remote_support !== undefined" class="row">
                            <div class="col-md-12">
                                 <label>Supports Remote</label>
-                                <h5>{{attackPattern.attributes.x_mitre_remote_support}}</h5>
+                                <mat-chip-list>
+                                    <mat-chip
+                                        selected="true">
+                                        {{attackPattern.attributes.x_mitre_remote_support}}
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div><br>
                         </div>
-                        <div *ngIf="attackPattern.attributes.x_mitre_network_requirements" class="row">
+                        <div *ngIf="attackPattern.attributes.x_mitre_network_requirements !== undefined" class="row">
                            <div class="col-md-12">
                                 <label>Requires Network</label>
-                                <h5>{{attackPattern.attributes.x_mitre_network_requirements}}</h5>
+                                <mat-chip-list>
+                                    <mat-chip
+                                        selected="true">
+                                        {{attackPattern.attributes.x_mitre_network_requirements}}
+                                    </mat-chip>
+                                </mat-chip-list><br>
                             </div><br>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_defense_bypassed" class="row">

@@ -339,7 +339,7 @@ export class BaseStixComponent {
                     break;
                 case 'set':
                     let origVal = this.getOrigVal(currArr.path[0], currArr.path[1], revDiff);
-                    if (origVal && currArr.val) {
+                    if (origVal && (currArr.val !== undefined)) {
                         if (currArr.path[2]) {
                             if (mitreId !== undefined) {
                                 historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val) + ' by ' + mitreId);
@@ -353,8 +353,8 @@ export class BaseStixComponent {
                                 historyArr.push(modDate + ':  "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val));
                             }
                         }
-                    } else if (origVal && !currArr.val) {
-                        if (currArr.path[2]) {
+                    } else if (origVal && (currArr.val === undefined)) {
+                        if (currArr.path[2] !== undefined) {
                             if (mitreId !== undefined) {
                                 historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" DELETED by ' + mitreId);
                             } else {

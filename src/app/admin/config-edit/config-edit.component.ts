@@ -9,8 +9,10 @@ import { AdminService } from '../admin.service';
 export class ConfigEditComponent implements OnInit {
 
     public configData: any[] = [];
-    public message: string;
-    public messageType: string;
+    public message: string[] = [];
+    public addConfig: boolean = false;
+    public newConfig: any = {};
+    public addNewMessage: string = '';
 
     constructor(private adminService: AdminService) { }
 
@@ -18,52 +20,144 @@ export class ConfigEditComponent implements OnInit {
         this.fetchConfig();
     }
 
-    public changeData(configData): void {
-        var currDataConfig = Object.assign({}, configData);
-        currDataConfig['configValue'] = configData['configValue'].split('\n');
-        for (let i in currDataConfig['configValue']) {
-            currDataConfig['configValue'][i] = currDataConfig['configValue'][i].replace(/\s*$/,"");
+    private createConfigObject(): void {
+        this.addConfig = true;
+        this.addNewMessage = '';
+        this.newConfig['configKey'] = '';
+        this.newConfig['configValue'] = '';
+        this.resetMessages();
+    }
+
+    private resetMessages(): void {
+        for (let j in this.message) {
+            this.message[j] = '';
         }
-        currDataConfig['configValue'] = currDataConfig['configValue'].filter((p) => p !== '');
-        let processChangedData$ = this.adminService
-            .processChangedData({ data: { attributes: currDataConfig } }, currDataConfig.id)
+    }
+
+    private addNewObject(): void {
+        this.resetMessages();
+        try {
+            this.newConfig.configValue = JSON.parse(this.newConfig.configValue);
+            let configData$ = this.adminService
+                .addConfig({ data: { attributes: this.newConfig }})
+                .subscribe(
+                (res) => {
+                    this.addConfig = false;
+                    this.addNewMessage = `${res.attributes.configKey} has been added.`;
+                    this.fetchConfig();
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    configData$.unsubscribe();
+                }
+                );
+        } catch (e) {
+            this.addNewMessage = e;
+        }
+    }
+
+    private cancelObjectAdd(): void {
+        this.addConfig = false;
+        this.newConfig['configKey'] = '';
+        this.newConfig['configValue'] = '';
+    }
+
+    private deleteSingleConfig(id, i): void {
+        this.resetMessages();
+        let configData$ = this.adminService.deleteSingleConfig(id)
             .subscribe(
             (res) => {
-                console.log(res);
-                this.message = `${res.attributes.configKey} have been saved.`;
-                this.messageType = res.attributes.configKey;
+                this.addNewMessage = '';
+                if (i !== 0) {
+                    this.message[i - 1] = `Successfully deleted ${this.configData[i].attributes.configKey}.`;
+                } else {
+                    this.message[0] = `Successfully deleted ${this.configData[i].attributes.configKey}.`;
+                }
+                this.fetchConfig();
             },
             (err) => {
                 console.log(err);
+                this.addNewMessage = '';
+                this.message[i] = `Unable to delete ${this.configData[i].attributes.configKey}.`;
             },
             () => {
-                processChangedData$.unsubscribe();
+                configData$.unsubscribe();
             }
             );
+    }
+
+    private changeData(configData, i): void {
+        this.resetMessages();
+        let currDataConfig = Object.assign({}, configData);
+        try {
+            currDataConfig.attributes.configValue = JSON.parse(currDataConfig.attributes.configValue);
+            let processChangedData$ = this.adminService
+                .processChangedData({ data: currDataConfig }, currDataConfig.attributes.id)
+                .subscribe(
+                (res) => {
+                    console.log(res);
+                    this.addNewMessage = '';
+                    this.message[i] = `${res.attributes.configKey} has been saved.`;
+                    this.fetchSingleConfig(this.configData[i].attributes.id, i, true);
+                },
+                (err) => {
+                    this.addNewMessage = '';
+                    this.message[i] = err;
+                    console.log(err);
+                },
+                () => {
+                    processChangedData$.unsubscribe();
+                }
+                );
+        } catch (e) {
+            this.addNewMessage = '';
+            this.message[i] = e;
+        }
+    }
+
+    private fetchSingleConfig(id, i, refresh) {
+        let configData$ = this.adminService.getSingleConfig(id)
+          .subscribe(
+          (res) => {
+              if (res) {
+                  this.configData[i].attributes.configValue = JSON.stringify(res.attributes.configValue, null, 2);
+                  if (!refresh) {
+                      this.resetMessages();
+                      this.addNewMessage = '';
+                      this.message[i] = `${res.attributes.configKey} edits have been undone.`
+                  }
+              }
+          },
+          (err) => {
+              this.resetMessages();
+              this.addNewMessage = '';
+              this.message[i] = `Unable to undo edits to ${this.configData[i].attributes.configKey}.`
+          },
+          () => {
+              configData$.unsubscribe();
+          }
+          );
     }
 
     private fetchConfig() {
         let configData$ = this.adminService.getConfig()
             .subscribe(
             (res) => {
-                console.log(res);
                 if (res && res.length) {
-                    for (let currRes of res) {
-                        if (currRes.attributes.configKey === 'x_mitre_platforms' || currRes.attributes.configKey === 'x_mitre_data_sources' || currRes.attributes.configKey === 'tactics') {
-                            let currData = {};
-                            currData['id'] = currRes.attributes._id;
-                            currData['configKey'] = currRes.attributes.configKey;
-                            currData['configValue'] = currRes.attributes.configValue.toString().replace(/,/g, '\n');
-                            this.configData.push(currData);
+                    this.configData = res.reverse();
+                    for (let i = 0; i < this.configData.length; ++i) {
+                        this.configData[i].attributes.configValue = JSON.stringify(this.configData[i].attributes.configValue, null, 2);
+                        if (this.message.length < i) {
+                            this.message.push('');
                         }
                     }
                 } else {
                     this.configData = [];
                 }
-                console.log(this.configData);
             },
             (err) => {
-                console.log(err);
             },
             () => {
                 configData$.unsubscribe();

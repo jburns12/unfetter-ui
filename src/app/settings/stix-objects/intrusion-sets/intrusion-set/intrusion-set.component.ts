@@ -30,6 +30,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public relHistoryArr: any = [];
     public historyFound: boolean = false;
     public allCitations: any = [];
+    public aliasesToDisplay: any = [];
 
      constructor(
         public stixService: StixService,
@@ -254,6 +255,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 this.getCitations();
                 this.assignCitations();
                 this.intrusionSet.attributes.external_references.reverse();
+                this.aliasesToDisplay = this.intrusionSet.attributes.aliases.filter((h) => h !== this.intrusionSet.attributes.name);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

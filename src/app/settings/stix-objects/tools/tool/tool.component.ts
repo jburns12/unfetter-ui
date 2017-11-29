@@ -27,6 +27,7 @@ public history: boolean = false;
 public historyArr: string[] = [];
 public relHistoryArr: any = [];
 public historyFound: boolean = false;
+public aliasesToDisplay: any = [];
 
 constructor(
      public stixService: StixService,
@@ -182,6 +183,7 @@ constructor(
          (data) => {
            this.tool =  new Tool(data);
            this.tool.attributes.external_references.reverse();
+           this.aliasesToDisplay = this.tool.attributes.x_mitre_aliases.filter((h) => h !== this.tool.attributes.name);
            this.getTechniques(false);
          }, (error) => {
                  // handle errors here

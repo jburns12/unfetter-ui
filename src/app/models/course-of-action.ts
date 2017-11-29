@@ -15,6 +15,7 @@ export class CourseOfAction {
         description: string;
         name: string;
         object_marking_refs: string[];
+        external_references: ExternalReference[];
     };
     constructor(data?: CourseOfAction) {
         this.type = Constance.COURSE_OF_ACTION_TYPE;

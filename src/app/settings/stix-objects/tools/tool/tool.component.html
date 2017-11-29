@@ -38,11 +38,11 @@
                            <h5 [innerHTML]="formatText(tool.attributes.description)"></h5><br>
                        </div>
                    </div>
-                   <div *ngIf="tool.attributes.x_mitre_aliases && tool.attributes.x_mitre_aliases.length > 0" class="row">
+                   <div *ngIf="aliasesToDisplay.length > 0" class="row">
                        <div class="col-md-12">
                            <label>Aliases</label>
                            <mat-chip-list>
-                               <mat-chip *ngFor="let alias of tool.attributes.x_mitre_aliases"
+                               <mat-chip *ngFor="let alias of aliasesToDisplay"
                                    selected="true">
                                    {{alias}}
                                </mat-chip>

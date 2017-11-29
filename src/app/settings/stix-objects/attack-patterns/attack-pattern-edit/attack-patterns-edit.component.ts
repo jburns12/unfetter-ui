@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { StixService } from '../../../stix.service';
-import { AttackPattern, ExternalReference, KillChainPhase } from '../../../../models';
+import { AttackPattern, CourseOfAction, ExternalReference, KillChainPhase } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 
 @Component({

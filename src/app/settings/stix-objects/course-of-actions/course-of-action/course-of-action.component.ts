@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
-import { CourseOfAction } from '../../../../models';
+import { AttackPattern, CourseOfAction } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 

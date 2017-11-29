@@ -9,44 +9,12 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-            <mat-input-container class="full-width">
-                <textarea matInput placeholder="Description"  [(ngModel)]="courseOfAction.attributes.description" value="{{courseOfAction.attributes.description}}"></textarea>
+                <mat-input-container class="full-width">
+                    <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="courseOfAction.attributes.description">{{courseOfAction.attributes.description}}</textarea>
                 </mat-input-container>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <label>Labels</label>
-                <div class="button-row">
-                    <a class=" " mat-raised-button (click)="addLabelButtonClicked()"><i class="material-icons">add</i>ADD</a>
-                </div>
-            </div>
-        </div>
-        <div class="row" >
-            <div class="col-md-12">
-
-                    <mat-card *ngFor="let label of courseOfAction.attributes.label_names" style="margin: 10px 0px;">
-                            <mat-card-content>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                            <mat-input-container class="full-width">
-                                                <input matInput placeholder="Label"  value="{{label.name}}">
-                                            </mat-input-container>
-                                    </div>
-
-                                </div>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <div class="button-row">
-                                    <a class="" mat-raised-button (click)="removeLabelButtonClicked(label)"><i class="material-icons">delete</i>REMOVE</a>
-                                </div>
-                            </mat-card-actions>
-                    </mat-card>
-
-
-            </div>
-        </div>
-        <external-reference [(model)]="courseOfAction"></external-reference>
+        <external-reference [(model)]="courseOfAction" [(citations)]="allCitations"></external-reference>
 
         <div class="row">
             <div class="col-md-12">

@@ -5,11 +5,30 @@
                     <div class="button-row">
                         <button class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</button>
                         <button class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</button>
+                        <button class="mat-primary" mat-raised-button (click)="historyButtonClicked()">HISTORY</button>
                     </div>
                 </div>
             </div>
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-12">
+                  <div *ngIf="history">
+                    <mat-card>
+                      <mat-card-header style="border-bottom: 1px solid lightgray;">
+                        <mat-card-title><h3>History Log</h3></mat-card-title>
+                      </mat-card-header>
+                      <h4>Object History</h4>
+                      <mat-card-content *ngFor="let historyStr of historyArr">
+                        {{historyStr}}
+                      </mat-card-content><br>
+                      <div *ngIf="relHistoryArr.length > 0">
+                      <h4>Relationship History</h4>
+                      <mat-card-content *ngFor="let relHistoryStr of relHistoryArr">
+                        {{relHistoryStr}}
+                      </mat-card-content>
+                      </div>
+                    </mat-card>
+                    <br>
+                  </div>
                     <mat-card>
                         <mat-card-content>
                                 <div class="row">

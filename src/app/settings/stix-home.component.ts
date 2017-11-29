@@ -10,7 +10,7 @@ export class StixHomeComponent {
     public navigations: any[] = [
         { url: 'attack-patterns', label: 'Techniques' },
         // { url: 'campaigns', label: 'Campaigns' },
-        // { url: 'course-of-actions', label: 'Courses of Action' },
+        { url: 'course-of-actions', label: 'Courses of Action' },
         // { url: 'indicators', label: 'Indicators' },
         // { url: 'identities', label: 'Identities' },
         { url: 'malwares', label: 'Malware' },

@@ -20,6 +20,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     public newRelationships: Relationship[] = [];
     public savedRelationships: Relationship[] = [];
     public deletedRelationships: Relationship[] = [];
+    public allCitations: any = [];
 
     constructor(
         public stixService: StixService,
@@ -39,7 +40,8 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 console.log(this.tool);
                 this.getTechniques(false);
                 this.getAllAliases();
-                super.getCitations();
+                this.getCitations();
+                this.assignCitations();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -50,6 +52,14 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 }
             }
         );
+    }
+
+    public assignCitations(): void {
+        for (let i in this.tool.attributes.external_references) {
+            this.tool.attributes.external_references[i].citeButton = 'Generate Citation Text';
+            this.tool.attributes.external_references[i].citation = '[[Citation: ' + this.tool.attributes.external_references[i].source_name + ']]';
+            this.tool.attributes.external_references[i].citeref = '[[CiteRef::' + this.tool.attributes.external_references[i].source_name + ']]';
+        }
     }
 
     public addAliasesToTool(): void {
@@ -67,6 +77,32 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
             }
         }
         console.log(this.tool.attributes.x_mitre_aliases);
+    }
+
+    public getCitations(): void {
+      let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
+      let subscription =  super.load(filter).subscribe(
+          (data) => {
+              let tools = data as Tool[];
+              tools.forEach((tool: Tool) => {
+                  for (let i in tool.attributes.external_references) {
+                      if (!(tool.attributes.external_references[i].external_id)) {
+                          this.allCitations.push(tool.attributes.external_references[i]);
+                      }
+                  }
+              });
+              this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+              this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+          }, (error) => {
+              // handle errors here
+               console.log('error ' + error);
+          }, () => {
+              // prevent memory links
+              if (subscription) {
+                  subscription.unsubscribe();
+              }
+          }
+      );
     }
 
     public createRelationships(id: string): void {

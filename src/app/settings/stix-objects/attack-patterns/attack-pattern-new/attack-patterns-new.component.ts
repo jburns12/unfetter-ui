@@ -33,7 +33,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
               this.getPlatformsAndDataSources();
               this.getContributors();
               this.getId();
-              super.getCitations();
+              this.getCitations();
           }, (error) => {
               // handle errors here
               console.log('error ' + error);

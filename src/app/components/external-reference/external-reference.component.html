@@ -1,6 +1,7 @@
   <div class="row">
             <div class="col-md-12">
-                <h4>External References</h4>
+                <h4 *ngIf="model.type !== 'course-of-action'">External References</h4>
+                <h4 *ngIf="model.type === 'course-of-action'">External References for Mitigation</h4>
                 <div class="button-row">
                     <a class="" mat-raised-button (click)="addExternalReferenceButtonClicked()"><i class="material-icons">add</i> ADD</a>
                 </div>

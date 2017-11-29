@@ -20,7 +20,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public attackPattern: AttackPattern = new AttackPattern();
     public mitigation: string = '';
     public courseOfAction: CourseOfAction = new CourseOfAction();
-    public coaMitigator: CourseOfAction;
+    public mitigationExtRefs: any = [];
     public relationship: Relationship = new Relationship();
     public coaId: string = '';
     public target: any;
@@ -103,9 +103,9 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public deleteCoAandRels(): void {
         let goBack = true;
         this.deleteRels(this.attackPattern.id, goBack);
-        if (this.coaMitigator !== undefined) {
-            this.coaMitigator.url = Constance.COURSE_OF_ACTION_URL;
-            this.delete(this.coaMitigator).subscribe(
+        if (this.coaId !== '') {
+            this.courseOfAction.url = Constance.COURSE_OF_ACTION_URL;
+            this.delete(this.courseOfAction).subscribe(
                 () => {
 
                 }
@@ -245,9 +245,14 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 this.coaId = coaId;
-                this.coaMitigator = new CourseOfAction();
-                this.coaMitigator = data as CourseOfAction;
-                this.mitigation = this.coaMitigator.attributes.description;
+                this.courseOfAction = data as CourseOfAction;
+                for (let i in this.courseOfAction.attributes.external_references) {
+                    this.courseOfAction.attributes.external_references[i].citeButton = 'Generate Citation Text';
+                    this.courseOfAction.attributes.external_references[i].citation = '[[Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
+                    this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
+                }
+                this.mitigation = this.courseOfAction.attributes.description;
+                this.mitigationExtRefs = Object.assign({}, this.courseOfAction.attributes.external_references);
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -262,10 +267,23 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
 
     public saveCourseOfAction(attackPatternId: string): void {
         if (this.coaId !== '') {
-            if (this.mitigation !== this.coaMitigator.attributes.description) {
-                this.coaMitigator.attributes.description = this.mitigation;
+            for (let i in this.courseOfAction.attributes.external_references) {
+                if ('citeButton' in this.courseOfAction.attributes.external_references[i]) {
+                    delete this.courseOfAction.attributes.external_references[i].citeButton;
+                }
+                if ('citation' in this.courseOfAction.attributes.external_references[i]) {
+                    delete this.courseOfAction.attributes.external_references[i].citation;
+                }
+                if ('citeref' in this.courseOfAction.attributes.external_references[i]) {
+                    delete this.courseOfAction.attributes.external_references[i].citeref;
+                }
+            }
+            console.log(this.mitigationExtRefs);
+            console.log(this.courseOfAction.attributes.external_references);
+            if (this.mitigation !== this.courseOfAction.attributes.description || this.mitigationExtRefs !== this.courseOfAction.attributes.external_references) {
+                this.courseOfAction.attributes.description = this.mitigation;
                 this.stixService.url = Constance.COURSE_OF_ACTION_URL;
-                let subscription = super.save(this.coaMitigator).subscribe(
+                let subscription = super.save(this.courseOfAction).subscribe(
                     (data) => {
 
                     }, (error) => {
@@ -283,6 +301,17 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             if (this.mitigation !== '') {
                this.courseOfAction.attributes.description = this.mitigation;
                this.courseOfAction.attributes.name = this.attackPattern.attributes.name + ' Mitigation';
+               for (let i in this.courseOfAction.attributes.external_references) {
+                   if ('citeButton' in this.courseOfAction.attributes.external_references[i]) {
+                       delete this.courseOfAction.attributes.external_references[i].citeButton;
+                   }
+                   if ('citation' in this.courseOfAction.attributes.external_references[i]) {
+                       delete this.courseOfAction.attributes.external_references[i].citation;
+                   }
+                   if ('citeref' in this.courseOfAction.attributes.external_references[i]) {
+                       delete this.courseOfAction.attributes.external_references[i].citeref;
+                   }
+               }
                console.log(this.courseOfAction);
                let subscription = super.create(this.courseOfAction).subscribe(
                     (stixObject) => {

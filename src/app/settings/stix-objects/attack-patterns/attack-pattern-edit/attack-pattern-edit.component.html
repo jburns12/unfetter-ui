@@ -35,6 +35,7 @@
                     </mat-input-container>
                 </div>
             </div>
+            <external-reference *ngIf="courseOfAction" [(model)]="courseOfAction" [(citations)]="allCitations"></external-reference>
             <div class="row">
                 <div class="col-md-12">
                     <mat-input-container class="full-width">

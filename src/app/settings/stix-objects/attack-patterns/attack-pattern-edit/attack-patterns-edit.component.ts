@@ -92,6 +92,29 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 }
             }
         });
+        let uri = Constance.COURSE_OF_ACTION_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                let coas = data as CourseOfAction[];
+                coas.forEach((coa: CourseOfAction) => {
+                    for (let i in coa.attributes.external_references) {
+                        if (!(coa.attributes.external_references[i].external_id)) {
+                            this.allCitations.push(coa.attributes.external_references[i]);
+                        }
+                    }
+                });
+                this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+            }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
         this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
         this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
@@ -101,6 +124,11 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             this.attackPattern.attributes.external_references[i].citeButton = 'Generate Citation Text';
             this.attackPattern.attributes.external_references[i].citation = '[[Citation: ' + this.attackPattern.attributes.external_references[i].source_name + ']]';
             this.attackPattern.attributes.external_references[i].citeref = '[[CiteRef::' + this.attackPattern.attributes.external_references[i].source_name + ']]';
+        }
+        for (let i in this.courseOfAction.attributes.external_references) {
+            this.courseOfAction.attributes.external_references[i].citeButton = 'Generate Citation Text';
+            this.courseOfAction.attributes.external_references[i].citation = '[[Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
+            this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
         }
     }
 

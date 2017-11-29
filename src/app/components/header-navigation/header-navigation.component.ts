@@ -9,12 +9,12 @@ import { AuthService } from '../../global/services/auth.service';
   styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html'
 })
-export class HeaderNavigationComponent {  
+export class HeaderNavigationComponent {
 
   public navigations: Navigation[] = [
     { url: 'stix/attack-patterns', label: 'Techniques' },
     // { url: 'stix/campaigns', label: 'Campaigns' },
-    // { url: 'stix/course-of-actions', label: 'Courses of Action' },
+    { url: 'stix/course-of-actions', label: 'Courses of Action' },
     // { url: 'stix/indicators', label: 'Indicators' },
     // { url: 'stix/identities', label: 'Identities' },
     { url: 'stix/malwares', label: 'Malware' },

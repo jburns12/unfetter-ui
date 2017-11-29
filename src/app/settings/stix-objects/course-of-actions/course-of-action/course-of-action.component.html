@@ -31,30 +31,15 @@
                   </div>
                     <mat-card>
                         <mat-card-content>
+                          <mat-card-header style="border-bottom: 1px solid lightgray;">
+                              <mat-card-title><h3>{{ courseOfAction.attributes.name }}</h3></mat-card-title>
+                          </mat-card-header>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label>Name</label>
-                                        <h6>{{courseOfAction.attributes.name}}</h6>
+                                        <h5 [innerHTML]="formatText(courseOfAction.attributes.description)"></h5>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>Description</label>
-                                        <h6 [innerHTML]="formatText(courseOfAction.attributes.description)"></h6>
-                                    </div>
-                                </div>
-                                <div *ngIf="courseOfAction.attributes.labels && courseOfAction.attributes.labels.length" class="row">
-                                    <div class="col-md-12">
-                                        <label>Labels</label>
-                                        <mat-chip-list>
-                                            <mat-chip *ngFor="let label of courseOfAction.attributes.labels"
-                                                selected="true"
-                                                color="accent">
-                                                {{label}}
-                                            </mat-chip>
-                                        </mat-chip-list>
-                                    </div>
-                                </div>
+                                <br>
                                 <div *ngIf="courseOfAction.attributes.external_references && courseOfAction.attributes.external_references.length" class="row">
                                     <div class="col-md-12">
                                         <label>External References</label>

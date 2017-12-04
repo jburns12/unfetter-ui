@@ -22,6 +22,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public attackPatterns: AttackPattern[];
     public tacticConfig: string[] = [];
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exFil': false};
+    public tactics: any = [];
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -58,7 +59,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
        let subscription = super.load(filter).subscribe(
            (data) => {
                this.attackPatterns = data as AttackPattern[];
-               this.getPlatformsAndDataSources();
+               this.getConfigs();
                this.getContributors();
                this.assignPerms();
                this.findCoA();
@@ -132,7 +133,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
-    public getPlatformsAndDataSources(): void {
+    public getConfigs(): void {
         let uniqPlatforms = [];
         let uri = Constance.CONFIG_URL;
         let subscription =  super.getByUrl(uri).subscribe(
@@ -147,6 +148,33 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                       if (currRes.attributes.configKey === 'x_mitre_data_sources') {
                           console.log(currRes.attributes.configValue);
                           this.dataSources = currRes.attributes.configValue;
+                      }
+                      if (currRes.attributes.configKey === 'tactics') {
+                          for  (let currTactic of currRes.attributes.configValue) {
+                              if (currTactic.phase === 'act') {
+                                  let found = this.attackPattern.attributes.kill_chain_phases.find((h) => {
+                                      return h.phase_name === currTactic.tactic;
+                                  });
+                                  if (found) {
+                                      if (currTactic.tactic === 'privilege-escalation') {
+                                          this.tacticBools['privEsc'] = true;
+                                      }
+                                      if (currTactic.tactic === 'execution') {
+                                          this.tacticBools['execution'] = true;
+                                      }
+                                      if (currTactic.tactic === 'defense-evasion') {
+                                          this.tacticBools['defEvas'] = true;
+                                      }
+                                      if (currTactic.tactic === 'exfiltration') {
+                                          this.tacticBools['exfil'] = true;
+                                      }
+                                      this.tactics.push({'name': currTactic.tactic, 'val': true});
+                                  }
+                                  else {
+                                      this.tactics.push({'name': currTactic.tactic, 'val': false});
+                                  }
+                              }
+                          }
                       }
                   }
               }

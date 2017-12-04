@@ -19,7 +19,7 @@
                 </div>
             </div>
 
-            <kill-chain-phases [(model)]="attackPattern" (onTacticAdd)="tacticChange($event)"></kill-chain-phases>
+            <kill-chain-phases [(model)]="attackPattern" [(tactics)]="tactics" (onTacticAdd)="tacticChange($event)" [(tacticBools)]="tacticBools"></kill-chain-phases>
 
             <div class="row">
                 <div class="col-md-12">

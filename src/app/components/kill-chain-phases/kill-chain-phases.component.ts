@@ -13,19 +13,6 @@ export class KillChainPhasesComponent implements OnChanges {
     @Input() public tactics: any;
     @Output() public onTacticAdd: EventEmitter<any> = new EventEmitter<any>();
     @Input() public tacticBools: any;
-    tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exfil': false};
-    //public tactics: any = [
-    //  {'name': 'collection', 'val': false},
-    //  {'name': 'command-and-control', 'val': false},
-    //  {'name': 'credential-access', 'val': false},
-    //  {'name': 'defense-evasion', 'val': false},
-    //  {'name': 'discovery', 'val': false},
-    //  {'name': 'execution', 'val': false},
-    //  {'name': 'exfiltration', 'val': false},
-    //  {'name': 'lateral-movement', 'val': false},
-    //  {'name': 'persistence', 'val': false},
-    //  {'name': 'privilege-escalation', 'val': false}
-    //];
 
     public ngOnChanges() {
         for (let i in this.tactics) {

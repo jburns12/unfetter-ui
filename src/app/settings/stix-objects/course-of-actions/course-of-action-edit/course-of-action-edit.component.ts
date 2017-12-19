@@ -28,6 +28,7 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
     }
 
     public saveCourceOfAction(): void {
+       this.removeCitationsExtRefs();
        let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
                 this.location.back();
@@ -43,4 +44,22 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
         );
     }
 
+    public removeCitationsExtRefs(): void {
+        for (let i in this.courseOfAction.attributes.external_references) {
+            if ('citeButton' in this.courseOfAction.attributes.external_references[i]) {
+                delete this.courseOfAction.attributes.external_references[i].citeButton;
+            }
+            if ('citation' in this.courseOfAction.attributes.external_references[i]) {
+                delete this.courseOfAction.attributes.external_references[i].citation;
+            }
+            if ('citeref' in this.courseOfAction.attributes.external_references[i]) {
+                delete this.courseOfAction.attributes.external_references[i].citeref;
+            }
+        }
+        for (let i = 0; i < this.courseOfAction.attributes.external_references.length; i++) {
+            if (Object.keys(this.courseOfAction.attributes.external_references[i]).length === 0) {
+                this.courseOfAction.attributes.external_references.splice(i, 1);
+            }
+        }
+    }
 }

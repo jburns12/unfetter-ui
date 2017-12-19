@@ -278,6 +278,11 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     delete this.courseOfAction.attributes.external_references[i].citeref;
                 }
             }
+            for (let i = 0; i < this.courseOfAction.attributes.external_references.length; i++) {
+                if (Object.keys(this.courseOfAction.attributes.external_references[i]).length === 0) {
+                    this.courseOfAction.attributes.external_references.splice(i, 1);
+                }
+            }
             console.log(this.mitigationExtRefs);
             console.log(this.courseOfAction.attributes.external_references);
             if (this.mitigation !== this.courseOfAction.attributes.description || this.mitigationExtRefs !== this.courseOfAction.attributes.external_references) {
@@ -310,6 +315,11 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                    }
                    if ('citeref' in this.courseOfAction.attributes.external_references[i]) {
                        delete this.courseOfAction.attributes.external_references[i].citeref;
+                   }
+               }
+               for (let i = 0; i < this.courseOfAction.attributes.external_references.length; i++) {
+                   if (Object.keys(this.courseOfAction.attributes.external_references[i]).length === 0) {
+                       this.courseOfAction.attributes.external_references.splice(i, 1);
                    }
                }
                console.log(this.courseOfAction);

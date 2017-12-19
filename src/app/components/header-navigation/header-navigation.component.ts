@@ -22,7 +22,8 @@ export class HeaderNavigationComponent {
     // { url: 'stix/sightings', label: 'Sightings' },
     { url: 'stix/tools', label: 'Tools' },
     // { url: 'stix/threat-actors', label: 'Threat Actors' },
-    { url: 'stix/intrusion-sets', label: 'Intrusion Sets' },
+    { url: 'stix/intrusion-sets', label: 'Groups' },
+    { url: 'stix/citations', label: 'Citations'}
     // { url: 'stix/reports', label: 'Reports' },
     // { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];

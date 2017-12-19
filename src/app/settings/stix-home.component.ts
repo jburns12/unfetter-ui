@@ -19,6 +19,7 @@ export class StixHomeComponent {
         { url: 'tools', label: 'Tools' },
         // { url: 'threat-actors', label: 'Threat Actors' },
         { url: 'intrusion-sets', label: 'Groups' },
+        { url: 'citations', label: 'Citations'}
         // { url: 'reports', label: 'Reports' },
         // { url: 'x-unfetter-sensors', label: 'Sensors'}
     ];

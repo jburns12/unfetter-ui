@@ -86,26 +86,17 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public getCitations(): void {
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            for (let i in attackPattern.attributes.external_references) {
-                if (!(attackPattern.attributes.external_references[i].external_id)) {
-                    this.allCitations.push(attackPattern.attributes.external_references[i]);
-                }
-            }
-        });
-        let uri = Constance.COURSE_OF_ACTION_URL;
+        let uri = Constance.MULTIPLES_URL;
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
-                let coas = data as CourseOfAction[];
-                coas.forEach((coa: CourseOfAction) => {
-                    for (let i in coa.attributes.external_references) {
-                        if (!(coa.attributes.external_references[i].external_id)) {
-                            this.allCitations.push(coa.attributes.external_references[i]);
-                        }
+                let extRefs = [];
+                for (let currObj of data) {
+                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
+                        extRefs = extRefs.concat(currObj.attributes.external_references);
                     }
-                });
-                this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                }
+                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -116,8 +107,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 }
             }
         );
-        this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-        this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
 
     public assignCitations(): void {

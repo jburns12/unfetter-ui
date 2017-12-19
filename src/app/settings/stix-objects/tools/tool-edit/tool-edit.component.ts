@@ -63,9 +63,9 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public addAliasesToTool(): void {
+        this.tool.attributes.x_mitre_aliases = [];
+        this.tool.attributes.x_mitre_aliases.push(this.tool.attributes.name);
         if (this.aliases.length > 0) {
-            this.tool.attributes.x_mitre_aliases = [];
-            this.tool.attributes.x_mitre_aliases.push(this.tool.attributes.name);
             for (let alias of this.aliases){
                 this.tool.attributes.x_mitre_aliases.push(alias.name);
                 if (alias.description !== '') {
@@ -80,29 +80,27 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     public getCitations(): void {
-      let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
-      let subscription =  super.load(filter).subscribe(
-          (data) => {
-              let tools = data as Tool[];
-              tools.forEach((tool: Tool) => {
-                  for (let i in tool.attributes.external_references) {
-                      if (!(tool.attributes.external_references[i].external_id)) {
-                          this.allCitations.push(tool.attributes.external_references[i]);
-                      }
-                  }
-              });
-              this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-              this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
-          }, (error) => {
-              // handle errors here
-               console.log('error ' + error);
-          }, () => {
-              // prevent memory links
-              if (subscription) {
-                  subscription.unsubscribe();
-              }
-          }
-      );
+        let uri = Constance.MULTIPLES_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                let extRefs = [];
+                for (let currObj of data) {
+                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
+                        extRefs = extRefs.concat(currObj.attributes.external_references);
+                    }
+                }
+                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+            }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
     }
 
     public createRelationships(id: string): void {

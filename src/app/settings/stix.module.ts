@@ -35,6 +35,7 @@ import {
     SightingEditComponent,
     SightingComponent } from './stix-objects/sightings';
 
+import { CitationsHomeComponent } from './stix-objects/citations';
 import { SensorHomeComponent, SensorListComponent, SensorNewComponent, SensorEditComponent, SensorComponent } from './stix-objects/sensors';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
 import { ThreatActorHomeComponent, ThreatActorListComponent, ThreatActorsComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './stix-objects/threat-actors';
@@ -95,6 +96,8 @@ import { GlobalModule } from '../global/global.module';
     CourseOfActionNewComponent,
     CourseOfActionComponent,
 
+    CitationsHomeComponent,
+    
     SightingHomeComponent,
     SightingListComponent,
     SightingNewComponent,

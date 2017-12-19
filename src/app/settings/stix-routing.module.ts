@@ -94,6 +94,7 @@ import {
 import {
   LinkExplorerComponent
 } from './link-explorer';
+
 import {
   StixHomeComponent
 } from './stix-home.component';
@@ -105,6 +106,10 @@ import {
   SensorEditComponent,
   SensorNewComponent
 } from './stix-objects/sensors';
+
+import {
+  CitationsHomeComponent
+} from './stix-objects/citations';
 
 import { AuthGuard } from '../global/services/auth.guard';
 
@@ -159,6 +164,10 @@ const stixRoutes: Routes = [{
             component: CampaignsEditComponent
           }
         ]
+      },
+      {
+        path: 'citations',
+        component: CitationsHomeComponent
       },
       {
         path: 'course-of-actions',

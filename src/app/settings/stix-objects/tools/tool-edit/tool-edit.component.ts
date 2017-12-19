@@ -67,12 +67,14 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         this.tool.attributes.x_mitre_aliases.push(this.tool.attributes.name);
         if (this.aliases.length > 0) {
             for (let alias of this.aliases){
-                this.tool.attributes.x_mitre_aliases.push(alias.name);
-                if (alias.description !== '') {
-                    let extRef = new ExternalReference();
-                    extRef.source_name = alias.name;
-                    extRef.description = alias.description;
-                    this.tool.attributes.external_references.push(extRef);
+                if (alias.name !== '') {
+                    this.tool.attributes.x_mitre_aliases.push(alias.name);
+                    if (alias.description !== '') {
+                        let extRef = new ExternalReference();
+                        extRef.source_name = alias.name;
+                        extRef.description = alias.description;
+                        this.tool.attributes.external_references.push(extRef);
+                    }
                 }
             }
         }

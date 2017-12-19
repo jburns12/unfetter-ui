@@ -15,7 +15,7 @@
           <h3 *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
               <a *ngIf="navigation.label !== 'Citations'" [routerLink]="[navigation.url]">{{navigation.label}}</a>
           </h3>
-      </ul><br>
+      </ul>
       <h2>View Citations:</h2>
 
       <ul class="nav nav-pills">

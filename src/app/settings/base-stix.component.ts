@@ -288,7 +288,7 @@ export class BaseStixComponent {
     }
 
     public getHistoryLine(currArr: any, historyArr: string[], modDate: any, revDiff: any, mitreId: string): void {
-        if (currArr.path[0] !== 'previous_versions' && currArr.path[0] !== 'modified' && currArr.path[0] !== 'deletedRelationships' && currArr.path[0] !== 'mitreId') {
+        if (currArr.path[0] !== 'previous_versions' && currArr.path[0] !== 'modified' && currArr.path[0] !== 'deletedRelationships' && currArr.path[0] !== 'mitreId' && currArr.path[0] !== 'collection') {
             switch (currArr.type) {
                 case 'add':
                     for (let val of currArr.vals) {

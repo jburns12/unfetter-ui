@@ -52,12 +52,12 @@
                                     <input class="display-citation" size="100" #copyCitation value="{{ externalReference.citation }}" [(ngModel)]=externalReference.citation>
                                 </div>
                             </mat-card-actions>
-                            <mat-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton == 'Hide Citation Text'">
+                            <!--<mat-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton == 'Hide Citation Text'">
                                 <div class="button-row">
                                     <a class="" mat-raised-button [ngxClipboard]="copyCiteRef"> Copy</a>
                                     <input class="display-citation" size="100" #copyCiteRef value="{{ externalReference.citeref }}" [(ngModel)]=externalReference.citeref>
                                 </div>
-                            </mat-card-actions>
+                            </mat-card-actions>-->
                             <mat-card-actions>
                                 <div class="button-row">
                                     <a class="" mat-raised-button (click)="removeExternalReferenceButtonClicked(externalReference)"><i class="material-icons">delete</i> REMOVE</a>

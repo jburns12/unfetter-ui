@@ -21,6 +21,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     public savedRelationships: Relationship[] = [];
     public deletedRelationships: Relationship[] = [];
     public allCitations: any = [];
+    public contributors: string[] = [];
 
     constructor(
         public stixService: StixService,
@@ -40,7 +41,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 console.log(this.tool);
                 this.getTechniques(false);
                 this.getAllAliases();
-                this.getCitations();
+                this.getCitationsAndContributors();
                 this.assignCitations();
             }, (error) => {
                 // handle errors here
@@ -52,6 +53,18 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 }
             }
         );
+    }
+
+    public addContributor(): void {
+        if (!('x_mitre_contributors' in this.tool.attributes)) {
+            this.tool.attributes.x_mitre_contributors = [];
+        }
+        let contributorName = '';
+        this.tool.attributes.x_mitre_contributors.unshift(contributorName);
+    }
+
+    public removeContributor(contributor): void {
+        this.tool.attributes.x_mitre_contributors = this.tool.attributes.x_mitre_contributors.filter((h) => h !== contributor);
     }
 
     public assignCitations(): void {
@@ -81,7 +94,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         console.log(this.tool.attributes.x_mitre_aliases);
     }
 
-    public getCitations(): void {
+    public getCitationsAndContributors(): void {
         let uri = Constance.MULTIPLES_URL;
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
@@ -90,7 +103,10 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                     if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
                         extRefs = extRefs.concat(currObj.attributes.external_references);
                     }
+                    this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
                 }
+                this.contributors = this.contributors.filter((elem, index, self) => self.findIndex((t) => t === elem) === index).sort().filter(Boolean);
+                console.log(this.contributors);
                 extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                 this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
             }, (error) => {
@@ -159,7 +175,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
-    public removeCitationsExtRefs(): void {
+    public removeCitationsExtRefsContributors(): void {
         for (let i in this.tool.attributes.external_references) {
             if ('citeButton' in this.tool.attributes.external_references[i]) {
                 delete this.tool.attributes.external_references[i].citeButton;
@@ -176,11 +192,17 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 this.tool.attributes.external_references.splice(i, 1);
             }
         }
+        if ('x_mitre_contributors' in this.tool.attributes) {
+            this.removeContributor("");
+            if (this.tool.attributes.x_mitre_contributors.length === 0) {
+                delete this.tool.attributes['x_mitre_contributors'];
+            }
+        }
     }
 
     public saveTool(): void {
         this.addAliasesToTool();
-        this.removeCitationsExtRefs();
+        this.removeCitationsExtRefsContributors();
         this.tool.attributes.external_references.reverse();
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
@@ -223,6 +245,33 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 }
             }
         }
+    }
+
+    public getCitationsAndContributors(): void {
+        let uri = Constance.MULTIPLES_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                let extRefs = [];
+                for (let currObj of data) {
+                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
+                        extRefs = extRefs.concat(currObj.attributes.external_references);
+                    }
+                    this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
+                }
+                this.contributors = this.contributors.filter((elem, index, self) => self.findIndex((t) => t === elem) === index).sort().filter(Boolean);
+                console.log(this.contributors);
+                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+            }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
     }
 
     public loadRelationships(filter: any): void {
@@ -300,6 +349,14 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
 
     public removeAlias(alias): void {
         this.aliases = this.aliases.filter((h) => h.name !== alias);
+    }
+
+    public filterOptions(stringToMatch: string, listToParse: any): void {
+        if (stringToMatch) {
+            let filterVal = stringToMatch.toLowerCase();
+            return listToParse.filter((h) => h.toLowerCase().startsWith(filterVal));
+        }
+        return listToParse;
     }
 
     public loadObject(url: string, id: string, list: any ): void {

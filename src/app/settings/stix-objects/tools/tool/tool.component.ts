@@ -45,6 +45,10 @@ constructor(
      this.loadTool();
    }
 
+   public trackByFunction(index: number, obj: any): any {
+     return index;
+   }
+
    public editButtonClicked(): void {
        let link = ['../edit', this.tool.id];
        super.gotoView(link);
@@ -65,9 +69,12 @@ constructor(
            let subscription =  super.getByUrl(uri).subscribe(
                (data) => {
                    let pattern = data as Tool;
+                   let currHistory = [];
+                   console.log(pattern);
                    this.diff = JSON.stringify(data.attributes.previous_versions);
-                   super.getHistory(pattern, this.historyArr);
+                   super.getHistory(pattern, currHistory);
                    super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
+                   this.historyArr = Array.from(new Set(currHistory));
                    this.history = !this.history;
                    this.historyFound = true;
                   }, (error) => {

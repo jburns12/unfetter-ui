@@ -29,7 +29,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         this.getTechniques(true);
         this.getSoftware(true);
         this.getId();
-        super.getCitations();
+        super.getCitationsAndContributors();
     }
 
     public getIdString(ids: any): string {

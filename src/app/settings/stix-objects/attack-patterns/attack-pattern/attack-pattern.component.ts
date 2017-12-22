@@ -25,7 +25,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public coaId: string = '';
     public target: any;
     public history: boolean = false;
-    public historyArr: string[] = [];
+    public historyArr: string[];
     public relHistoryArr: any = [];
     public historyFound: boolean = false;
     public diff: any;
@@ -70,10 +70,12 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             let subscription =  super.getByUrl(uri).subscribe(
                 (data) => {
                     let pattern = data as AttackPattern;
+                    let currHistory = [];
                     console.log(pattern);
                     this.diff = JSON.stringify(data.attributes.previous_versions);
-                    super.getHistory(pattern, this.historyArr);
+                    super.getHistory(pattern, currHistory);
                     super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
+                    this.historyArr = Array.from(new Set(currHistory));
                     this.history = !this.history;
                     this.historyFound = true;
                    }, (error) => {

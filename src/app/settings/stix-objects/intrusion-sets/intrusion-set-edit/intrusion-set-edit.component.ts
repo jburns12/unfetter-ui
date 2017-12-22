@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -49,6 +49,8 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public attackPatterns: AttackPattern[] = [];
     public identities: Identity[] = [];
     public threatActors: ThreatActor[] = [];
+    public contributors: string[] = [];
+    public allCitations: any = [];
 
    constructor(
         public stixService: StixService,
@@ -65,6 +67,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public ngOnInit() {
        super.loadIntrusionSet();
+       this.getCitationsAndContributors();
     }
 
     public isChecked(label: string): boolean {
@@ -101,6 +104,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
          this.addAliasesToIntrusionSet();
          this.removeCitationsExtRefs();
          this.intrusionSet.attributes.external_references.reverse();
+         console.log(this.intrusionSet);
          const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();
@@ -290,6 +294,53 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
             }
         }
         console.log(this.currSoftwares);
+    }
+
+    public getCitationsAndContributors(): void {
+        let uri = Constance.MULTIPLES_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                let extRefs = [];
+                for (let currObj of data) {
+                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
+                        extRefs = extRefs.concat(currObj.attributes.external_references);
+                    }
+                    this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
+                }
+                this.contributors = this.contributors.filter((elem, index, self) => self.findIndex((t) => t === elem) === index).sort().filter(Boolean);
+                console.log(this.contributors);
+                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+            }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public addContributor(): void {
+        if (!('x_mitre_contributors' in this.intrusionSet.attributes)) {
+            this.intrusionSet.attributes.x_mitre_contributors = [];
+        }
+        let contributorName = '';
+        this.intrusionSet.attributes.x_mitre_contributors.unshift(contributorName);
+    }
+
+    public removeContributor(contributor): void {
+        this.intrusionSet.attributes.x_mitre_contributors = this.intrusionSet.attributes.x_mitre_contributors.filter((h) => h !== contributor);
+    }
+
+    public filterOptions(stringToMatch: string, listToParse: any): void {
+        if (stringToMatch) {
+            let filterVal = stringToMatch.toLowerCase();
+            return listToParse.filter((h) => h.toLowerCase().startsWith(filterVal));
+        }
+        return listToParse;
     }
 
     private found(list: any[], object: any): any {

@@ -49,6 +49,17 @@
                             </mat-chip-list>
                         </div>
                     </div><br>
+                    <div *ngIf="intrusionSet.attributes.x_mitre_contributors && intrusionSet.attributes.x_mitre_contributors.length" class="row">
+                        <div class="col-md-12">
+                            <label>Contributors:</label>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let contributor of intrusionSet.attributes.x_mitre_contributors"
+                                    selected="true">
+                                    {{contributor}}
+                                </mat-chip>
+                            </mat-chip-list><br>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <label>External References</label>

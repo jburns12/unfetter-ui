@@ -1,4 +1,3 @@
-
 <div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
@@ -116,7 +115,39 @@
                     </mat-card>
             </div>
 </div><br>
-
+<div class="row">
+    <div class="col-md-12">
+        <h4>Contributors</h4>
+              <div class="button-row">
+                    <a class=" " mat-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
+              </div>
+          </div>
+        </div>
+         <div class="row">
+            <div class="col-md-12">
+                     <mat-card *ngFor="let contributor of intrusionSet.attributes.x_mitre_contributors; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                       <mat-card-content>
+                           <div class="row">
+                             <div class="col-md-6">
+                               <mat-input-container class="full-width">
+                                   <input matInput placeholder="Contributor Name" [(ngModel)]="intrusionSet.attributes.x_mitre_contributors[i]" [matAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(intrusionSet.attributes.x_mitre_contributors[i], contributors)">
+                               </mat-input-container>
+                               <mat-autocomplete name="auto" #auto="matAutocomplete" >
+                               <mat-option *ngFor="let contributor of currContributors" [value]="contributor">
+                                   <span>{{ contributor }}</span>
+                               </mat-option>
+                               </mat-autocomplete>
+                             </div>
+                           </div>
+                       </mat-card-content>
+                            <mat-card-actions>
+                                <div class="button-row">
+                                    <a class="" mat-raised-button (click)="removeContributor(contributor)"><i class="material-icons">delete</i> REMOVE</a>
+                                </div>
+                            </mat-card-actions>
+                    </mat-card>
+            </div>
+</div><br>
 <external-reference [(model)]="intrusionSet" [(citations)]="allCitations"></external-reference>
 
 <div class="row">

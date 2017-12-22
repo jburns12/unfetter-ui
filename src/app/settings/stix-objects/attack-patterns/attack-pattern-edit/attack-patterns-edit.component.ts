@@ -164,6 +164,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                                   }
                               }
                           }
+                          this.tactics.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                       }
                   }
               }

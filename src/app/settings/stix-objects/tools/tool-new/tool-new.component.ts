@@ -31,7 +31,7 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
     public ngOnInit() {
         this.getTechniques(true);
         this.getId();
-        super.getCitations();
+        this.getCitationsAndContributors();
     }
 
     public getIdString(ids: any): string {
@@ -108,7 +108,7 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
         this.tool.attributes.external_references.push(idRef);
         this.addAliasesToTool();
         this.tool.attributes.labels.push('tool');
-        this.removeCitationsExtRefs();
+        this.removeCitationsExtRefsContributors();
         this.tool.attributes.external_references.reverse();
         let sub = super.create(this.tool).subscribe(
             (stixObject) => {

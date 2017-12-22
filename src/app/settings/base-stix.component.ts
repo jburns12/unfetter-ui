@@ -374,6 +374,7 @@ export class BaseStixComponent {
                 historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.id + ' CREATED');
             }
             historyArr.reverse();
+            console.log(historyArr);
         } else {
             if (pattern.attributes.mitreId !== undefined) {
                 historyArr.push(pattern.attributes.created + ':  ' + pattern.id + ' CREATED by ' + pattern.attributes.mitreId);

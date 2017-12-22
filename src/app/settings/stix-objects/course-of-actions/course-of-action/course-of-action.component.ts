@@ -65,11 +65,13 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
             let uri = this.stixService.url + '/' + this.courseOfAction.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
                 (data) => {
-                    let pattern = data as AttackPattern;
+                    let pattern = data as CourseOfAction;
+                    let currHistory = [];
                     console.log(pattern);
                     this.diff = JSON.stringify(data.attributes.previous_versions);
-                    super.getHistory(pattern, this.historyArr);
+                    super.getHistory(pattern, currHistory);
                     super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
+                    this.historyArr = Array.from(new Set(currHistory));
                     this.history = !this.history;
                     this.historyFound = true;
                    }, (error) => {

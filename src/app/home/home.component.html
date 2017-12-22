@@ -7,8 +7,7 @@
       </div>
     </div>
   </div>
-
-  <div id="stixHome" class="container">
+  <div id="stixHome" class="container" *ngIf="authService.loggedIn()">
       <h2>Choose Type of Object to Edit:</h2>
 
       <ul class="nav nav-pills">

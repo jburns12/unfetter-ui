@@ -31,6 +31,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public historyFound: boolean = false;
     public allCitations: any = [];
     public aliasesToDisplay: any = [];
+    public contributors: string[] = [];
 
      constructor(
         public stixService: StixService,
@@ -48,6 +49,10 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         this.loadIntrusionSet();
     }
 
+    public trackByFunction(index: number, obj: any): any {
+      return index;
+    }
+    
     public editButtonClicked(): void {
         const link = ['../edit', this.intrusionSet.id];
         super.gotoView(link);
@@ -86,10 +91,13 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
             let uri = this.stixService.url + '/' + this.intrusionSet.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
                 (data) => {
-                    let pattern = data as Tool;
+                    let pattern = data as IntrusionSet;
+                    let currHistory = [];
+                    console.log(pattern);
                     this.diff = JSON.stringify(data.attributes.previous_versions);
-                    super.getHistory(pattern, this.historyArr);
+                    super.getHistory(pattern, currHistory);
                     super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
+                    this.historyArr = Array.from(new Set(currHistory));
                     this.history = !this.history;
                     this.historyFound = true;
                    }, (error) => {
@@ -252,7 +260,6 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 if (this.editComponent) {
                     this.getAllAliases();
                 }
-                this.getCitations();
                 this.assignCitations();
                 this.intrusionSet.attributes.external_references.reverse();
                 this.aliasesToDisplay = this.intrusionSet.attributes.aliases.filter((h) => h !== this.intrusionSet.attributes.name);
@@ -274,30 +281,6 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
             this.intrusionSet.attributes.external_references[i].citation = '[[Citation: ' + this.intrusionSet.attributes.external_references[i].source_name + ']]';
             this.intrusionSet.attributes.external_references[i].citeref = '[[CiteRef::' + this.intrusionSet.attributes.external_references[i].source_name + ']]';
         }
-    }
-
-    public getCitations(): void {
-        let uri = Constance.MULTIPLES_URL;
-        let subscription =  super.getByUrl(uri).subscribe(
-            (data) => {
-                let extRefs = [];
-                for (let currObj of data) {
-                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
-                        extRefs = extRefs.concat(currObj.attributes.external_references);
-                    }
-                }
-                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
-            }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
     }
 
     public formatText(inputString): string {

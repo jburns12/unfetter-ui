@@ -114,7 +114,7 @@ constructor(
    }
 
    public findRelationships(): void {
-       let filter = { 'stix.target_ref': this.tool.id };
+       let filter = { 'stix.source_ref': this.tool.id };
        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
        let subscription =  super.getByUrl(uri).subscribe(
            (data) => {
@@ -122,7 +122,7 @@ constructor(
                let i = 0;
                target.forEach((relationship: Relationship) => {
                    if (relationship.attributes.relationship_type === 'uses') {
-                       let tech = this.techniques.filter((h) => h.id === relationship.attributes.source_ref);
+                       let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
                        if (tech.length > 0) {
                            this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
                            this.origRels.push(relationship);

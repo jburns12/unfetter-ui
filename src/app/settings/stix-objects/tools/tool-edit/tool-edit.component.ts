@@ -125,7 +125,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         for (let technique of this.addedTechniques) {
             let currTechnique = this.techniques.filter((h) => h.name === technique.name);
             if (currTechnique.length > 0) {
-                this.saveRelationship(currTechnique[0].id, id, technique.description, technique.relationship);
+                this.saveRelationship(id, currTechnique[0].id, technique.description, technique.relationship);
             }
             console.log(technique.relationship);
             console.log(this.origRels);
@@ -247,32 +247,6 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
-    public loadRelationships(filter: any): void {
-        let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
-        let sub =  super.getByUrl( encodeURI(url) ).subscribe(
-        (data) => {
-            this.savedRelationships = data as Relationship[];
-            this.savedRelationships.forEach(
-                (relationship) => {
-                    if (filter['stix.source_ref']) {
-                        this.loadStixObject(relationship.attributes.target_ref);
-                    } else {
-                        this.loadStixObject(relationship.attributes.source_ref);
-                    }
-                }
-            );
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (sub) {
-                    sub.unsubscribe();
-                }
-            }
-        );
-    }
-
     public checkAddedTechniques(): void {
         for (let index in this.currTechniques) {
             this.currTechniques[index] = this.techniques;
@@ -287,19 +261,6 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
 
     public found(list: any[], object: any): any {
         return list.find( (entry) => { return entry.id === object.id; } );
-    }
-
-    public loadStixObject(id: string): void {
-
-        if (id.indexOf('indicator') >= 0) {
-            this.loadObject(Constance.INDICATOR_URL, id, this.indicators);
-        } else if (id.indexOf('attack-pattern') >= 0) {
-            this.loadObject(Constance.ATTACK_PATTERN_URL, id, this.attackPatterns);
-        } else if (id.indexOf('course-of-action') >= 0) {
-            this.loadObject(Constance.COURSE_OF_ACTION_URL, id, this.courseOfActions);
-        } else if (id.indexOf('intrusion-set') >= 0) {
-            this.loadObject(Constance.INTRUSION_SET_URL, id, this.intrusionSets);
-        }
     }
 
     public removeRelationships(id: string): void {

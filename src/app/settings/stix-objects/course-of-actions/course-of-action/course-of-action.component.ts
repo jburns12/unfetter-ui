@@ -67,8 +67,6 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                 (data) => {
                     let pattern = data as CourseOfAction;
                     let currHistory = [];
-                    console.log(pattern);
-                    this.diff = JSON.stringify(data.attributes.previous_versions);
                     super.getHistory(pattern, currHistory);
                     super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
                     this.historyArr = Array.from(new Set(currHistory));

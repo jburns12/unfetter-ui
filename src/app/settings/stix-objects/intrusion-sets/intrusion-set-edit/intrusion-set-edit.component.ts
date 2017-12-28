@@ -104,7 +104,6 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
          this.addAliasesToIntrusionSet();
          this.removeCitationsExtRefs();
          this.intrusionSet.attributes.external_references.reverse();
-         console.log(this.intrusionSet);
          const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

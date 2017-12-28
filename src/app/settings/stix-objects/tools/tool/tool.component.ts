@@ -21,7 +21,9 @@ public aliases: any = [];
 public addedTechniques: any = [];
 public currTechniques: any = [];
 public techniques: any = [];
+public groups: any = [];
 public origRels: any = [];
+public allRels: any = [];
 public diff: any;
 public history: boolean = false;
 public historyArr: string[] = [];
@@ -73,7 +75,7 @@ constructor(
                    console.log(pattern);
                    this.diff = JSON.stringify(data.attributes.previous_versions);
                    super.getHistory(pattern, currHistory);
-                   super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
+                   super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
                    this.historyArr = Array.from(new Set(currHistory));
                    this.history = !this.history;
                    this.historyFound = true;
@@ -92,6 +94,25 @@ constructor(
        }
    }
 
+   public getGroups(): void {
+       let subscription =  super.getByUrl(Constance.INTRUSION_SET_URL).subscribe(
+           (data) => {
+               let target = data as IntrusionSet[];
+               target.forEach((intrusionSet: IntrusionSet) => {
+                   this.groups.push({'name': intrusionSet.attributes.name, 'id': intrusionSet.id});
+               });
+              }, (error) => {
+               // handle errors here
+                console.log('error ' + error);
+           }, () => {
+               // prevent memory links
+               if (subscription) {
+                   subscription.unsubscribe();
+               }
+           }
+       );
+   }
+
    public findRelationships(): void {
        let filter = { 'stix.target_ref': this.tool.id };
        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
@@ -105,6 +126,9 @@ constructor(
                        if (tech.length > 0) {
                            this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
                            this.origRels.push(relationship);
+                           let relCopy = Object.assign({}, relationship);
+                           relCopy.attributes.name = tech[0].name;
+                           this.allRels.push(relCopy);
                            this.currTechniques[i] = this.techniques;
                            for (let index in this.currTechniques) {
                                for (let j in this.addedTechniques) {
@@ -121,6 +145,28 @@ constructor(
                // prevent memory links
                if (subscription) {
                    subscription.unsubscribe();
+               }
+           }
+       );
+       let groupsFilter = { 'stix.target_ref': this.tool.id };
+       let groupsUri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(groupsFilter) + '&previousversions=true&metaproperties=true';
+       let groupsSubscription =  super.getByUrl(groupsUri).subscribe(
+           (data) => {
+               let target = data as Relationship[];
+               target.forEach((relationship: Relationship) => {
+                   let group = this.groups.filter((h) => h.id === relationship.attributes.source_ref);
+                   if (group.length > 0) {
+                       relationship.attributes.name = group[0].name;
+                       this.allRels.push(relationship);
+                   }
+                 });
+              }, (error) => {
+               // handle errors here
+                console.log('error ' + error);
+           }, () => {
+               // prevent memory links
+               if (groupsSubscription) {
+                   groupsSubscription.unsubscribe();
                }
            }
        );
@@ -192,6 +238,7 @@ constructor(
            this.tool.attributes.external_references.reverse();
            this.aliasesToDisplay = this.tool.attributes.x_mitre_aliases.filter((h) => h !== this.tool.attributes.name);
            this.getTechniques(false);
+           this.getGroups();
          }, (error) => {
                  // handle errors here
                   console.log('error ' + error);

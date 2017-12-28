@@ -24,7 +24,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public softwares: any = [];
     public editComponent: boolean = false;
     public origRels: any = [];
-    public diff: any;
+    public allRels: any = [];
     public history: boolean = false;
     public historyArr: string[] = [];
     public relHistoryArr: any = [];
@@ -52,7 +52,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public trackByFunction(index: number, obj: any): any {
       return index;
     }
-    
+
     public editButtonClicked(): void {
         const link = ['../edit', this.intrusionSet.id];
         super.gotoView(link);
@@ -93,10 +93,8 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 (data) => {
                     let pattern = data as IntrusionSet;
                     let currHistory = [];
-                    console.log(pattern);
-                    this.diff = JSON.stringify(data.attributes.previous_versions);
                     super.getHistory(pattern, currHistory);
-                    super.getRelHistory(pattern, this.relHistoryArr, this.origRels);
+                    super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
                     this.historyArr = Array.from(new Set(currHistory));
                     this.history = !this.history;
                     this.historyFound = true;
@@ -143,6 +141,9 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                             if (tech.length > 0) {
                                 this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
                                 this.origRels.push(relationship);
+                                let relCopy = Object.assign({}, relationship);
+                                relCopy.attributes.name = tech[0].name;
+                                this.allRels.push(relCopy);
                                 this.currTechniques[i] = this.techniques;
                                 for (let index in this.currTechniques) {
                                     for (let j in this.addedTechniques) {
@@ -157,6 +158,9 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                             let sw = this.softwares.filter((h) => h.id === relationship.attributes.target_ref);
                             if (sw.length > 0) {
                                 this.origRels.push(relationship);
+                                let relCopy = Object.assign({}, relationship);
+                                relCopy.attributes.name = sw[0].name;
+                                this.allRels.push(relCopy);
                                 this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
                                 this.currSoftwares[i] = this.softwares;
                                 for (let index in this.currSoftwares) {
@@ -238,7 +242,6 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 if (!create) {
                     this.findRelationships(false);
                 }
-                console.log(this.softwares);
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

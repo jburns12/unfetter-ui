@@ -359,27 +359,27 @@ export class BaseStixComponent {
             console.log(currDiff);
             console.log(revDiff);
             for (let currArr of currDiff) {
-               this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId);
+               this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId.name);
             }
             for (let i = 0; ( i + 1 ) < pattern.attributes.previous_versions.length; i++) {
                 let currVerDiff = odiff(pattern.attributes.previous_versions[i + 1], pattern.attributes.previous_versions[i]);
                 let revVerDiff = odiff(pattern.attributes.previous_versions[i], pattern.attributes.previous_versions[i + 1]);
                 for (let currArr of currVerDiff) {
-                   this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId);
+                   this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId.name);
                 }
             }
             if (pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId !== undefined) {
-                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.id + ' CREATED by ' + pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId);
+                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED by ' + pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId.name);
             } else {
-                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.id + ' CREATED');
+                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED');
             }
             historyArr.reverse();
             console.log(historyArr);
         } else {
             if (pattern.attributes.mitreId !== undefined) {
-                historyArr.push(pattern.attributes.created + ':  ' + pattern.id + ' CREATED by ' + pattern.attributes.mitreId);
+                historyArr.push(pattern.attributes.created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED by ' + pattern.attributes.mitreId.name);
             } else {
-                historyArr.push(pattern.attributes.created + ':  ' + pattern.id + ' CREATED');
+                historyArr.push(pattern.attributes.created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED');
             }
         }
     }
@@ -391,18 +391,18 @@ export class BaseStixComponent {
                 let createdHash = {};
                 createdHash['date'] = currRel.created;
                 createdHash['action'] = 'CREATED';
-                createdHash['ref'] = currRel.ref;
+                createdHash['ref'] = currRel.name;
                 if (currRel.created_id !== undefined) {
-                    createdHash['id'] = currRel.created_id;
+                    createdHash['id'] = currRel.created_id.name;
                 }
                 dateArr.push(createdHash);
 
                 let deletedHash = {};
                 deletedHash['date'] = currRel.deleted;
                 deletedHash['action'] = 'DELETED';
-                deletedHash['ref'] = currRel.ref;
+                deletedHash['ref'] = currRel.name;
                 if (currRel.deleted_id !== undefined) {
-                    deletedHash['id'] = currRel.deleted_id;
+                    deletedHash['id'] = currRel.deleted_id.name;
                 }
                 dateArr.push(deletedHash);
             }
@@ -413,22 +413,22 @@ export class BaseStixComponent {
             relHash['date'] = rel.attributes.created;
             relHash['action'] = 'CREATED';
             if (rel.attributes.mitreId !== undefined) {
-                relHash['id'] = rel.attributes.mitreId;
+                relHash['id'] = rel.attributes.mitreId.name;
             }
 
             if (rel.attributes.target_ref === pattern.id) {
-                relHash['ref'] = rel.attributes.source_ref;
+                relHash['ref'] = rel.attributes.name;
             } else {
-                relHash['ref'] = rel.attributes.target_ref;
+                relHash['ref'] = rel.attributes.name;
             }
             dateArr.push(relHash);
         }
         dateArr = dateArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
         for (let currArr of dateArr) {
             if (currArr.id !== undefined) {
-                relHistoryArr.push(currArr.date + ':  ' + 'Relationship with ' + currArr.ref + ' ' + currArr.action + ' by ' + currArr.id);
+                relHistoryArr.push(currArr.date + ':  ' + 'Relationship with "' + currArr.ref + '" ' + currArr.action + ' by ' + currArr.id);
             } else {
-                relHistoryArr.push(currArr.date + ':  ' + 'Relationship with ' + currArr.ref + ' ' + currArr.action);
+                relHistoryArr.push(currArr.date + ':  ' + 'Relationship with "' + currArr.ref + '" ' + currArr.action);
             }
         }
     }

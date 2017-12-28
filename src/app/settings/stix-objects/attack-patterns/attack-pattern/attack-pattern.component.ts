@@ -25,7 +25,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public coaId: string = '';
     public target: any;
     public history: boolean = false;
-    public historyArr: string[];
+    public historyArr: any[];
     public relHistoryArr: any = [];
     public historyFound: boolean = false;
     public diff: any;

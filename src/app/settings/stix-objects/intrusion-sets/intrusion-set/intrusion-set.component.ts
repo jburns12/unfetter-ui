@@ -26,7 +26,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public origRels: any = [];
     public allRels: any = [];
     public history: boolean = false;
-    public historyArr: string[] = [];
+    public historyArr: any[] = [];
     public relHistoryArr: any = [];
     public historyFound: boolean = false;
     public allCitations: any = [];

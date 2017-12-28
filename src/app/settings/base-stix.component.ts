@@ -287,15 +287,15 @@ export class BaseStixComponent {
         return null;
     }
 
-    public getHistoryLine(currArr: any, historyArr: string[], modDate: any, revDiff: any, mitreId: string): void {
+    public getHistoryLine(currArr: any, historyArr: any[], modDate: any, revDiff: any, mitreId: string): void {
         if (currArr.path[0] !== 'previous_versions' && currArr.path[0] !== 'modified' && currArr.path[0] !== 'deletedRelationships' && currArr.path[0] !== 'mitreId' && currArr.path[0] !== 'collection') {
             switch (currArr.type) {
                 case 'add':
                     for (let val of currArr.vals) {
                         if (mitreId !== undefined) {
-                            historyArr.push(modDate + ':  ' + JSON.stringify(val) + ' ADDED to "' + currArr.path[0] + '" by ' + mitreId);
+                            historyArr.push({'date': modDate, 'path2': '', 'left': '', 'right': JSON.stringify(val), 'type': ' ADDED to ', 'path': currArr.path[0], 'name': ' by ' + mitreId});
                         } else {
-                            historyArr.push(modDate + ':  ' + JSON.stringify(val) + ' ADDED to "' + currArr.path[0] + '"');
+                            historyArr.push({'date': modDate, 'path2': '', 'left': '', 'right': JSON.stringify(val), 'type': ' ADDED to ', 'path': currArr.path[0], 'name': ''});
                         }
                     }
                     break;
@@ -303,9 +303,9 @@ export class BaseStixComponent {
                     let removedItems = this.getRemovedItems(currArr.path[0], revDiff);
                     for (let removedItem of removedItems) {
                         if (mitreId !== undefined) {
-                            historyArr.push(modDate + ':  Value ' + JSON.stringify(removedItem) + ' DELETED from "' + currArr.path[0] + '" by ' + mitreId);
+                            historyArr.push({'date': modDate, 'path2': '', 'left': JSON.stringify(removedItem), 'right': '', 'type': ' value DELETED', 'path': currArr.path[0], 'name': ' by ' + mitreId});
                         } else {
-                            historyArr.push(modDate + ':  Value ' + JSON.stringify(removedItem) + ' DELETED from "' + currArr.path[0] + '"');
+                            historyArr.push({'date': modDate, 'path2': '', 'left': JSON.stringify(removedItem), 'right': '', 'type': ' value DELETED', 'path': currArr.path[0], 'name': ''});
                         }
                     }
                     break;
@@ -314,36 +314,36 @@ export class BaseStixComponent {
                     if (origVal && (currArr.val !== undefined)) {
                         if (currArr.path[2]) {
                             if (mitreId !== undefined) {
-                                historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val) + ' by ' + mitreId);
+                                historyArr.push({'date': modDate, 'path2': currArr.path[2], 'path': ' in ' + currArr.path[0], 'type': ' CHANGED', 'left': JSON.stringify(origVal), 'right': JSON.stringify(currArr.val), 'name': ' by ' + mitreId});
                             } else {
-                                historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val));
+                                historyArr.push({'date': modDate, 'path2': currArr.path[2], 'path': ' in ' + currArr.path[0], 'type': ' CHANGED', 'left': JSON.stringify(origVal), 'right': JSON.stringify(currArr.val), 'name': ''});
                             }
                         } else {
                             if (mitreId !== undefined) {
-                                historyArr.push(modDate + ':  "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val) + ' by ' + mitreId);
+                                historyArr.push({'date': modDate, 'path2': '', 'path': currArr.path[0], 'type': ' CHANGED', 'left': JSON.stringify(origVal), 'right': JSON.stringify(currArr.val), 'name': ' by ' + mitreId});
                             } else {
-                                historyArr.push(modDate + ':  "' + currArr.path[0] + '" CHANGED from ' + JSON.stringify(origVal) + ' to ' + JSON.stringify(currArr.val));
+                                historyArr.push({'date': modDate, 'path2': '', 'path': currArr.path[0], 'type': ' CHANGED', 'left': JSON.stringify(origVal), 'right': JSON.stringify(currArr.val), 'name': ''});
                             }
                         }
                     } else if (origVal && (currArr.val === undefined)) {
                         if (currArr.path[2] !== undefined) {
                             if (mitreId !== undefined) {
-                                historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" DELETED by ' + mitreId);
+                                historyArr.push({'date': modDate, 'path2': currArr.path[2], 'path': ' in ' + currArr.path[0], 'type': ' DELETED', 'name': ' by ' + mitreId});
                             } else {
-                                historyArr.push(modDate + ':  "' + currArr.path[2] + '" in "' + currArr.path[0] + '" DELETED');
+                                historyArr.push({'date': modDate, 'path2': currArr.path[2], 'path': ' in ' + currArr.path[0], 'type': ' DELETED', 'name': ''});
                             }
                         } else {
                             if (mitreId !== undefined) {
-                                historyArr.push(modDate + ':  "' + currArr.path[0] + '" DELETED by ' + mitreId);
+                                historyArr.push({'date': modDate, 'path2': '', 'path': currArr.path[0], 'type': ' DELETED', 'name': ' by ' + mitreId});
                             } else {
-                                historyArr.push(modDate + ':  "' + currArr.path[0] + '" DELETED');
+                                historyArr.push({'date': modDate, 'path2': '', 'path': currArr.path[0], 'type': ' DELETED', 'name': ''});
                             }
                         }
                     } else {
                         if (mitreId !== undefined) {
-                            historyArr.push(modDate + ':  "' + currArr.path[0] + '" CHANGED to ' + JSON.stringify(currArr.val) + ' by ' + mitreId);
+                            historyArr.push({'date': modDate, 'path2': '', 'path': currArr.path[0], 'type': ' CHANGED', 'left': '', 'right': JSON.stringify(currArr.val), 'name': ' by ' + mitreId});
                         } else {
-                            historyArr.push(modDate + ':  "' + currArr.path[0] + '" CHANGED to ' + JSON.stringify(currArr.val));
+                            historyArr.push({'date': modDate, 'path2': '', 'path': currArr.path[0], 'type': ' CHANGED', 'left': '', 'right': JSON.stringify(currArr.val), 'name': ''});
                         }
                     }
                     break;
@@ -351,8 +351,7 @@ export class BaseStixComponent {
         }
     }
 
-    public getHistory(pattern: any, historyArr: string[]): void {
-        console.log(pattern);
+    public getHistory(pattern: any, historyArr: any[]): void {
         if (pattern.attributes.previous_versions && (pattern.attributes.previous_versions.length > 0) ) {
             let currDiff = odiff(pattern.attributes.previous_versions[0], pattern.attributes);
             let revDiff = odiff(pattern.attributes, pattern.attributes.previous_versions[0]);
@@ -369,17 +368,17 @@ export class BaseStixComponent {
                 }
             }
             if (pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId !== undefined) {
-                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED by ' + pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId.name);
+                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ' by ' + pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId.name});
             } else {
-                historyArr.push(pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED');
+                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'path2': '',  'path': pattern.attributes.name, 'type': ' CREATED', 'name': ''});
             }
             historyArr.reverse();
             console.log(historyArr);
         } else {
             if (pattern.attributes.mitreId !== undefined) {
-                historyArr.push(pattern.attributes.created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED by ' + pattern.attributes.mitreId.name);
+                historyArr.push({'date': pattern.attributes.created, 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ' by ' + pattern.attributes.mitreId.name});
             } else {
-                historyArr.push(pattern.attributes.created + ':  ' + pattern.type + ' "' + pattern.attributes.name + '" CREATED');
+                historyArr.push({'date': pattern.attributes.created, 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ''});
             }
         }
     }

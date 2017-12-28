@@ -11,6 +11,7 @@ import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
 import { StixRoutingModule } from './stix-routing.module';
 import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
+import { DiffMatchPatchModule } from 'ng-diff-match-patch';
 
 import {
   AttackPatternListComponent, AttackPatternsHomeComponent,
@@ -74,7 +75,8 @@ import { GlobalModule } from '../global/global.module';
       AccordionModule,
       DataListModule,
       StixRoutingModule,
-      GlobalModule
+      GlobalModule,
+      DiffMatchPatchModule
   ],
   declarations: [
     // Components / Directives/ Pipes
@@ -97,7 +99,7 @@ import { GlobalModule } from '../global/global.module';
     CourseOfActionComponent,
 
     CitationsHomeComponent,
-    
+
     SightingHomeComponent,
     SightingListComponent,
     SightingNewComponent,

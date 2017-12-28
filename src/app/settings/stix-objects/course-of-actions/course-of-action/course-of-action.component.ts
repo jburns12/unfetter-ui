@@ -18,7 +18,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
     public showLabels = true;
     public showExternalReferences = true;
     public history: boolean = false;
-    public historyArr: string[] = [];
+    public historyArr: any[] = [];
     public relHistoryArr: any = [];
     public historyFound: boolean = false;
     public diff: any;

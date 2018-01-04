@@ -1,4 +1,73 @@
 <br>
+<div class="row">
+    <div class="col-md-12">
+              <div *ngIf="addNewMessage" class="alert alert-info">{{addNewMessage}}</div>
+                    <div *ngIf="!addCitation" class="button-row">
+                          <a class=" " mat-raised-button (click)="createNewCitation()"><i class="material-icons">add</i> ADD NEW REFERENCE</a>
+                    </div>
+                    <mat-card *ngIf="addCitation" style="margin: 10px 0px;">
+                          <mat-card-content>
+                              <h3>Create Reference</h3>
+                              <div class="row">
+                                  <div class="col-md-4">
+                                      <mat-input-container class="full-width">
+                                          <input matInput required placeholder="Key" [(ngModel)]="newCitation.key" value="{{newCitation.key}}">
+                                      </mat-input-container>
+                                  </div>
+                                  <div class="col-md-12">
+                                      <mat-input-container class="full-width">
+                                          <input matInput placeholder="URL" [(ngModel)]="newCitation.url" value="{{newCitation.url}}">
+                                      </mat-input-container>
+                                  </div>
+                                  <div class="col-md-12">
+                                      <mat-input-container class="full-width">
+                                          <input matInput required placeholder="Authors" [(ngModel)]="newCitation.authors" value="{{newCitation.authors}}">
+                                      </mat-input-container>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <mat-form-field style="width: auto;">
+                                        <mat-select name="month" [(ngModel)]="newCitation.month" placeholder="Month" class="full-width">
+                                          <mat-option *ngFor="let month of months" [value]="month">
+                                            <span>{{ month }}</span>
+                                          </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-md-4">
+                                      <mat-input-container class="full-width">
+                                          <input matInput type="number" [formControl]="rateControl" placeholder="Day" [(ngModel)]="newCitation.day" value="{{newCitation.day}}">
+                                          <mat-error>Please enter a value between 1 and 31.</mat-error>
+                                      </mat-input-container>
+                                  </div>
+                                  <div class="col-md-4">
+                                      <mat-input-container class="full-width">
+                                          <input matInput type="number" [formControl]="yearControl" placeholder="Year" [(ngModel)]="newCitation.year" value="{{newCitation.year}}">
+                                          <mat-error>Please enter a valid year.</mat-error>
+                                      </mat-input-container>
+                                  </div>
+                                  <div class="col-md-12">
+                                      <mat-input-container class="full-width">
+                                          <input matInput placeholder="Title" [(ngModel)]="newCitation.title" value="{{newCitation.title}}">
+                                      </mat-input-container>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <mat-form-field>
+                                        <input #startDateInput matInput required [(ngModel)]="newCitation.retrieved" [matDatepicker]="startDatePicker" placeholder="Retrieved"/>
+                                        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #startDatePicker></mat-datepicker>
+                                    </mat-form-field>
+                                  </div>
+                                </div>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <div class="button-row">
+                                    <a class="" mat-raised-button (click)="addCreatedCitation()" [disabled]="!rateControl.valid || !yearControl.valid || !newCitation.key || !newCitation.authors || !newCitation.retrieved"><i class="material-icons">save</i> SAVE</a>
+                                </div>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </div>
+
 <table class="table table-hover">
     <thead>
         <tr>

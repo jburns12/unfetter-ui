@@ -95,8 +95,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                         extRefs = extRefs.concat(currObj.attributes.external_references);
                     }
                 }
-                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                this.allCitations = this.allCitations.concat(extRefs);
+                this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -165,6 +166,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                               }
                           }
                           this.tactics.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                      }
+                      if (currRes.attributes.configKey === 'references') {
+                          console.log(this.allCitations);
+                          this.allCitations = this.allCitations.concat(currRes.attributes.configValue);
+                          this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                          this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
                       }
                   }
               }

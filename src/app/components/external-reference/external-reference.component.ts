@@ -50,6 +50,6 @@ export class ExternalReferenceComponent {
             let filterVal = citationStr.toLowerCase();
             return this.citations.filter((h) => h.source_name.toLowerCase().startsWith(filterVal));
         }
-        return this.citations;
+        return [];
     }
 }

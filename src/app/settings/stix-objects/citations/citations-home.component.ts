@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Constance } from '../../../utils/constance';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,12 +17,18 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
     public addNewCitation: string = '';
     public addCitation: boolean = false;
     public addNewMessage: boolean = false;
+    public addNewMessageStr: string = '';
     public newCitation: any = {};
+    public citationToEdit: any;
+    public allConfigData: any;
     public rateControl: any;
     public yearControl: any;
     public months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     public foundReferences: any;
     public configData: any;
+    public stixData: any;
+    public editCitationMode: boolean = false;
+    public citationKey: string;
 
     constructor(
         public stixService: StixService,
@@ -75,8 +81,6 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
     }
 
     public addCreatedCitation(): void {
-        console.log(this.newCitation);
-
         let refToAdd = {};
 
         refToAdd['source_name'] = this.newCitation.key;
@@ -84,7 +88,6 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
             refToAdd['url'] = this.newCitation.url;
         }
         refToAdd['description'] = this.getRefDescription();
-        console.log(refToAdd);
         if (this.foundReferences !== undefined) {
             this.addReferenceToConfig(refToAdd);
         }
@@ -100,11 +103,10 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
         this.stixService.url = Constance.CONFIG_URL;
         let subscription = super.save(this.foundReferences).subscribe(
              (data) => {
-                 console.log(data);
                  this.stixService.url = Constance.MULTIPLES_URL;
                  this.addCitation = false;
                  this.loadCitations();
-                 this.addNewMessage = 'Added reference ' + refToAdd.source_name;
+                 this.addNewMessageStr = 'Added reference ' + refToAdd.source_name;
              }, (error) => {
                  // handle errors here
                  console.log('error ' + error);
@@ -120,17 +122,16 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
     public createReferencesInConfig(refToAdd): void {
         let newConfig = {};
         newConfig['attributes'] = {};
-        newConfig.attributes['configKey'] = 'references';
-        newConfig.attributes['configValue'] = [];
-        newConfig.attributes['configValue'].push(refToAdd);
+        newConfig['attributes']['configKey'] = 'references';
+        newConfig['attributes']['configValue'] = [];
+        newConfig['attributes']['configValue'].push(refToAdd);
         newConfig['url'] = Constance.CONFIG_URL;
 
         let sub = super.create(newConfig).subscribe(
            (data) => {
-                console.log(data);
                 this.addCitation = false;
                 this.loadCitations();
-                this.addNewMessage = 'Added reference ' + refToAdd.source_name;
+                this.addNewMessageStr = 'Added reference ' + refToAdd.source_name;
            }, (error) => {
                // handle errors here
                 console.log('error ' + error);
@@ -143,9 +144,81 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
        );
     }
 
+    public cancelButtonClicked(): void {
+        this.addCitation = false;
+    }
+
+    public editCancelButtonClicked(): void {
+        this.editCitationMode = false;
+    }
+
+    public saveEditedCitation(): void {
+        for (let currObj in this.stixData) {
+            if (this.stixData[currObj].attributes.external_references) {
+                for (let i in this.stixData[currObj].attributes.external_references) {
+                    if (this.stixData[currObj].attributes.external_references[i].source_name === this.citationKey) {
+                        this.stixData[currObj].attributes.external_references[i] = this.citationToEdit;
+                        this.stixService.url = 'api/' + this.stixData[currObj].type + 's';
+                        console.log(this.stixData[currObj]);
+                        let subscription = super.save(this.stixData[currObj]).subscribe(
+                             (data) => {
+                             }, (error) => {
+                                 // handle errors here
+                                 console.log('error ' + error);
+                             }, () => {
+                                 // prevent memory links
+                                 if (subscription) {
+                                     subscription.unsubscribe();
+                                 }
+                             }
+                         );
+                    }
+                }
+            }
+        }
+        for (let i in this.allConfigData) {
+            if (this.allConfigData[i].attributes.configKey === 'references') {
+                for (let j in this.allConfigData[i].attributes.configValue) {
+                    if (this.allConfigData[i].attributes.configValue[j].source_name === this.citationKey) {
+                        this.allConfigData[i].attributes.configValue[j] = this.citationToEdit;
+                    }
+                }
+                console.log(this.allConfigData[i]);
+                this.allConfigData[i].id = this.allConfigData[i].attributes.id;
+                this.stixService.url = Constance.CONFIG_URL;
+                let subscription = super.save(this.allConfigData[i]).subscribe(
+                    (data) => {
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+        }
+        this.editCitationMode = false;
+        this.stixService.url = Constance.MULTIPLES_URL;
+        this.loadCitations();
+        this.addNewMessageStr = 'Edited reference ' + this.citationKey;
+        this.addNewMessage = true;
+    }
+
+    public editCitation(citation: any): void {
+        this.editCitationMode = true;
+        this.addNewMessage = false;
+        this.citationToEdit = Object.assign({}, citation);
+        this.citationKey = citation.source_name;
+        window.scrollTo(0, 0);
+    }
+
     public loadCitations(): void {
         let subscription = super.load().subscribe(
             (data) => {
+                this.stixData = data;
                 let extRefs = [];
                 for (let currObj of data) {
                     if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
@@ -156,17 +229,16 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                 let subscription =  super.getByUrl(uri).subscribe(
                     (data) => {
                         if (data) {
+                            this.allConfigData = data;
                             for (let i = 0; i < data.length; ++i) {
-                                console.log(data[i]);
                                 if (data[i].attributes.configKey === 'references') {
                                     this.foundReferences = data[i];
                                     extRefs = extRefs.concat(data[i].attributes.configValue);
-                                    extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                                    this.citations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
-                                    console.log(this.citations);
                                 }
                             }
                         }
+                        extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                        this.citations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
                     }, (error) => {
                         // handle errors here
                          console.log('error ' + error);
@@ -193,5 +265,6 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
         this.addCitation = true;
         this.newCitation = {};
         this.addNewMessage = false;
+        this.addNewMessageStr = '';
     }
 }

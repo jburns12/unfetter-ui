@@ -1,7 +1,7 @@
 <br>
 <div class="row">
     <div class="col-md-12">
-              <div *ngIf="addNewMessage" class="alert alert-info">{{addNewMessage}}</div>
+              <div *ngIf="addNewMessage" class="alert alert-info">{{addNewMessageStr}}</div>
                     <div *ngIf="!addCitation" class="button-row">
                           <a class=" " mat-raised-button (click)="createNewCitation()"><i class="material-icons">add</i> ADD NEW REFERENCE</a>
                     </div>
@@ -62,22 +62,58 @@
                             <mat-card-actions>
                                 <div class="button-row">
                                     <a class="" mat-raised-button (click)="addCreatedCitation()" [disabled]="!rateControl.valid || !yearControl.valid || !newCitation.key || !newCitation.authors || !newCitation.retrieved"><i class="material-icons">save</i> SAVE</a>
+                                    <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
                                 </div>
                             </mat-card-actions>
                         </mat-card>
                     </div>
                 </div>
+<br>
+    <div class="row">
+        <div class="col-md-12">
+            <mat-card *ngIf="editCitationMode" style="margin: 10px 0px;">
+                <mat-card-content>
+                    <h3>Edit Reference</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <mat-input-container class="full-width">
+                                <input matInput placeholder="Name" [(ngModel)]="citationToEdit.source_name" value="{{citationToEdit.source_name}}">
+                            </mat-input-container>
+                        </div>
+                        <div class="col-md-12">
+                            <mat-input-container class="full-width">
+                                <textarea matInput matTextareaAutosize placeholder="Citation Text" [(ngModel)]="citationToEdit.description" value="{{citationToEdit.description}}"></textarea>
+                            </mat-input-container>
+                        </div>
+                        <div class="col-md-8">
+                            <mat-input-container class="full-width">
+                                <input matInput placeholder="URL" [(ngModel)]="citationToEdit.url" value="{{citationToEdit.url}}">
+                            </mat-input-container>
+                        </div>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <div class="button-row">
+                        <a class="" mat-raised-button (click)="saveEditedCitation()" [disabled]="!citationToEdit.source_name || !citationToEdit.description"><i class="material-icons">save</i> SAVE</a>
+                        <a class="" mat-raised-button (click)="editCancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                    </div>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+    </div>
 
 <table class="table table-hover">
     <thead>
         <tr>
+            <td></td>
             <td><h3>Name</h3></td>
-            <td><h3>Citation</h3></td>
+            <td><h3>Citation Text</h3></td>
             <td><h3>URL</h3></td>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let citation of citations">
+            <td><button class="" mat-raised-button (click)="editCitation(citation)"> Edit</button></td>
             <td>{{citation.source_name}}</td>
             <td>{{citation.description}}</td>
             <td><a href={{citation.url}}>{{citation.url}}</a></td>

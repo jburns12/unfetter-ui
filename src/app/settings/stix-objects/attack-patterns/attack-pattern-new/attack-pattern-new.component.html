@@ -33,7 +33,6 @@
                 </mat-input-container>
             </div>
         </div>
-        <external-reference [(model)]="courseOfAction" [(citations)]="allCitations"></external-reference>
         <div class="row">
             <div class="col-md-12">
                 <mat-input-container class="full-width">
@@ -170,7 +169,9 @@
                             </mat-card>
                     </div>
         </div><br>
-       <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>
+        <h4>External References</h4> 
+        <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
+        <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>
 
           <div class="row">
             <div class="col-md-12">

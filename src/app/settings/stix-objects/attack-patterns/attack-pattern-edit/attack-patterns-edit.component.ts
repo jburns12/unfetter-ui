@@ -23,6 +23,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public tacticConfig: string[] = [];
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exFil': false};
     public tactics: any = [];
+    public createNewOnly: boolean = true;
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -237,6 +238,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             ).sort().filter(Boolean);
         this.id = 'T' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
         console.log(this.id);
+    }
+
+    public getNewCitation(refToAdd) {
+        this.allCitations.push(refToAdd);
+        this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+        this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
 
     public tacticChange(tactics) {

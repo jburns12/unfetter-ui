@@ -254,10 +254,57 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         );
     }
 
+    public getCitationsAndContributors(): void {
+        let uri = Constance.MULTIPLES_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                let extRefs = [];
+                for (let currObj of data) {
+                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
+                        extRefs = extRefs.concat(currObj.attributes.external_references);
+                    }
+                    this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
+                }
+                let configUri = Constance.CONFIG_URL;
+                let subscription =  super.getByUrl(configUri).subscribe(
+                    (res) => {
+                        if (res && res.length) {
+                            for (let currRes of res) {
+                                if (currRes.attributes.configKey === 'references') {
+                                  extRefs = extRefs.concat(currRes.attributes.configValue);
+                                }
+                            }
+                        }
+                        extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                        this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                    }, (error) => {
+                        // handle errors here
+                         console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+                this.contributors = this.contributors.filter((elem, index, self) => self.findIndex((t) => t === elem) === index).sort().filter(Boolean);
+            }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
     public loadIntrusionSet(): void {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.intrusionSet = new IntrusionSet(data);
+                this.getCitationsAndContributors();
                 this.getTechniques(false);
                 this.getSoftware(false);
                 if (this.editComponent) {

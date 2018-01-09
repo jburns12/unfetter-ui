@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input, Output, EventEmitter } from '@angular/core';
 import { Constance } from '../../../utils/constance';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -9,7 +9,8 @@ import { StixService } from '../../stix.service';
 
 @Component({
   selector: 'citations',
-  templateUrl: './citations-home.component.html'
+  templateUrl: './citations-home.component.html',
+  providers: [ StixService ]
 })
 
 export class CitationsHomeComponent extends BaseStixComponent implements OnInit {
@@ -29,6 +30,8 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
     public stixData: any;
     public editCitationMode: boolean = false;
     public citationKey: string;
+    @Input() public createNewOnly: boolean = false;
+    @Output() public createdNew: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
         public stixService: StixService,
@@ -39,7 +42,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
         public snackBar: MatSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = Constance.MULTIPLES_URL;
+        this.stixService.url = Constance.MULTIPLES_URL;
     }
 
     public ngOnInit() {
@@ -107,6 +110,8 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                  this.addCitation = false;
                  this.loadCitations();
                  this.addNewMessageStr = 'Added reference ' + refToAdd.source_name;
+                 this.addNewMessage = true;
+                 this.createdNew.emit(refToAdd);
              }, (error) => {
                  // handle errors here
                  console.log('error ' + error);
@@ -132,6 +137,8 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                 this.addCitation = false;
                 this.loadCitations();
                 this.addNewMessageStr = 'Added reference ' + refToAdd.source_name;
+                this.addNewMessage = true;
+                this.createdNew.emit(refToAdd);
            }, (error) => {
                // handle errors here
                 console.log('error ' + error);

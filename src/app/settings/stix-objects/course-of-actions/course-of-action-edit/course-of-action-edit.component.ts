@@ -11,7 +11,8 @@ import { CourseOfAction, ExternalReference, Label } from '../../../../models';
   templateUrl: './course-of-action-edit.component.html'
 })
 export class CourseOfActionEditComponent extends CourseOfActionComponent implements OnInit {
-
+    public createNewOnly: boolean = true;
+    
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -42,6 +43,12 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
                 }
             }
         );
+    }
+
+    public getNewCitation(refToAdd) {
+        this.allCitations.push(refToAdd);
+        this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+        this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
 
     public removeCitationsExtRefs(): void {

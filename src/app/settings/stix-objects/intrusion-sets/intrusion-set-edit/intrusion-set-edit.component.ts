@@ -32,6 +32,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public motivationCtrl: FormControl;
     public resourceLevelCtrl: FormControl;
     public editComponent: boolean = true;
+    public mitreId: any;
 
     public labels = [
         {label: 'activist'},
@@ -87,30 +88,36 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
 
-    public removeCitationsExtRefs(): void {
+    public getMitreId(): void {
         for (let i in this.intrusionSet.attributes.external_references) {
-            if ('citeButton' in this.intrusionSet.attributes.external_references[i]) {
-                delete this.intrusionSet.attributes.external_references[i].citeButton;
-            }
-            if ('citation' in this.intrusionSet.attributes.external_references[i]) {
-                delete this.intrusionSet.attributes.external_references[i].citation;
-            }
-            if ('citeref' in this.intrusionSet.attributes.external_references[i]) {
-                delete this.intrusionSet.attributes.external_references[i].citeref;
+            if (this.intrusionSet.attributes.external_references[i].external_id !== undefined) {
+                this.mitreId = Object.assign({}, this.intrusionSet.attributes.external_references[i]);
             }
         }
-        for (let i = 0; i < this.intrusionSet.attributes.external_references.length; i++) {
-            if (Object.keys(this.intrusionSet.attributes.external_references[i]).length === 0) {
-                this.intrusionSet.attributes.external_references.splice(i, 1);
+    }
+
+    public addExtRefs(): void {
+        let citationArr = super.matchCitations(this.intrusionSet.attributes.description);
+        if (this.mitreId !== undefined) {
+            this.intrusionSet.attributes.external_references.push(this.mitreId);
+        }
+        console.log(citationArr);
+        console.log(this.allCitations);
+        for (let name of citationArr) {
+            let citation = this.allCitations.find((p) => p.source_name === name);
+            console.log(citation);
+            if (citation !== undefined) {
+                this.intrusionSet.attributes.external_references.push(citation);
             }
         }
     }
 
     public saveIdentity(): void {
-         this.addAliasesToIntrusionSet();
-         this.removeCitationsExtRefs();
-         this.intrusionSet.attributes.external_references.reverse();
-         const sub = super.saveButtonClicked().subscribe(
+        this.getMitreId();
+        this.intrusionSet.attributes.external_references = [];
+        this.addExtRefs();
+        this.addAliasesToIntrusionSet();
+        const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();
                 this.createRelationships(data.id);
@@ -166,7 +173,15 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         relationship.attributes.source_ref = source_ref;
         relationship.attributes.target_ref = target_ref;
         if (description !== '') {
-          relationship.attributes.description = description;
+            relationship.attributes.external_references = [];
+            relationship.attributes.description = description;
+            let citationArr = super.matchCitations(relationship.attributes.description);
+            for (let name of citationArr) {
+                let citation = this.allCitations.find((p) => p.source_name === name);
+                if (citation !== undefined) {
+                    relationship.attributes.external_references.push(citation);
+                }
+            }
         }
         relationship.attributes.relationship_type = 'uses';
         if (id !== '') {

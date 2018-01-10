@@ -3,7 +3,7 @@
     <div class="col-md-12">
               <div *ngIf="addNewMessage" class="alert alert-info">{{addNewMessageStr}}</div>
                     <div *ngIf="!addCitation" class="button-row">
-                          <a class=" " mat-raised-button (click)="createNewCitation()"><i class="material-icons">add</i> ADD NEW REFERENCE</a>
+                          <a class=" " mat-raised-button (click)="createNewCitation()"><i class="material-icons">add</i> CREATE NEW REFERENCE</a>
                     </div>
                     <mat-card *ngIf="addCitation" style="margin: 10px 0px;">
                           <mat-card-content>

@@ -20,7 +20,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public attackPattern: AttackPattern = new AttackPattern();
     public mitigation: string = '';
     public courseOfAction: CourseOfAction = new CourseOfAction();
-    public mitigationExtRefs: any = [];
     public relationship: Relationship = new Relationship();
     public coaId: string = '';
     public target: any;
@@ -284,7 +283,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
                 }
                 this.mitigation = this.courseOfAction.attributes.description;
-                this.mitigationExtRefs = Object.assign({}, this.courseOfAction.attributes.external_references);
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -297,28 +295,20 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    public saveCourseOfAction(attackPatternId: string): void {
+    public saveCourseOfAction(attackPatternId: string, citations: any): void {
         if (this.coaId !== '') {
-            for (let i in this.courseOfAction.attributes.external_references) {
-                if ('citeButton' in this.courseOfAction.attributes.external_references[i]) {
-                    delete this.courseOfAction.attributes.external_references[i].citeButton;
-                }
-                if ('citation' in this.courseOfAction.attributes.external_references[i]) {
-                    delete this.courseOfAction.attributes.external_references[i].citation;
-                }
-                if ('citeref' in this.courseOfAction.attributes.external_references[i]) {
-                    delete this.courseOfAction.attributes.external_references[i].citeref;
-                }
-            }
-            for (let i = 0; i < this.courseOfAction.attributes.external_references.length; i++) {
-                if (Object.keys(this.courseOfAction.attributes.external_references[i]).length === 0) {
-                    this.courseOfAction.attributes.external_references.splice(i, 1);
-                }
-            }
-            console.log(this.mitigationExtRefs);
             console.log(this.courseOfAction.attributes.external_references);
-            if (this.mitigation !== this.courseOfAction.attributes.description || this.mitigationExtRefs !== this.courseOfAction.attributes.external_references) {
+            if (this.mitigation !== this.courseOfAction.attributes.description) {
                 this.courseOfAction.attributes.description = this.mitigation;
+                this.courseOfAction.attributes.external_references = [];
+                let citationArr = super.matchCitations(this.mitigation);
+                for (let name of citationArr) {
+                    let citation = citations.find((p) => p.source_name === name);
+                    console.log(citation);
+                    if (citation !== undefined) {
+                        this.courseOfAction.attributes.external_references.push(citation);
+                    }
+                }
                 this.stixService.url = Constance.COURSE_OF_ACTION_URL;
                 let subscription = super.save(this.courseOfAction).subscribe(
                     (data) => {
@@ -338,20 +328,13 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             if (this.mitigation !== '') {
                this.courseOfAction.attributes.description = this.mitigation;
                this.courseOfAction.attributes.name = this.attackPattern.attributes.name + ' Mitigation';
-               for (let i in this.courseOfAction.attributes.external_references) {
-                   if ('citeButton' in this.courseOfAction.attributes.external_references[i]) {
-                       delete this.courseOfAction.attributes.external_references[i].citeButton;
-                   }
-                   if ('citation' in this.courseOfAction.attributes.external_references[i]) {
-                       delete this.courseOfAction.attributes.external_references[i].citation;
-                   }
-                   if ('citeref' in this.courseOfAction.attributes.external_references[i]) {
-                       delete this.courseOfAction.attributes.external_references[i].citeref;
-                   }
-               }
-               for (let i = 0; i < this.courseOfAction.attributes.external_references.length; i++) {
-                   if (Object.keys(this.courseOfAction.attributes.external_references[i]).length === 0) {
-                       this.courseOfAction.attributes.external_references.splice(i, 1);
+               this.courseOfAction.attributes.external_references = [];
+               let citationArr = super.matchCitations(this.mitigation);
+               for (let name of citationArr) {
+                   let citation = citations.find((p) => p.source_name === name);
+                   console.log(citation);
+                   if (citation !== undefined) {
+                       this.courseOfAction.attributes.external_references.push(citation);
                    }
                }
                console.log(this.courseOfAction);

@@ -73,13 +73,12 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
     }
 
     public saveButtonClicked(): Observable<any> {
-        let idRef = new ExternalReference();
-        idRef.external_id = this.id;
-        idRef.source_name = 'mitre-attack';
-        this.intrusionSet.attributes.external_references.push(idRef);
+        this.mitreId = new ExternalReference();
+        this.mitreId.external_id = this.id;
+        this.mitreId.source_name = 'mitre-attack';
+        this.intrusionSet.attributes.external_references = [];
+        this.addExtRefs();
         this.addAliasesToIntrusionSet();
-        this.removeCitationsExtRefs();
-        this.intrusionSet.attributes.external_references.reverse();
         const observable = super.create(this.intrusionSet);
         const sub = observable
             .subscribe(

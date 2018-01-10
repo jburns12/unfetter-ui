@@ -11,6 +11,7 @@ import { CourseOfAction, ExternalReference, Label } from '../../../../models';
   templateUrl: './course-of-action-edit.component.html'
 })
 export class CourseOfActionEditComponent extends CourseOfActionComponent implements OnInit {
+    public createNewOnly: boolean = true;
 
     constructor(
         public stixService: StixService,
@@ -28,7 +29,7 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
     }
 
     public saveCourceOfAction(): void {
-       this.removeCitationsExtRefs();
+       this.addExtRefs();
        let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
                 this.location.back();
@@ -44,21 +45,20 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
         );
     }
 
-    public removeCitationsExtRefs(): void {
-        for (let i in this.courseOfAction.attributes.external_references) {
-            if ('citeButton' in this.courseOfAction.attributes.external_references[i]) {
-                delete this.courseOfAction.attributes.external_references[i].citeButton;
-            }
-            if ('citation' in this.courseOfAction.attributes.external_references[i]) {
-                delete this.courseOfAction.attributes.external_references[i].citation;
-            }
-            if ('citeref' in this.courseOfAction.attributes.external_references[i]) {
-                delete this.courseOfAction.attributes.external_references[i].citeref;
-            }
-        }
-        for (let i = 0; i < this.courseOfAction.attributes.external_references.length; i++) {
-            if (Object.keys(this.courseOfAction.attributes.external_references[i]).length === 0) {
-                this.courseOfAction.attributes.external_references.splice(i, 1);
+    public getNewCitation(refToAdd) {
+        this.allCitations.push(refToAdd);
+        this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+        this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+    }
+
+    public addExtRefs(): void {
+        this.courseOfAction.attributes.external_references = [];
+        let citationArr = super.matchCitations(this.courseOfAction.attributes.description);
+        for (let name of citationArr) {
+            let citation = this.allCitations.find((p) => p.source_name === name);
+            console.log(citation);
+            if (citation !== undefined) {
+                this.courseOfAction.attributes.external_references.push(citation);
             }
         }
     }

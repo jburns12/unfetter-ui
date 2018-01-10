@@ -32,6 +32,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public motivationCtrl: FormControl;
     public resourceLevelCtrl: FormControl;
     public editComponent: boolean = true;
+    public mitreId: any;
 
     public labels = [
         {label: 'activist'},
@@ -51,6 +52,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public threatActors: ThreatActor[] = [];
     public contributors: string[] = [];
     public allCitations: any = [];
+    public createNewOnly: boolean = true;
 
    constructor(
         public stixService: StixService,
@@ -67,7 +69,6 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public ngOnInit() {
        super.loadIntrusionSet();
-       this.getCitationsAndContributors();
     }
 
     public isChecked(label: string): boolean {
@@ -81,30 +82,42 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         this.intrusionSet.attributes.labels.push(label);
     }
 
-    public removeCitationsExtRefs(): void {
+    public getNewCitation(refToAdd) {
+        this.allCitations.push(refToAdd);
+        this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+        this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+    }
+
+    public getMitreId(): void {
         for (let i in this.intrusionSet.attributes.external_references) {
-            if ('citeButton' in this.intrusionSet.attributes.external_references[i]) {
-                delete this.intrusionSet.attributes.external_references[i].citeButton;
-            }
-            if ('citation' in this.intrusionSet.attributes.external_references[i]) {
-                delete this.intrusionSet.attributes.external_references[i].citation;
-            }
-            if ('citeref' in this.intrusionSet.attributes.external_references[i]) {
-                delete this.intrusionSet.attributes.external_references[i].citeref;
+            if (this.intrusionSet.attributes.external_references[i].external_id !== undefined) {
+                this.mitreId = Object.assign({}, this.intrusionSet.attributes.external_references[i]);
             }
         }
-        for (let i = 0; i < this.intrusionSet.attributes.external_references.length; i++) {
-            if (Object.keys(this.intrusionSet.attributes.external_references[i]).length === 0) {
-                this.intrusionSet.attributes.external_references.splice(i, 1);
+    }
+
+    public addExtRefs(): void {
+        let citationArr = super.matchCitations(this.intrusionSet.attributes.description);
+        if (this.mitreId !== undefined) {
+            this.intrusionSet.attributes.external_references.push(this.mitreId);
+        }
+        console.log(citationArr);
+        console.log(this.allCitations);
+        for (let name of citationArr) {
+            let citation = this.allCitations.find((p) => p.source_name === name);
+            console.log(citation);
+            if (citation !== undefined) {
+                this.intrusionSet.attributes.external_references.push(citation);
             }
         }
     }
 
     public saveIdentity(): void {
-         this.addAliasesToIntrusionSet();
-         this.removeCitationsExtRefs();
-         this.intrusionSet.attributes.external_references.reverse();
-         const sub = super.saveButtonClicked().subscribe(
+        this.getMitreId();
+        this.intrusionSet.attributes.external_references = [];
+        this.addExtRefs();
+        this.addAliasesToIntrusionSet();
+        const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();
                 this.createRelationships(data.id);
@@ -160,7 +173,15 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         relationship.attributes.source_ref = source_ref;
         relationship.attributes.target_ref = target_ref;
         if (description !== '') {
-          relationship.attributes.description = description;
+            relationship.attributes.external_references = [];
+            relationship.attributes.description = description;
+            let citationArr = super.matchCitations(relationship.attributes.description);
+            for (let name of citationArr) {
+                let citation = this.allCitations.find((p) => p.source_name === name);
+                if (citation !== undefined) {
+                    relationship.attributes.external_references.push(citation);
+                }
+            }
         }
         relationship.attributes.relationship_type = 'uses';
         if (id !== '') {
@@ -293,33 +314,6 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
             }
         }
         console.log(this.currSoftwares);
-    }
-
-    public getCitationsAndContributors(): void {
-        let uri = Constance.MULTIPLES_URL;
-        let subscription =  super.getByUrl(uri).subscribe(
-            (data) => {
-                let extRefs = [];
-                for (let currObj of data) {
-                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
-                        extRefs = extRefs.concat(currObj.attributes.external_references);
-                    }
-                    this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
-                }
-                this.contributors = this.contributors.filter((elem, index, self) => self.findIndex((t) => t === elem) === index).sort().filter(Boolean);
-                console.log(this.contributors);
-                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
-            }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
     }
 
     public addContributor(): void {

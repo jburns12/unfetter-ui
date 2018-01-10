@@ -148,6 +148,8 @@
                     </mat-card>
             </div>
 </div><br>
+<h4>External References</h4> 
+<citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
 <external-reference [(model)]="intrusionSet" [(citations)]="allCitations"></external-reference>
 
 <div class="row">

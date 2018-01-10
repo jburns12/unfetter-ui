@@ -230,6 +230,22 @@ export class BaseStixComponent {
         );
     }
 
+    public matchCitations(inputStr: string): any {
+        let re = /\[\[Citation: ([^\]\]]*)\]\]/g;
+        let citationArr = [];
+        let foundMatch;
+
+        do {
+            foundMatch = re.exec(inputStr);
+            if (foundMatch) {
+                citationArr.push(foundMatch[1]);
+                console.log(foundMatch[1]);
+            }
+        } while (foundMatch);
+
+        return citationArr;
+    }
+
     public deleteRels(id: string, goBack: boolean): void {
         let uri = Constance.RELATIONSHIPS_URL
         let subscription =  this.getByUrl(uri).subscribe(

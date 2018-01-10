@@ -1,27 +1,72 @@
-  <div class="row">
+ <div class="row">
             <div class="col-md-12">
-                <h4 *ngIf="model.type !== 'course-of-action'">External References</h4>
-                <h4 *ngIf="model.type === 'course-of-action'">External References for Mitigation</h4>
-                <div class="button-row">
-                    <a class="" mat-raised-button (click)="addExternalReferenceButtonClicked()"><i class="material-icons">add</i> ADD</a>
+                <div *ngIf="extToFind == undefined" class="button-row">
+                    <a class="" mat-raised-button (click)="addExternalReferenceButtonClicked()">Open Reference Finder</a>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div *ngIf="extToFind != undefined" class="row">
+                <div class="col-md-12">
+                        <mat-card style="margin: 10px 0px;">
+                                <mat-card-content>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Name" [(ngModel)]="extToFind.source_name" (ngModelChange)="currCitations = populateFinderCitation(extToFind.source_name)" value="{{extToFind.source_name}}" [matAutocomplete]="auto">
+                                                </mat-input-container>
+                                                <mat-autocomplete name="auto" #auto="matAutocomplete" >
+                                                <mat-option *ngFor="let citation of currCitations" [value]="citation.source_name">
+                                                    <span>{{ citation.source_name }}</span>
+                                                </mat-option>
+                                                </mat-autocomplete>
+                                        </div>
+                                        <div class="col-md-8">
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="URL" [readonly]="true" [(ngModel)]="extToFind.url" value="{{extToFind.url}}">
+                                                </mat-input-container>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <mat-input-container class="full-width">
+                                                <textarea matInput matTextareaAutosize placeholder="Citation" [readonly]="true" [(ngModel)]="extToFind.description" value="{{extToFind.description}}"></textarea>
+                                            </mat-input-container>
+                                        </div>
+                                    </div>
+                                </mat-card-content>
+                                <mat-card-actions *ngIf="extToFind.source_name != 'mitre-attack' && extToFind.citeButton">
+                                    <div class="button-row">
+                                        <a class="" mat-raised-button (click)="generateCitation(extToFind)"> {{ extToFind.citeButton }} </a><br>
+                                    </div>
+                                </mat-card-actions>
+                                <mat-card-actions *ngIf="extToFind.source_name != 'mitre-attack' && extToFind.citeButton == 'Hide Citation Text'">
+                                    <div class="button-row">
+                                        <a class="" mat-raised-button [ngxClipboard]="copyCitation"> Copy</a>
+                                        <input class="display-citation" size="100" #copyCitation value="{{ extToFind.citation }}" [(ngModel)]=extToFind.citation>
+                                    </div>
+                                </mat-card-actions>
+                                <mat-card-actions>
+                                <div class="button-row">
+                                    <a class="" mat-raised-button (click)="closeFinderButtonClicked()"><i class="material-icons">delete</i> Close Reference Finder</a>
+                                </div>
+                                </mat-card-actions>
+                        </mat-card>
+                    </div>
+            </div><br>
+        <div *ngIf="model.attributes.external_references.length > 0" class="row">
             <div class="col-md-12">
+                    <h5>Object's References</h5>
                     <mat-card *ngFor="let externalReference of model.attributes.external_references" style="margin: 10px 0px;">
                             <mat-card-content>
                                 <div *ngIf="externalReference.external_id" class="row">
                                     <div class="col-md-4">
                                       <mat-input-container class="full-width">
-                                          <input matInput placeholder="MITRE ID" [(ngModel)]="externalReference.external_id" value="{{externalReference.external_id}}">
+                                          <input matInput placeholder="ATTACK ID" [readonly]="true" [(ngModel)]="externalReference.external_id" value="{{externalReference.external_id}}">
                                       </mat-input-container>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                             <mat-input-container class="full-width">
-                                                <input matInput placeholder="Name" [(ngModel)]="externalReference.source_name" (ngModelChange)="currCitations = populateCitation(externalReference.source_name)" value="{{externalReference.source_name}}" [matAutocomplete]="auto">
+                                                <input matInput placeholder="Name" [readonly]="true" [(ngModel)]="externalReference.source_name" (ngModelChange)="currCitations = populateCitation(externalReference.source_name)" value="{{externalReference.source_name}}" [matAutocomplete]="auto">
                                             </mat-input-container>
                                             <mat-autocomplete name="auto" #auto="matAutocomplete" >
                                             <mat-option *ngFor="let citation of currCitations" [value]="citation.source_name">
@@ -31,12 +76,12 @@
                                     </div>
                                     <div class="col-md-8">
                                             <mat-input-container class="full-width">
-                                                <input matInput placeholder="URL" [(ngModel)]="externalReference.url" value="{{externalReference.url}}">
+                                                <input matInput placeholder="URL" [readonly]="true" [(ngModel)]="externalReference.url" value="{{externalReference.url}}">
                                             </mat-input-container>
                                     </div>
                                     <div *ngIf="externalReference.source_name != 'mitre-attack'" class="col-md-12">
                                         <mat-input-container class="full-width">
-                                            <textarea matInput matTextareaAutosize placeholder="Citation" [(ngModel)]="externalReference.description" value="{{externalReference.description}}"></textarea>
+                                            <textarea matInput matTextareaAutosize placeholder="Citation" [readonly]="true" [(ngModel)]="externalReference.description" value="{{externalReference.description}}"></textarea>
                                         </mat-input-container>
                                     </div>
                                 </div>
@@ -58,11 +103,11 @@
                                     <input class="display-citation" size="100" #copyCiteRef value="{{ externalReference.citeref }}" [(ngModel)]=externalReference.citeref>
                                 </div>
                             </mat-card-actions>-->
-                            <mat-card-actions>
+                            <!--<mat-card-actions>
                                 <div class="button-row">
                                     <a class="" mat-raised-button (click)="removeExternalReferenceButtonClicked(externalReference)"><i class="material-icons">delete</i> REMOVE</a>
                                 </div>
-                            </mat-card-actions>
+                            </mat-card-actions>-->
                     </mat-card>
                 </div>
         </div>

@@ -102,14 +102,14 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
     }
 
     public saveTool(): void {
-        let idRef = new ExternalReference();
-        idRef.external_id = this.id;
-        idRef.source_name = 'mitre-attack';
-        this.tool.attributes.external_references.push(idRef);
+        this.mitreId = new ExternalReference();
+        this.mitreId.external_id = this.id;
+        this.mitreId.source_name = 'mitre-attack';
+        this.tool.attributes.external_references = [];
+        this.addExtRefs();
         this.addAliasesToTool();
         this.tool.attributes.labels.push('tool');
-        this.removeCitationsExtRefsContributors();
-        this.tool.attributes.external_references.reverse();
+        this.removeContributors();
         let sub = super.create(this.tool).subscribe(
             (stixObject) => {
                 this.location.back();

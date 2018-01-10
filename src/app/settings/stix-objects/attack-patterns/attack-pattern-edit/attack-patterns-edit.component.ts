@@ -23,6 +23,8 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public tacticConfig: string[] = [];
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exFil': false};
     public tactics: any = [];
+    public createNewOnly: boolean = true;
+    public mitreId: any;
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -95,8 +97,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                         extRefs = extRefs.concat(currObj.attributes.external_references);
                     }
                 }
-                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                this.allCitations = this.allCitations.concat(extRefs);
+                this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -166,6 +169,11 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                           }
                           this.tactics.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                       }
+                      if (currRes.attributes.configKey === 'references') {
+                          this.allCitations = this.allCitations.concat(currRes.attributes.configValue);
+                          this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                          this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                      }
                   }
               }
 
@@ -230,6 +238,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             ).sort().filter(Boolean);
         this.id = 'T' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
         console.log(this.id);
+    }
+
+    public getNewCitation(refToAdd) {
+        this.allCitations.push(refToAdd);
+        this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+        this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
 
     public tacticChange(tactics) {
@@ -365,31 +379,41 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 delete this.attackPattern.attributes['x_mitre_system_requirements'];
             }
         }
+        this.attackPattern.attributes.external_references = [];
+    }
+
+    public getMitreId(): void {
         for (let i in this.attackPattern.attributes.external_references) {
-            if ('citeButton' in this.attackPattern.attributes.external_references[i]) {
-                delete this.attackPattern.attributes.external_references[i].citeButton;
-            }
-            if ('citation' in this.attackPattern.attributes.external_references[i]) {
-                delete this.attackPattern.attributes.external_references[i].citation;
-            }
-            if ('citeref' in this.attackPattern.attributes.external_references[i]) {
-                delete this.attackPattern.attributes.external_references[i].citeref;
+            if (this.attackPattern.attributes.external_references[i].external_id !== undefined) {
+                this.mitreId = Object.assign({}, this.attackPattern.attributes.external_references[i]);
             }
         }
-        for (let i = 0; i < this.attackPattern.attributes.external_references.length; i++) {
-            if (Object.keys(this.attackPattern.attributes.external_references[i]).length === 0) {
-                this.attackPattern.attributes.external_references.splice(i, 1);
+    }
+
+    public addExtRefs(): void {
+        let citationArr = super.matchCitations(this.attackPattern.attributes.description);
+        if (this.mitreId !== undefined) {
+            this.attackPattern.attributes.external_references.push(this.mitreId);
+        }
+        console.log(citationArr);
+        console.log(this.allCitations);
+        for (let name of citationArr) {
+            let citation = this.allCitations.find((p) => p.source_name === name);
+            console.log(citation);
+            if (citation !== undefined) {
+                this.attackPattern.attributes.external_references.push(citation);
             }
         }
     }
 
     public saveAttackPattern(): void {
-        this.attackPattern.attributes.external_references.reverse();
+        this.getMitreId();
         this.removeEmpties();
+        this.addExtRefs();
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log(data);
-                this.saveCourseOfAction(data.id);
+                this.saveCourseOfAction(data.id, this.allCitations);
                 this.location.back();
             }, (error) => {
                 // handle errors here

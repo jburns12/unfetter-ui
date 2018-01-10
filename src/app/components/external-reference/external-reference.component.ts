@@ -12,11 +12,12 @@ export class ExternalReferenceComponent {
 
     @Input() public model: any;
     @Input() public citations: any;
+    public extToFind: any;
 
     public addExternalReferenceButtonClicked(): void {
         let externalReference = new ExternalReference();
         externalReference.citeButton = 'Generate Citation Text';
-        this.model.attributes.external_references.unshift(externalReference);
+        this.extToFind = externalReference;
     }
 
     public removeExternalReferenceButtonClicked(externalReference: ExternalReference): void {
@@ -31,7 +32,11 @@ export class ExternalReferenceComponent {
         }
     }
 
-    public populateCitation(citationStr: string): void {
+    public closeFinderButtonClicked(): void {
+        this.extToFind = undefined;
+    }
+
+    public populateCitation(citationStr: string): any {
         let match = this.model.attributes.external_references.find((h) => h.source_name === citationStr);
         let index = this.model.attributes.external_references.indexOf(match);
         let citation = this.citations.find((h) => h.source_name === citationStr);
@@ -50,6 +55,26 @@ export class ExternalReferenceComponent {
             let filterVal = citationStr.toLowerCase();
             return this.citations.filter((h) => h.source_name.toLowerCase().startsWith(filterVal));
         }
-        return this.citations;
+        return [];
+    }
+
+    public populateFinderCitation(citationStr: string): any {
+        let citation = this.citations.find((h) => h.source_name === citationStr);
+        if (citation) {
+            this.extToFind.external_id = citation.external_id;
+            this.extToFind.description = citation.description;
+            this.extToFind.url = citation.url;
+        } else {
+            this.extToFind.external_id = '';
+            this.extToFind.description = '';
+            this.extToFind.url = '';
+        }
+        this.extToFind.citation = '[[Citation: ' + citationStr + ']]';
+        this.extToFind.citeref = '[[CiteRef::' + citationStr + ']]';
+        if (citationStr) {
+            let filterVal = citationStr.toLowerCase();
+            return this.citations.filter((h) => h.source_name.toLowerCase().startsWith(filterVal));
+        }
+        return [];
     }
 }

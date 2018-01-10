@@ -22,6 +22,8 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     public deletedRelationships: Relationship[] = [];
     public allCitations: any = [];
     public contributors: string[] = [];
+    public createNewOnly: boolean = true;
+    public mitreId: any;
 
     constructor(
         public stixService: StixService,
@@ -53,6 +55,12 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                 }
             }
         );
+    }
+
+    public getNewCitation(refToAdd) {
+        this.allCitations.push(refToAdd);
+        this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+        this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
 
     public addContributor(): void {
@@ -105,10 +113,29 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                     }
                     this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
                 }
+                let configUri = Constance.CONFIG_URL;
+                let subscription =  super.getByUrl(configUri).subscribe(
+                    (res) => {
+                        if (res && res.length) {
+                            for (let currRes of res) {
+                                if (currRes.attributes.configKey === 'references') {
+                                  extRefs = extRefs.concat(currRes.attributes.configValue);
+                                }
+                            }
+                        }
+                        extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                        this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                    }, (error) => {
+                        // handle errors here
+                         console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
                 this.contributors = this.contributors.filter((elem, index, self) => self.findIndex((t) => t === elem) === index).sort().filter(Boolean);
-                console.log(this.contributors);
-                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -138,7 +165,15 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         relationship.attributes.source_ref = source_ref;
         relationship.attributes.target_ref = target_ref;
         if (description !== '') {
-          relationship.attributes.description = description;
+            relationship.attributes.external_references = [];
+            relationship.attributes.description = description;
+            let citationArr = super.matchCitations(relationship.attributes.description);
+            for (let name of citationArr) {
+                let citation = this.allCitations.find((p) => p.source_name === name);
+                if (citation !== undefined) {
+                    relationship.attributes.external_references.push(citation);
+                }
+            }
         }
         relationship.attributes.relationship_type = 'uses';
         if (id !== '') {
@@ -175,23 +210,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
-    public removeCitationsExtRefsContributors(): void {
-        for (let i in this.tool.attributes.external_references) {
-            if ('citeButton' in this.tool.attributes.external_references[i]) {
-                delete this.tool.attributes.external_references[i].citeButton;
-            }
-            if ('citation' in this.tool.attributes.external_references[i]) {
-                delete this.tool.attributes.external_references[i].citation;
-            }
-            if ('citeref' in this.tool.attributes.external_references[i]) {
-                delete this.tool.attributes.external_references[i].citeref;
-            }
-        }
-        for (let i = 0; i < this.tool.attributes.external_references.length; i++) {
-            if (Object.keys(this.tool.attributes.external_references[i]).length === 0) {
-                this.tool.attributes.external_references.splice(i, 1);
-            }
-        }
+    public removeContributors(): void {
         if ('x_mitre_contributors' in this.tool.attributes) {
             this.removeContributor("");
             if (this.tool.attributes.x_mitre_contributors.length === 0) {
@@ -200,10 +219,36 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
+    public getMitreId(): void {
+        for (let i in this.tool.attributes.external_references) {
+            if (this.tool.attributes.external_references[i].external_id !== undefined) {
+                this.mitreId = Object.assign({}, this.tool.attributes.external_references[i]);
+            }
+        }
+    }
+
+    public addExtRefs(): void {
+        let citationArr = super.matchCitations(this.tool.attributes.description);
+        if (this.mitreId !== undefined) {
+            this.tool.attributes.external_references.push(this.mitreId);
+        }
+        console.log(citationArr);
+        console.log(this.allCitations);
+        for (let name of citationArr) {
+            let citation = this.allCitations.find((p) => p.source_name === name);
+            console.log(citation);
+            if (citation !== undefined) {
+                this.tool.attributes.external_references.push(citation);
+            }
+        }
+    }
+
     public saveTool(): void {
+        this.getMitreId();
+        this.tool.attributes.external_references = [];
+        this.addExtRefs();
         this.addAliasesToTool();
-        this.removeCitationsExtRefsContributors();
-        this.tool.attributes.external_references.reverse();
+        this.removeContributors();
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

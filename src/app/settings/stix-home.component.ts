@@ -17,6 +17,7 @@ export class StixHomeComponent {
         // { url: 'relationships', label: 'Relationships' },
         // { url: 'sightings', label: 'Sightings' },
         { url: 'tools', label: 'Tools' },
+        { url: 'softwares', label: 'Software' },
         // { url: 'threat-actors', label: 'Threat Actors' },
         { url: 'intrusion-sets', label: 'Groups' },
         { url: 'citations', label: 'Citations'}

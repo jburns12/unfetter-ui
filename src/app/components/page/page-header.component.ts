@@ -8,6 +8,7 @@ export class PageHeaderComponent {
 
      @Input() public pageTitle: string;
      @Input() public pageIcon: string;
+     @Input() public secondaryIcon: string;
      @Input() public description: string;
      public showDescription: boolean = true;
 

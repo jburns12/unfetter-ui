@@ -10,12 +10,12 @@ import { Constance } from '../../../../utils/constance';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 
 @Component({
-  selector: 'malware',
-  templateUrl: './malware.component.html',
+  selector: 'software',
+  templateUrl: './software.component.html',
 
 })
 
-export class MalwareComponent extends BaseStixComponent implements OnInit {
+export class SoftwareComponent extends BaseStixComponent implements OnInit {
    public malware: Malware = new Malware();
    public tool: Tool = new Tool();
    public aliases: any = [];

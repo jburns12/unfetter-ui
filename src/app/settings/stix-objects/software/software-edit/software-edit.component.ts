@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar, MatRadioChange } from '@angular/material';
-import { MalwareComponent } from '../malware/malware.component';
+import { SoftwareComponent } from '../software/software.component';
 import { StixService } from '../../../stix.service';
 import { Malware, AttackPattern, Indicator, IntrusionSet, CourseOfAction, Filter, ExternalReference, Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 
 @Component({
-  selector: 'malware-set-edit',
-  templateUrl: './malware-edit.component.html',
-  styleUrls: ['malware-edit.component.scss']
+  selector: 'software-set-edit',
+  templateUrl: './software-edit.component.html',
+  styleUrls: ['software-edit.component.scss']
 })
-export class MalwareEditComponent extends MalwareComponent implements OnInit {
+export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public attackPatterns: AttackPattern[] = [];
     public indicators: Indicator[] = [];
     public courseOfActions: CourseOfAction[] = [];
@@ -24,8 +24,9 @@ export class MalwareEditComponent extends MalwareComponent implements OnInit {
     public contributors: string[] = [];
     public createNewOnly: boolean = true;
     public mitreId: any;
-    public softwareTypes: string[] = ['None', 'Malware', 'Tool', 'Utility'];
-    public softwareType: string = 'None';
+    public softwareTypes: string[] = ['Malware', 'Tool/Utility'];
+    public softwareType: string = 'Malware';
+    public origType: string = 'Malware';
 
    constructor(
         public stixService: StixService,
@@ -38,12 +39,19 @@ export class MalwareEditComponent extends MalwareComponent implements OnInit {
     }
 
     public ngOnInit() {
+        let testRoute: any;
+        testRoute = this.route;
+        if (testRoute.url.value[1].path.match(/^tool/)) {
+            this.stixService.url = Constance.TOOL_URL;
+            this.softwareType = 'Tool/Utility';
+            this.origType = 'Tool/Utility';
+        }
         const subscription =  super.get().subscribe(
             (data) => {
-                this.malware = new Malware(data);
+                this.malware = data;
                 this.malware.attributes.external_references.reverse();
                 console.log(this.malware);
-                this.getTechniques(false);
+                this.getGroups();
                 this.getAllAliases();
                 this.getCitationsAndContributors();
                 this.assignCitations();
@@ -62,6 +70,7 @@ export class MalwareEditComponent extends MalwareComponent implements OnInit {
     public typeChange(event: MatRadioChange) {
         this.softwareType = event.value;
         console.log(this.softwareType);
+        console.log(this.allRels);
     }
 
     public getNewCitation(refToAdd) {
@@ -215,14 +224,44 @@ export class MalwareEditComponent extends MalwareComponent implements OnInit {
         }
     }
 
-    public removeRelationships(id: string): void {
-        for (let rel of this.origRels) {
-            rel.url = Constance.RELATIONSHIPS_URL;
-            rel.id = rel.attributes.id;
-            this.delete(rel).subscribe(
-                () => {
+    public createRelationshipsGroups(id: string): void {
+        console.log(this.allRels);
+        for (let rel of this.allRels) {
+            let relationship = new Relationship();
+            relationship.attributes.source_ref = rel.attributes.source_ref;
+            relationship.attributes.target_ref = id;
+            if (rel.attributes.description !== '') {
+                relationship.attributes.external_references = rel.attributes.external_references;
+                relationship.attributes.description = rel.attributes.description;
+            }
+            relationship.attributes.relationship_type = 'uses';
+            let subscription = super.create(relationship).subscribe(
+                (data) => {
+                    console.log(data);
+                }, (error) => {
+                    // handle errors here
+                    console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (subscription) {
+                        subscription.unsubscribe();
+                    }
                 }
             );
+        }
+    }
+
+    public removeRelationships(id: string, deleteRel: boolean = true): void {
+        for (let rel of this.origRels) {
+            this.allRels = this.allRels.filter((h) => h.id !== rel.attributes.id);
+            if (deleteRel) {
+                rel.url = Constance.RELATIONSHIPS_URL;
+                rel.id = rel.attributes.id;
+                this.delete(rel).subscribe(
+                    () => {
+                    }
+                );
+            }
         }
     }
 
@@ -260,21 +299,73 @@ export class MalwareEditComponent extends MalwareComponent implements OnInit {
     }
 
     public saveMalware(): void {
-        if (this.softwareType === 'Malware' || this.softwareType === 'None') {
-            this.getMitreId();
-            this.malware.attributes.external_references = [];
-            this.addExtRefs();
-            this.addAliasesToMalware();
-            this.removeContributors();
-            this.malware.attributes.external_references.reverse();
+        this.getMitreId();
+        this.malware.attributes.external_references = [];
+        this.addExtRefs();
+        this.addAliasesToMalware();
+        this.removeContributors();
+        this.malware.attributes.external_references.reverse();
+        if (this.softwareType === 'Tool/Utility') {
+            this.stixService.url = Constance.TOOL_URL;
+        }
+        else {
+            this.stixService.url = Constance.MALWARE_URL;
+        }
+        if (this.origType === this.softwareType) {
             let sub = super.saveButtonClicked().subscribe(
                 (data) => {
                     this.location.back();
                     this.createRelationships(data.id);
                     this.removeRelationships(data.id);
+                    console.log(this.allRels);
                 }, (error) => {
                     // handle errors here
                     console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (sub) {
+                        sub.unsubscribe();
+                    }
+                }
+            );
+        }
+        else {
+            console.log(this.malware);
+            let newObj = Object.assign({}, this.malware);
+            delete newObj['id'];
+            delete newObj.attributes['id'];
+            delete newObj['links'];
+            if (this.softwareType === 'Malware') {
+                newObj.type = 'malware';
+                newObj.attributes.labels = ['malware'];
+                newObj.url = Constance.MALWARE_URL;
+                this.stixService.url = Constance.MALWARE_URL;
+                this.malware.url = Constance.TOOL_URL;
+            }
+            else {
+                newObj.type = 'tool';
+                newObj.attributes.labels = ['tool'];
+                newObj.url = Constance.TOOL_URL;
+                this.stixService.url = Constance.TOOL_URL;
+                this.malware.url = Constance.MALWARE_URL;
+            }
+            for (let i in this.addedTechniques) {
+                this.addedTechniques[i].relationship = '';
+            }
+            let sub = super.create(newObj).subscribe(
+                (stixObject) => {
+                    console.log(stixObject);
+                    this.createRelationships(stixObject[0].id);
+                    this.removeRelationships(stixObject[0].id, false);
+                    this.createRelationshipsGroups(stixObject[0].id);
+                    this.delete(this.malware, false).subscribe(
+                        () => {
+                            this.router.navigate(['stix/softwares']);
+                        }
+                    );
+                }, (error) => {
+                    // handle errors here
+                     console.log('error ' + error);
                 }, () => {
                     // prevent memory links
                     if (sub) {

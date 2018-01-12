@@ -92,6 +92,13 @@ import {
   ToolNewComponent
 } from './stix-objects/tools';
 import {
+  SoftwareHomeComponent,
+  SoftwareListComponent,
+  SoftwareComponent,
+  SoftwareEditComponent,
+  SoftwareNewComponent
+} from './stix-objects/software';
+import {
   LinkExplorerComponent
 } from './link-explorer';
 
@@ -364,6 +371,27 @@ const stixRoutes: Routes = [{
           {
             path: 'edit/:id',
             component: ToolEditComponent
+          }
+        ]
+      },
+      {
+        path: 'softwares',
+        component: SoftwareHomeComponent,
+        children: [{
+            path: '',
+            component: SoftwareListComponent
+          },
+          {
+            path: 'new',
+            component: SoftwareNewComponent
+          },
+          {
+            path: ':id',
+            component: SoftwareComponent
+          },
+          {
+            path: 'edit/:id',
+            component: SoftwareEditComponent
           }
         ]
       },

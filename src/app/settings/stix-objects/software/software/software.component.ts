@@ -10,12 +10,12 @@ import { Constance } from '../../../../utils/constance';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 
 @Component({
-  selector: 'malware',
-  templateUrl: './malware.component.html',
+  selector: 'software',
+  templateUrl: './software.component.html',
 
 })
 
-export class MalwareComponent extends BaseStixComponent implements OnInit {
+export class SoftwareComponent extends BaseStixComponent implements OnInit {
    public malware: Malware = new Malware();
    public tool: Tool = new Tool();
    public aliases: any = [];
@@ -102,6 +102,7 @@ export class MalwareComponent extends BaseStixComponent implements OnInit {
                 target.forEach((intrusionSet: IntrusionSet) => {
                     this.groups.push({'name': intrusionSet.attributes.name, 'id': intrusionSet.id});
                 });
+                this.getTechniques(false);
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -241,7 +242,6 @@ export class MalwareComponent extends BaseStixComponent implements OnInit {
             this.malware =  new Malware(data);
             this.malware.attributes.external_references.reverse();
             this.aliasesToDisplay = this.malware.attributes.x_mitre_aliases.filter((h) => h !== this.malware.attributes.name);
-            this.getTechniques(false);
             this.getGroups();
           }, (error) => {
                   // handle errors here

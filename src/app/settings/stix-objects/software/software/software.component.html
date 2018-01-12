@@ -1,0 +1,100 @@
+ <div class="row" *ngIf="malware">
+       <div class="col-md-12">
+            <div class="button-row">
+                <a class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
+                <a class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
+                <button *ngIf="!history" class="mat-primary" mat-raised-button (click)="historyButtonClicked()">SHOW HISTORY</button>
+                <button *ngIf="history" class="mat-primary" mat-raised-button (click)="historyButtonClicked()">HIDE HISTORY</button>
+            </div>
+        </div>
+</div>
+<div class="row" style="margin-top: 15px;">
+    <div class="col-md-12">
+      <div *ngIf="history">
+        <mat-card>
+          <mat-card-header style="border-bottom: 1px solid lightgray;">
+            <mat-card-title><h3>Object History</h3></mat-card-title>
+          </mat-card-header>
+          <br>
+          <mat-card-content *ngFor="let historyStr of historyArr">
+          <b>{{historyStr.date}}: {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
+          <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
+          </mat-card-content>
+        </mat-card><br>
+        <mat-card *ngIf="relHistoryArr.length > 0">
+            <mat-card-header style="border-bottom: 1px solid lightgray;">
+              <mat-card-title><h3>Relationship History</h3></mat-card-title>
+            </mat-card-header>
+            <br>
+          <mat-card-content *ngFor="let relHistoryStr of relHistoryArr">
+            <b>{{relHistoryStr}}</b>
+          </mat-card-content>
+        </mat-card>
+        <br>
+      </div>
+        <mat-card>
+            <mat-card-content>
+              <mat-card-header style="border-bottom: 1px solid lightgray;">
+                  <mat-card-title><h3>{{ malware.attributes.name }}</h3></mat-card-title>
+              </mat-card-header>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 [innerHTML]="formatText(malware.attributes.description)"></h5><br>
+                        </div>
+                    </div>
+                    <div *ngIf="aliasesToDisplay.length > 0" class="row">
+                        <div class="col-md-12">
+                            <label>Aliases</label>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let alias of aliasesToDisplay"
+                                    selected="true">
+                                    {{alias}}
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                    </div><br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Labels</label>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let label of malware.attributes.labels"
+                                    selected="true"
+                                    color="accent">
+                                    {{label}}
+                                </mat-chip>
+                            </mat-chip-list>
+
+                        </div>
+                    </div><br>
+                    <div *ngIf="malware.attributes.x_mitre_contributors && malware.attributes.x_mitre_contributors.length" class="row">
+                        <div class="col-md-12">
+                            <label>Contributors:</label>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let contributor of malware.attributes.x_mitre_contributors"
+                                    selected="true">
+                                    {{contributor}}
+                                </mat-chip>
+                            </mat-chip-list><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>External References</label>
+                            <mat-chip-list>
+                              <mat-chip *ngFor="let external_reference of malware.attributes.external_references"
+                                  selected="true">
+                                  <a style="color: white" target="_blank" [attr.href]="external_reference.url" *ngIf="external_reference.url" (click)="visitExtRef(external_reference.url)"> {{external_reference.source_name}}</a>
+                                  <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                              </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                    </div>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+</div>
+
+ <relationship-list *ngIf="malware.id" [model]="malware"></relationship-list>
+<div class="pull-right grey-text">{{malware.id}}</div>

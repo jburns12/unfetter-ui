@@ -44,7 +44,7 @@ import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetCompo
 import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent, RelationshipsComponent, RelationshipNewComponent } from './stix-objects/relationships';
 import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './stix-objects/indicators';
 import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './stix-objects/identities';
-
+import { SoftwareHomeComponent, SoftwareListComponent, SoftwareComponent, SoftwareEditComponent, SoftwareNewComponent } from './stix-objects/software';
 import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './stix-objects/malwares';
 import { ToolHomeComponent, ToolListComponent, ToolComponent, ToolEditComponent, ToolNewComponent } from './stix-objects/tools';
 import { LinkExplorerComponent } from './link-explorer';
@@ -158,6 +158,11 @@ import { GlobalModule } from '../global/global.module';
     ToolComponent,
     ToolEditComponent,
     ToolNewComponent,
+    SoftwareHomeComponent,
+    SoftwareListComponent,
+    SoftwareComponent,
+    SoftwareEditComponent,
+    SoftwareNewComponent,
     LinkExplorerComponent,
     StixHomeComponent
   ],

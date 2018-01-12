@@ -10,6 +10,7 @@ import { Constance } from '../../../../utils/constance';
 @Component({
   selector: 'software-new',
   templateUrl: './software-new.component.html',
+  styleUrls: ['../software-edit/software-edit.component.scss']
 })
 export class SoftwareNewComponent extends SoftwareEditComponent implements OnInit {
 
@@ -106,8 +107,19 @@ export class SoftwareNewComponent extends SoftwareEditComponent implements OnIni
         this.mitreId.source_name = 'mitre-attack';
         this.addExtRefs();
         this.addAliasesToMalware();
-        this.malware.attributes.labels.push('malware');
         this.removeContributors();
+        if (this.softwareType === 'Malware') {
+            this.malware.type = 'malware';
+            this.malware.attributes.labels = ['malware'];
+            this.malware.url = Constance.MALWARE_URL;
+            this.stixService.url = Constance.MALWARE_URL;
+        }
+        else {
+            this.malware.type = 'tool';
+            this.malware.attributes.labels = ['tool'];
+            this.malware.url = Constance.TOOL_URL;
+            this.stixService.url = Constance.TOOL_URL;
+        }
         let sub = super.create(this.malware).subscribe(
             (stixObject) => {
                 this.location.back();

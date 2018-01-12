@@ -76,10 +76,10 @@ export class BaseStixComponent {
         });
     }
 
-    public delete(item: any): Observable<any>  {
+    public delete(item: any, dialog: boolean = true): Observable<any>  {
         const _self  = this;
         return Observable.create((observer) => {
-               _self.deleteItem(item, observer);
+               _self.deleteItem(item, observer, dialog);
         });
     }
 
@@ -87,7 +87,7 @@ export class BaseStixComponent {
         this.router.navigate(command, { relativeTo: this.route });
     }
 
-    public openDialog(item: any): Observable<any> {
+    public openDialog(item: any, dialog: boolean = true): Observable<any> {
         const _self  = this;
         item.url = this.service.url;
         return Observable.create((observer) => {
@@ -95,7 +95,7 @@ export class BaseStixComponent {
             dialogRef.afterClosed().subscribe(
                 (result) => {
                     if (result === 'true' || result === true) {
-                        _self.deleteItem(item, observer);
+                        _self.deleteItem(item, observer, dialog);
                     }
             });
         });
@@ -152,14 +152,14 @@ export class BaseStixComponent {
                 );
     }
 
-    public deleteItem(item: any, observer: any): void {
+    public deleteItem(item: any, observer: any, dialog: boolean): void {
         this.route.params
             .switchMap((params: Params) => this.service.delete(item))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
-                    if ('name' in item.attributes && item.type !== 'course-of-action') {
+                    if ('name' in item.attributes && item.type !== 'course-of-action' && dialog === true) {
                         this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
                             duration: this.duration,
                             extraClasses: ['snack-bar-background-success']

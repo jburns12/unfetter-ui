@@ -14,9 +14,6 @@ import { Constance } from '../../../../utils/constance';
 })
 export class SoftwareNewComponent extends SoftwareEditComponent implements OnInit {
 
-    public malwares: Malware[];
-    public tools: Tool[];
-    public id: string;
     public ids: any;
 
     constructor(
@@ -35,76 +32,13 @@ export class SoftwareNewComponent extends SoftwareEditComponent implements OnIni
         super.getCitationsAndContributors();
     }
 
-    public getIdString(ids: any): string {
-      let idStr = '';
-      idStr = '' + (parseInt(ids[ids.length - 1].substr(1)) + 1);
-      let numZeroes = 4 - idStr.length;
-      for (let i = 0; i < numZeroes; i++) {
-        idStr = '0' + idStr;
-      }
-      idStr = 'S' + idStr;
-      return idStr;
-    }
-
-    public getToolIds(ids: any) {
-        this.stixService.url = Constance.TOOL_URL;
-        let subscription = super.load().subscribe(
-            (data) => {
-                this.tools = data as Tool[];
-                let allIds = [];
-                this.tools.forEach((tool: Tool) => {
-                    for (let i in tool.attributes.external_references) {
-                        if (tool.attributes.external_references[i].external_id) {
-                            ids.push(tool.attributes.external_references[i].external_id);
-                        }
-                    }
-                });
-                allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
-                    ).sort().filter(Boolean);
-                this.id = this.getIdString(allIds);
-                this.stixService.url = Constance.MALWARE_URL;
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
-    }
-
-    public getId(): void {
-        let subscription = super.load().subscribe(
-            (data) => {
-                this.malwares = data as Malware[];
-                let ids = [];
-                let allIds = [];
-                this.malwares.forEach((malware: Malware) => {
-                    for (let i in malware.attributes.external_references) {
-                        if (malware.attributes.external_references[i].external_id) {
-                            ids.push(malware.attributes.external_references[i].external_id);
-                        }
-                    }
-                });
-                this.getToolIds(ids);
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
-    }
-
     public saveMalware(): void {
-        this.mitreId = new ExternalReference();
-        this.mitreId.external_id = this.id;
-        this.mitreId.source_name = 'mitre-attack';
+        if (this.addId) {
+            this.mitreId = new ExternalReference();
+            this.mitreId.external_id = this.id;
+            this.mitreId.source_name = 'mitre-attack';
+            this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
+        }
         this.addExtRefs();
         this.addAliasesToMalware();
         this.removeContributors();

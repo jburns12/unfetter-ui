@@ -15,8 +15,6 @@ import { Observable } from 'rxjs/Observable';
 })
 export class IntrusionSetNewComponent extends IntrusionSetEditComponent implements OnInit {
 
-    public groups: IntrusionSet[];
-    public id: string;
     public ids: any;
 
     constructor(public stixService: StixService, public route: ActivatedRoute,
@@ -32,50 +30,14 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         super.getCitationsAndContributors();
     }
 
-    public getIdString(ids: any): string {
-      let idStr = '';
-      idStr = '' + (parseInt(ids[ids.length - 1].substr(1)) + 1);
-      let numZeroes = 4 - idStr.length;
-      for (let i = 0; i < numZeroes; i++) {
-        idStr = '0' + idStr;
-      }
-      idStr = 'G' + idStr;
-      return idStr;
-    }
-
-    public getId(): void {
-        let subscription = super.load().subscribe(
-            (data) => {
-                this.groups = data as IntrusionSet[];
-                let ids = [];
-                let allIds = [];
-                this.groups.forEach((group: IntrusionSet) => {
-                    for (let i in group.attributes.external_references) {
-                        if (group.attributes.external_references[i].external_id) {
-                            ids.push(group.attributes.external_references[i].external_id);
-                        }
-                    }
-                });
-                allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
-                    ).sort().filter(Boolean);
-                this.id = this.getIdString(allIds);
-                console.log(this.id);
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
-    }
-
     public saveButtonClicked(): Observable<any> {
-        this.mitreId = new ExternalReference();
-        this.mitreId.external_id = this.id;
-        this.mitreId.source_name = 'mitre-attack';
+        if (this.addId) {
+            this.mitreId = new ExternalReference();
+            this.mitreId.external_id = this.id;
+            this.mitreId.source_name = 'mitre-attack';
+            this.mitreId.url = 'https://attack.mitre.org/wiki/Group/' + this.id
+        }
+
         this.intrusionSet.attributes.external_references = [];
         this.addExtRefs();
         this.addAliasesToIntrusionSet();

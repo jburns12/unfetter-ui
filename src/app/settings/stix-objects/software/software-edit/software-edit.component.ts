@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar, MatRadioChange } from '@angular/material';
 import { SoftwareComponent } from '../software/software.component';
 import { StixService } from '../../../stix.service';
-import { Malware, AttackPattern, Indicator, IntrusionSet, CourseOfAction, Filter, ExternalReference, Relationship } from '../../../../models';
+import { Malware, AttackPattern, Indicator, IntrusionSet, CourseOfAction, Filter, ExternalReference, Tool, Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 
 @Component({
@@ -27,6 +27,10 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public softwareTypes: string[] = ['Malware', 'Tool/Utility'];
     public softwareType: string = 'Malware';
     public origType: string = 'Malware';
+    public addId: boolean = false;
+    public malwares: Malware[];
+    public tools: Tool[];
+    public id: string;
 
    constructor(
         public stixService: StixService,
@@ -55,6 +59,8 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                 this.getAllAliases();
                 this.getCitationsAndContributors();
                 this.assignCitations();
+                this.getMitreId();
+                this.getId();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -71,6 +77,10 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         this.softwareType = event.value;
         console.log(this.softwareType);
         console.log(this.allRels);
+    }
+
+    public addRemoveId() {
+        this.addId = !this.addId;
     }
 
     public getNewCitation(refToAdd) {
@@ -282,9 +292,80 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         }
     }
 
+    public getIdString(ids: any): string {
+        let idStr = '';
+        idStr = '' + (parseInt(ids[ids.length - 1].substr(1)) + 1);
+        let numZeroes = 4 - idStr.length;
+        for (let i = 0; i < numZeroes; i++) {
+          idStr = '0' + idStr;
+        }
+        idStr = 'S' + idStr;
+        return idStr;
+    }
+
+    public getToolIds(ids: any) {
+        this.stixService.url = Constance.TOOL_URL;
+        let subscription = super.load().subscribe(
+            (data) => {
+                this.tools = data as Tool[];
+                let allIds = [];
+                this.tools.forEach((tool: Tool) => {
+                    for (let i in tool.attributes.external_references) {
+                        if (tool.attributes.external_references[i].external_id) {
+                            ids.push(tool.attributes.external_references[i].external_id);
+                        }
+                    }
+                });
+                allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                    ).sort().filter(Boolean);
+                this.id = this.getIdString(allIds);
+                this.stixService.url = Constance.MALWARE_URL;
+            }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public getId(): void {
+        if (this.mitreId !== undefined && this.mitreId !== '') {
+            this.id = this.mitreId.external_id;
+        }
+        else {
+            let subscription = super.load().subscribe(
+                (data) => {
+                    this.malwares = data as Malware[];
+                    let ids = [];
+                    let allIds = [];
+                    this.malwares.forEach((malware: Malware) => {
+                        for (let i in malware.attributes.external_references) {
+                            if (malware.attributes.external_references[i].external_id) {
+                                ids.push(malware.attributes.external_references[i].external_id);
+                            }
+                        }
+                    });
+                    this.getToolIds(ids);
+                }, (error) => {
+                    // handle errors here
+                    console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (subscription) {
+                        subscription.unsubscribe();
+                    }
+                }
+            );
+        }
+    }
+
     public addExtRefs(): void {
         let citationArr = super.matchCitations(this.malware.attributes.description);
-        if (this.mitreId !== undefined) {
+        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.malware.attributes.external_references.push(this.mitreId);
         }
         console.log(citationArr);
@@ -299,7 +380,18 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     }
 
     public saveMalware(): void {
-        this.getMitreId();
+        if (this.mitreId === '' || this.mitreId === undefined ) {
+            if(this.addId) {
+                this.mitreId = new ExternalReference();
+                this.mitreId.external_id = this.id;
+                this.mitreId.source_name = 'mitre-attack';
+                this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
+            }
+        }
+        else {
+            this.mitreId.external_id = this.id;
+            this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
+        }
         this.malware.attributes.external_references = [];
         this.addExtRefs();
         this.addAliasesToMalware();

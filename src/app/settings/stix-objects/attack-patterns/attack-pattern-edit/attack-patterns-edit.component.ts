@@ -25,6 +25,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public tactics: any = [];
     public createNewOnly: boolean = true;
     public mitreId: any;
+    public addId: boolean = false;
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -67,6 +68,8 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.findCoA();
                this.getCitations();
                this.assignCitations();
+               this.getMitreId();
+               this.getId();
            }, (error) => {
                // handle errors here
                console.log('error ' + error);
@@ -225,25 +228,34 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public getId(): void {
-        let ids = [];
-        let allIds = [];
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            for (let i in attackPattern.attributes.external_references) {
-                if (attackPattern.attributes.external_references[i].external_id) {
-                    ids.push(attackPattern.attributes.external_references[i].external_id);
+        if (this.mitreId !== undefined && this.mitreId !== '') {
+            this.id = this.mitreId.external_id;
+        }
+        else {
+            let ids = [];
+            let allIds = [];
+            this.attackPatterns.forEach((attackPattern: AttackPattern) => {
+                for (let i in attackPattern.attributes.external_references) {
+                    if (attackPattern.attributes.external_references[i].external_id) {
+                        ids.push(attackPattern.attributes.external_references[i].external_id);
+                    }
                 }
+            });
+            allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                ).sort().filter(Boolean);
+            this.id = 'T' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
+            console.log(this.id);
             }
-        });
-        allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
-            ).sort().filter(Boolean);
-        this.id = 'T' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
-        console.log(this.id);
     }
 
     public getNewCitation(refToAdd) {
         this.allCitations.push(refToAdd);
         this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
         this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+    }
+
+    public addRemoveId() {
+        this.addId = !this.addId;
     }
 
     public tacticChange(tactics) {
@@ -392,7 +404,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public addExtRefs(): void {
         let citationArr = super.matchCitations(this.attackPattern.attributes.description);
-        if (this.mitreId !== undefined) {
+        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.attackPattern.attributes.external_references.push(this.mitreId);
         }
         console.log(citationArr);
@@ -407,8 +419,19 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public saveAttackPattern(): void {
-        this.getMitreId();
         this.removeEmpties();
+        if (this.mitreId === '' || this.mitreId === undefined ) {
+            if(this.addId) {
+                this.mitreId = new ExternalReference();
+                this.mitreId.external_id = this.id;
+                this.mitreId.source_name = 'mitre-attack';
+                this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+            }
+        }
+        else {
+            this.mitreId.external_id = this.id;
+            this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+        }
         this.addExtRefs();
         let sub = super.saveButtonClicked().subscribe(
             (data) => {

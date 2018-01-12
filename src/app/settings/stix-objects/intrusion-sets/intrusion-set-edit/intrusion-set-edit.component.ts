@@ -32,7 +32,6 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public motivationCtrl: FormControl;
     public resourceLevelCtrl: FormControl;
     public editComponent: boolean = true;
-    public mitreId: any;
 
     public labels = [
         {label: 'activist'},
@@ -53,6 +52,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public contributors: string[] = [];
     public allCitations: any = [];
     public createNewOnly: boolean = true;
+    public addId: boolean = false;
 
    constructor(
         public stixService: StixService,
@@ -82,23 +82,19 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         this.intrusionSet.attributes.labels.push(label);
     }
 
+    public addRemoveId() {
+        this.addId = !this.addId;
+    }
+
     public getNewCitation(refToAdd) {
         this.allCitations.push(refToAdd);
         this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
         this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
     }
 
-    public getMitreId(): void {
-        for (let i in this.intrusionSet.attributes.external_references) {
-            if (this.intrusionSet.attributes.external_references[i].external_id !== undefined) {
-                this.mitreId = Object.assign({}, this.intrusionSet.attributes.external_references[i]);
-            }
-        }
-    }
-
     public addExtRefs(): void {
         let citationArr = super.matchCitations(this.intrusionSet.attributes.description);
-        if (this.mitreId !== undefined) {
+        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.intrusionSet.attributes.external_references.push(this.mitreId);
         }
         console.log(citationArr);
@@ -113,7 +109,18 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
     public saveIdentity(): void {
-        this.getMitreId();
+        if (this.mitreId === '' || this.mitreId === undefined ) {
+            if(this.addId) {
+                this.mitreId = new ExternalReference();
+                this.mitreId.external_id = this.id;
+                this.mitreId.source_name = 'mitre-attack';
+                this.mitreId.url = 'https://attack.mitre.org/wiki/Group/' + this.id
+            }
+        }
+        else {
+            this.mitreId.external_id = this.id;
+            this.mitreId.url = 'https://attack.mitre.org/wiki/Group/' + this.id
+        }
         this.intrusionSet.attributes.external_references = [];
         this.addExtRefs();
         this.addAliasesToIntrusionSet();

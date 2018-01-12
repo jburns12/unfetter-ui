@@ -32,6 +32,9 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public allCitations: any = [];
     public aliasesToDisplay: any = [];
     public contributors: string[] = [];
+    public mitreId: any;
+    public groups: IntrusionSet[];
+    public id: string;
 
      constructor(
         public stixService: StixService,
@@ -300,6 +303,59 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         );
     }
 
+    public getMitreId(): void {
+        for (let i in this.intrusionSet.attributes.external_references) {
+            if (this.intrusionSet.attributes.external_references[i].external_id !== undefined) {
+                this.mitreId = Object.assign({}, this.intrusionSet.attributes.external_references[i]);
+            }
+        }
+    }
+
+    public getIdString(ids: any): string {
+        let idStr = '';
+        idStr = '' + (parseInt(ids[ids.length - 1].substr(1)) + 1);
+        let numZeroes = 4 - idStr.length;
+        for (let i = 0; i < numZeroes; i++) {
+          idStr = '0' + idStr;
+        }
+        idStr = 'G' + idStr;
+        return idStr;
+      }
+
+    public getId(): void {
+        if (this.mitreId !== undefined && this.mitreId !== '') {
+            this.id = this.mitreId.external_id;
+        }
+        else {
+            let subscription = super.load().subscribe(
+                (data) => {
+                    this.groups = data as IntrusionSet[];
+                    let ids = [];
+                    let allIds = [];
+                    this.groups.forEach((group: IntrusionSet) => {
+                        for (let i in group.attributes.external_references) {
+                            if (group.attributes.external_references[i].external_id) {
+                                ids.push(group.attributes.external_references[i].external_id);
+                            }
+                        }
+                    });
+                    allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                        ).sort().filter(Boolean);
+                    this.id = this.getIdString(allIds);
+                    console.log(this.id);
+                }, (error) => {
+                    // handle errors here
+                    console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (subscription) {
+                        subscription.unsubscribe();
+                    }
+                }
+            );
+        }
+    }
+
     public loadIntrusionSet(): void {
         const subscription =  super.get().subscribe(
             (data) => {
@@ -311,6 +367,8 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     this.getAllAliases();
                 }
                 this.assignCitations();
+                this.getMitreId();
+                this.getId();
                 this.intrusionSet.attributes.external_references.reverse();
                 this.aliasesToDisplay = this.intrusionSet.attributes.aliases.filter((h) => h !== this.intrusionSet.attributes.name);
             }, (error) => {

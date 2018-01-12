@@ -16,10 +16,11 @@ export class HomeComponent {
       { url: 'stix/course-of-actions', label: 'Courses of Action' },
       // { url: 'indicators', label: 'Indicators' },
       // { url: 'identities', label: 'Identities' },
-      { url: 'stix/malwares', label: 'Malware' },
+      //{ url: 'stix/malwares', label: 'Malware' },
       // { url: 'relationships', label: 'Relationships' },
       // { url: 'sightings', label: 'Sightings' },
-      { url: 'stix/tools', label: 'Tools' },
+      //{ url: 'stix/tools', label: 'Tools' },
+      { url: 'stix/softwares', label: 'Software' },
       // { url: 'threat-actors', label: 'Threat Actors' },
       { url: 'stix/intrusion-sets', label: 'Groups' },
       { url: 'stix/citations', label: 'Citations'}

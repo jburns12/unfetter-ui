@@ -46,7 +46,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             'stix.kill_chain_phases': 1,
             'stix.id': 1
         };
-        const filter = `sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`;
+        const filterObj = { 'stix.external_references.source_name': 'mitre-attack' };
+        const filter = `sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}`;
         const subscription = super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];

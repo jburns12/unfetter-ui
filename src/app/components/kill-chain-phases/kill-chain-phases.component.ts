@@ -21,7 +21,7 @@ export class KillChainPhasesComponent implements OnChanges {
                 this.emitTactic(this.tactics[i]['name'], true);
             }
         }
-        //this.emitTactic(null, false);
+        // this.emitTactic(null, false);
     }
 
     public emitTactic(tactic: string, wait: boolean) {

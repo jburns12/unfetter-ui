@@ -164,8 +164,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                                           this.tacticBools['exfil'] = true;
                                       }
                                       this.tactics.push({'name': currTactic.tactic, 'val': true});
-                                  }
-                                  else {
+                                  } else {
                                       this.tactics.push({'name': currTactic.tactic, 'val': false});
                                   }
                               }
@@ -230,8 +229,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public getId(): void {
         if (this.mitreId !== undefined && this.mitreId !== '') {
             this.id = this.mitreId.external_id;
-        }
-        else {
+        } else {
             let ids = [];
             let allIds = [];
             this.attackPatterns.forEach((attackPattern: AttackPattern) => {
@@ -370,13 +368,13 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public removeEmpties(): void {
         if ('x_mitre_contributors' in this.attackPattern.attributes) {
-            this.removeContributor("");
+            this.removeContributor('');
             if (this.attackPattern.attributes.x_mitre_contributors.length === 0) {
                 delete this.attackPattern.attributes['x_mitre_contributors'];
             }
         }
         if ('x_mitre_data_sources' in this.attackPattern.attributes) {
-            this.attackPattern.attributes.x_mitre_data_sources = this.attackPattern.attributes.x_mitre_data_sources.filter((h) => h !== "");
+            this.attackPattern.attributes.x_mitre_data_sources = this.attackPattern.attributes.x_mitre_data_sources.filter((h) => h !== '');
             if (this.attackPattern.attributes.x_mitre_data_sources.length === 0) {
                 delete this.attackPattern.attributes['x_mitre_data_sources'];
             }
@@ -421,14 +419,13 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public saveAttackPattern(): void {
         this.removeEmpties();
         if (this.mitreId === '' || this.mitreId === undefined ) {
-            if(this.addId) {
+            if (this.addId) {
                 this.mitreId = new ExternalReference();
                 this.mitreId.external_id = this.id;
                 this.mitreId.source_name = 'mitre-attack';
                 this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
             }
-        }
-        else {
+        } else {
             this.mitreId.external_id = this.id;
             this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
         }

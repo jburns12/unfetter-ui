@@ -121,7 +121,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                     this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
                 }
                 let configUri = Constance.CONFIG_URL;
-                let subscription =  super.getByUrl(configUri).subscribe(
+                let subscript =  super.getByUrl(configUri).subscribe(
                     (res) => {
                         if (res && res.length) {
                             for (let currRes of res) {
@@ -137,8 +137,8 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                          console.log('error ' + error);
                     }, () => {
                         // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
+                        if (subscript) {
+                            subscript.unsubscribe();
                         }
                     }
                 );
@@ -160,7 +160,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         this.malware.attributes.x_mitre_aliases.push(this.malware.attributes.name);
         if (this.aliases.length > 0) {
             for (let alias of this.aliases){
-                if (alias.name !== ''){
+                if (alias.name !== '') {
                     this.malware.attributes.x_mitre_aliases.push(alias.name);
                     if (alias.description !== '') {
                         let extRef = new ExternalReference();
@@ -277,7 +277,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
 
     public removeContributors(): void {
         if ('x_mitre_contributors' in this.malware.attributes) {
-            this.removeContributor("");
+            this.removeContributor('');
             if (this.malware.attributes.x_mitre_contributors.length === 0) {
                 delete this.malware.attributes['x_mitre_contributors'];
             }
@@ -335,8 +335,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public getId(): void {
         if (this.mitreId !== undefined && this.mitreId !== '') {
             this.id = this.mitreId.external_id;
-        }
-        else {
+        } else {
             let subscription = super.load().subscribe(
                 (data) => {
                     this.malwares = data as Malware[];
@@ -381,14 +380,13 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
 
     public saveMalware(): void {
         if (this.mitreId === '' || this.mitreId === undefined ) {
-            if(this.addId) {
+            if (this.addId) {
                 this.mitreId = new ExternalReference();
                 this.mitreId.external_id = this.id;
                 this.mitreId.source_name = 'mitre-attack';
                 this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
             }
-        }
-        else {
+        } else {
             this.mitreId.external_id = this.id;
             this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
         }
@@ -399,8 +397,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         this.malware.attributes.external_references.reverse();
         if (this.softwareType === 'Tool/Utility') {
             this.stixService.url = Constance.TOOL_URL;
-        }
-        else {
+        } else {
             this.stixService.url = Constance.MALWARE_URL;
         }
         if (this.origType === this.softwareType) {
@@ -420,8 +417,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                     }
                 }
             );
-        }
-        else {
+        } else {
             console.log(this.malware);
             let newObj = Object.assign({}, this.malware);
             delete newObj['id'];
@@ -433,8 +429,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                 newObj.url = Constance.MALWARE_URL;
                 this.stixService.url = Constance.MALWARE_URL;
                 this.malware.url = Constance.TOOL_URL;
-            }
-            else {
+            } else {
                 newObj.type = 'tool';
                 newObj.attributes.labels = ['tool'];
                 newObj.url = Constance.TOOL_URL;

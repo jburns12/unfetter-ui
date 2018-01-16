@@ -38,8 +38,8 @@ export class SoftwareListComponent extends BaseStixComponent implements OnInit {
                 this.malwares = data as Malware[];
                 this.stixService.url = Constance.TOOL_URL;
                 let toolsSub =  super.load(filter).subscribe(
-                    (data) => {
-                        let newData = data;
+                    (allData) => {
+                        let newData = allData;
                         this.malwares = this.malwares.concat(newData);
                         this.malwares = this.malwares.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
                         this.malwares = this.malwares.filter((citation, index, self) => self.findIndex((t) => t.attributes.name === citation.attributes.name) === index);
@@ -68,8 +68,7 @@ export class SoftwareListComponent extends BaseStixComponent implements OnInit {
     public deletButtonClicked(software: any): void {
         if (software.type === 'malware') {
             this.stixService.url = Constance.MALWARE_URL;
-        }
-        else {
+        } else {
             this.stixService.url = Constance.TOOL_URL;
         }
         super.openDialog(software).subscribe(

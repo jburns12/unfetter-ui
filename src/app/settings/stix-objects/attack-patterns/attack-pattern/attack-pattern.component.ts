@@ -205,20 +205,20 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                         this.getMitigation(relationship.attributes.source_ref);
                     }
 
-                    let filter = { 'stix.id': relationship.attributes.source_ref };
-                    let uri = Constance.MULTIPLES_URL + '?filter=' + JSON.stringify(filter);
-                    let subscription =  this.getByUrl(uri).subscribe(
-                        (data) => {
-                              console.log(data);
-                              relationship.attributes.name = data[0].attributes.name;
+                    let relFilter = { 'stix.id': relationship.attributes.source_ref };
+                    let multiplesUri = Constance.MULTIPLES_URL + '?filter=' + JSON.stringify(relFilter);
+                    let subscript =  this.getByUrl(multiplesUri).subscribe(
+                        (multiplesData) => {
+                              console.log(multiplesData);
+                              relationship.attributes.name = multiplesData[0].attributes.name;
                               this.allRels.push(relationship);
                            }, (error) => {
                             // handle errors here
                              console.log('error ' + error);
                         }, () => {
                             // prevent memory links
-                            if (subscription) {
-                                subscription.unsubscribe();
+                            if (subscript) {
+                                subscript.unsubscribe();
                             }
                         }
                     );
@@ -242,19 +242,19 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             (data) => {
                 this.target = data as Relationship;
                 this.target.forEach((relationship: Relationship) => {
-                  let filter = { 'stix.id': relationship.attributes.target_ref };
-                  let uri = Constance.MULTIPLES_URL + '?filter=' + JSON.stringify(filter);
-                  let subscription =  this.getByUrl(uri).subscribe(
-                      (data) => {
-                            relationship.attributes.name = data[0].attributes.name;
+                  let relFilter = { 'stix.id': relationship.attributes.target_ref };
+                  let multiplesUri = Constance.MULTIPLES_URL + '?filter=' + JSON.stringify(relFilter);
+                  let subscript =  this.getByUrl(multiplesUri).subscribe(
+                      (multiplesData) => {
+                            relationship.attributes.name = multiplesData[0].attributes.name;
                             this.allRels.push(relationship);
                          }, (error) => {
                           // handle errors here
                            console.log('error ' + error);
                       }, () => {
                           // prevent memory links
-                          if (subscription) {
-                              subscription.unsubscribe();
+                          if (subscript) {
+                              subscript.unsubscribe();
                           }
                       }
                   );

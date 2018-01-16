@@ -57,7 +57,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
 
      public saveAttackPattern(): void {
         this.removeEmpties();
-        if(this.addId) {
+        if (this.addId) {
             this.mitreId = new ExternalReference();
             this.mitreId.external_id = this.id;
             this.mitreId.source_name = 'mitre-attack';

@@ -269,7 +269,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
                 }
                 let configUri = Constance.CONFIG_URL;
-                let subscription =  super.getByUrl(configUri).subscribe(
+                let subscript =  super.getByUrl(configUri).subscribe(
                     (res) => {
                         if (res && res.length) {
                             for (let currRes of res) {
@@ -285,8 +285,8 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                          console.log('error ' + error);
                     }, () => {
                         // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
+                        if (subscript) {
+                            subscript.unsubscribe();
                         }
                     }
                 );
@@ -325,8 +325,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public getId(): void {
         if (this.mitreId !== undefined && this.mitreId !== '') {
             this.id = this.mitreId.external_id;
-        }
-        else {
+        } else {
             let subscription = super.load().subscribe(
                 (data) => {
                     this.groups = data as IntrusionSet[];

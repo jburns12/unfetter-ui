@@ -125,7 +125,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                     }
                 }
                 let configUri = Constance.CONFIG_URL;
-                let subscription =  super.getByUrl(configUri).subscribe(
+                let subscript =  super.getByUrl(configUri).subscribe(
                     (res) => {
                         if (res && res.length) {
                             for (let currRes of res) {
@@ -141,8 +141,8 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                          console.log('error ' + error);
                     }, () => {
                         // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
+                        if (subscript) {
+                            subscript.unsubscribe();
                         }
                     }
                 );

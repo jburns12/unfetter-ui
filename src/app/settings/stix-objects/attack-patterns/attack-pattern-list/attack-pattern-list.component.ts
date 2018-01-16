@@ -113,44 +113,44 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 this.target = data as Relationship[];
                 coaRelationships = this.target.filter((h) => h.attributes.relationship_type === 'mitigates');
 
-            super.openDialog(attackPattern).subscribe(
-                () => {
-                    this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
-                    this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
-                    this.attackPattern.id = attackPattern.id;
-                    for (let rel of coaRelationships) {
-                        let uri = Constance.COURSE_OF_ACTION_URL + '/' + rel.attributes.source_ref;
-                        let subscription =  super.getByUrl(uri).subscribe(
-                            (data) => {
-                                this.foundCoA = new CourseOfAction();
-                                this.foundCoA = data as CourseOfAction;
-                                this.foundCoA.url = Constance.COURSE_OF_ACTION_URL;
-                                this.delete(this.foundCoA, false).subscribe(
-                                     () => {
+                super.openDialog(attackPattern).subscribe(
+                    () => {
+                        this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
+                        this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
+                        this.attackPattern.id = attackPattern.id;
+                        for (let rel of coaRelationships) {
+                            let coaUri = Constance.COURSE_OF_ACTION_URL + '/' + rel.attributes.source_ref;
+                            let subscript =  super.getByUrl(coaUri).subscribe(
+                                (coaData) => {
+                                    this.foundCoA = new CourseOfAction();
+                                    this.foundCoA = coaData as CourseOfAction;
+                                    this.foundCoA.url = Constance.COURSE_OF_ACTION_URL;
+                                    this.delete(this.foundCoA, false).subscribe(
+                                        () => {
 
-                                     }
-                                 );
-                               }, (error) => {
-                                // handle errors here
-                                 console.log('error ' + error);
-                            }, () => {
-                                // prevent memory links
-                                if (subscription) {
-                                    subscription.unsubscribe();
+                                        }
+                                    );
+                                }, (error) => {
+                                    // handle errors here
+                                    console.log('error ' + error);
+                                }, () => {
+                                    // prevent memory links
+                                    if (subscript) {
+                                        subscript.unsubscribe();
+                                    }
                                 }
-                            }
-                        );
-                    }
-                    this.deleteRels(this.attackPattern.id, false);
-                    // TODO determine if there is a better wya to do this
-                    let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
-                    delete this.attackPatternByPhaseMap[key];
-                    this.ref.detectChanges();
-                    this.attackPatternByPhaseMap[key] = temp;
+                            );
+                        }
+                        this.deleteRels(this.attackPattern.id, false);
+                        // TODO determine if there is a better wya to do this
+                        let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
+                        delete this.attackPatternByPhaseMap[key];
+                        this.ref.detectChanges();
+                        this.attackPatternByPhaseMap[key] = temp;
 
-                }
-            );
-           }, (error) => {
+                    }
+                );
+            }, (error) => {
             // handle errors here
              console.log('error ' + error);
         }, () => {

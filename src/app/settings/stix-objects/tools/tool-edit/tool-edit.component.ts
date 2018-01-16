@@ -114,7 +114,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                     this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
                 }
                 let configUri = Constance.CONFIG_URL;
-                let subscription =  super.getByUrl(configUri).subscribe(
+                let subscript =  super.getByUrl(configUri).subscribe(
                     (res) => {
                         if (res && res.length) {
                             for (let currRes of res) {
@@ -130,8 +130,8 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
                          console.log('error ' + error);
                     }, () => {
                         // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
+                        if (subscript) {
+                            subscript.unsubscribe();
                         }
                     }
                 );
@@ -212,7 +212,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
 
     public removeContributors(): void {
         if ('x_mitre_contributors' in this.tool.attributes) {
-            this.removeContributor("");
+            this.removeContributor('');
             if (this.tool.attributes.x_mitre_contributors.length === 0) {
                 delete this.tool.attributes['x_mitre_contributors'];
             }

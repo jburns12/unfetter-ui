@@ -47,8 +47,8 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
 
     public ngOnInit() {
         this.loadCitations();
-        this.rateControl = new FormControl("", [Validators.max(31), Validators.min(1)]);
-        this.yearControl = new FormControl("", [Validators.max(2100), Validators.min(1970)])
+        this.rateControl = new FormControl('', [Validators.max(31), Validators.min(1)]);
+        this.yearControl = new FormControl('', [Validators.max(2100), Validators.min(1970)])
     }
 
     public getRefDescription(): any {
@@ -69,8 +69,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
             }
             dateStr = dateStr += ')';
             description = description + dateStr + '. ';
-        }
-        else {
+        } else {
             description = description + '(n.d.). ';
         }
 
@@ -93,8 +92,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
         refToAdd['description'] = this.getRefDescription();
         if (this.foundReferences !== undefined) {
             this.addReferenceToConfig(refToAdd);
-        }
-        else {
+        } else {
             this.createReferencesInConfig(refToAdd);
         }
     }
@@ -233,14 +231,14 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                     }
                 }
                 let uri = Constance.CONFIG_URL;
-                let subscription =  super.getByUrl(uri).subscribe(
-                    (data) => {
-                        if (data) {
-                            this.allConfigData = data;
-                            for (let i = 0; i < data.length; ++i) {
-                                if (data[i].attributes.configKey === 'references') {
-                                    this.foundReferences = data[i];
-                                    extRefs = extRefs.concat(data[i].attributes.configValue);
+                let subscript =  super.getByUrl(uri).subscribe(
+                    (configData) => {
+                        if (configData) {
+                            this.allConfigData = configData;
+                            for (let i in configData) {
+                                if (configData[i].attributes.configKey === 'references') {
+                                    this.foundReferences = configData[i];
+                                    extRefs = extRefs.concat(configData[i].attributes.configValue);
                                 }
                             }
                         }
@@ -251,8 +249,8 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                          console.log('error ' + error);
                     }, () => {
                         // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
+                        if (subscript) {
+                            subscript.unsubscribe();
                         }
                     }
                 );

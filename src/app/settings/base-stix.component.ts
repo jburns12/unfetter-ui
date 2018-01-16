@@ -384,7 +384,8 @@ export class BaseStixComponent {
                 }
             }
             if (pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId !== undefined) {
-                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ' by ' + pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId.name});
+                let name = pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId.name;
+                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ' by ' + name});
             } else {
                 historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'path2': '',  'path': pattern.attributes.name, 'type': ' CREATED', 'name': ''});
             }

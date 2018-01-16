@@ -47,8 +47,7 @@ export class SoftwareNewComponent extends SoftwareEditComponent implements OnIni
             this.malware.attributes.labels = ['malware'];
             this.malware.url = Constance.MALWARE_URL;
             this.stixService.url = Constance.MALWARE_URL;
-        }
-        else {
+        } else {
             this.malware.type = 'tool';
             this.malware.attributes.labels = ['tool'];
             this.malware.url = Constance.TOOL_URL;

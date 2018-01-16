@@ -159,7 +159,7 @@ export class BaseStixComponent {
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
-                    if ('name' in item.attributes && item.type !== 'course-of-action' && dialog === true) {
+                    if ('name' in item.attributes && dialog === true) {
                         this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
                             duration: this.duration,
                             extraClasses: ['snack-bar-background-success']

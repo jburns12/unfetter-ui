@@ -124,7 +124,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                                 this.foundCoA = new CourseOfAction();
                                 this.foundCoA = data as CourseOfAction;
                                 this.foundCoA.url = Constance.COURSE_OF_ACTION_URL;
-                                this.delete(this.foundCoA).subscribe(
+                                this.delete(this.foundCoA, false).subscribe(
                                      () => {
 
                                      }

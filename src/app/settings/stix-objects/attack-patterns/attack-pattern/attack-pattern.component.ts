@@ -104,7 +104,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         this.deleteRels(this.attackPattern.id, goBack);
         if (this.coaId !== '') {
             this.courseOfAction.url = Constance.COURSE_OF_ACTION_URL;
-            this.delete(this.courseOfAction).subscribe(
+            this.delete(this.courseOfAction, false).subscribe(
                 () => {
 
                 }

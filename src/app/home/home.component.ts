@@ -22,7 +22,7 @@ export class HomeComponent {
     { url: 'stix/softwares', label: 'Software' },
     // { url: 'threat-actors', label: 'Threat Actors' },
     { url: 'stix/intrusion-sets', label: 'Groups' },
-    { url: 'stix/citations', label: 'Citations'}
+    { url: 'stix/citations', label: 'References'}
     // { url: 'reports', label: 'Reports' },
     // { url: 'x-unfetter-sensors', label: 'Sensors'}
 ];

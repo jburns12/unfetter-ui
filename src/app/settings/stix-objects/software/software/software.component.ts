@@ -31,6 +31,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
    public relHistoryArr: any = [];
    public historyFound: boolean = false;
    public aliasesToDisplay: any = [];
+   public attackId: string;
 
    constructor(
         public stixService: StixService,
@@ -241,6 +242,13 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
           (data) => {
             this.malware =  new Malware(data);
             this.malware.attributes.external_references.reverse();
+            if (this.malware.attributes.external_references !== undefined) {
+                for (let ref of this.malware.attributes.external_references) {
+                    if (ref.external_id !== undefined) {
+                        this.attackId = ref.external_id;
+                    }
+                }
+            }
             this.aliasesToDisplay = this.malware.attributes.x_mitre_aliases.filter((h) => h !== this.malware.attributes.name);
             this.getGroups();
           }, (error) => {

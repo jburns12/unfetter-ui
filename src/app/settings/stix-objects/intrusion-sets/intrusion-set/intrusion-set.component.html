@@ -36,7 +36,8 @@
         <mat-card>
             <mat-card-content>
               <mat-card-header style="border-bottom: 1px solid lightgray;">
-                  <mat-card-title><h3>{{ intrusionSet.attributes.name }}</h3></mat-card-title>
+                  <mat-card-title *ngIf="mitreId !== undefined"><h3>{{ intrusionSet.attributes.name }} - {{ mitreId.external_id }}</h3></mat-card-title>
+                  <mat-card-title *ngIf="mitreId == undefined"><h3>{{ intrusionSet.attributes.name }} </h3></mat-card-title>
               </mat-card-header>
                     <div class="row">
                         <div class="col-md-12">

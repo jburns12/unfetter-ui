@@ -30,6 +30,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public diff: any;
     public allRels: any = [];
     public deleteMitigation: boolean = false;
+    public attackId: string;
 
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
@@ -117,6 +118,13 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             (data) => {
                 this.attackPattern = data as AttackPattern;
                 console.log(this.attackPattern);
+                if (this.attackPattern.attributes.external_references !== undefined) {
+                    for (let ref of this.attackPattern.attributes.external_references) {
+                        if (ref.external_id !== undefined) {
+                            this.attackId = ref.external_id;
+                        }
+                    }
+                }
                 this.attackPattern.attributes.external_references.reverse();
                 this.findCoA();
                 this.findSourceRels();

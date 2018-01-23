@@ -30,6 +30,8 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
     public stixData: any;
     public editCitationMode: boolean = false;
     public citationKey: string;
+    public usedRefCount: number;
+    public unusedRefCount: number;
     @Input() public createNewOnly: boolean = false;
     @Output() public createdNew: EventEmitter<any> = new EventEmitter<any>();
 
@@ -226,10 +228,16 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                 this.stixData = data;
                 let extRefs = [];
                 for (let currObj of data) {
-                    if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
+                    if (currObj.attributes.external_references) {
                         extRefs = extRefs.concat(currObj.attributes.external_references);
                     }
                 }
+                extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
+                extRefs = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                for (let i in extRefs) {
+                    extRefs[i].used = "Used";
+                }
+                this.usedRefCount = extRefs.length;
                 let uri = Constance.CONFIG_URL;
                 let subscript =  super.getByUrl(uri).subscribe(
                     (configData) => {
@@ -244,6 +252,12 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                         }
                         extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                         this.citations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                        for (let i in this.citations) {
+                            if (this.citations[i].used === undefined) {
+                                this.citations[i].used = "Unused";
+                            }
+                        }
+                        this.unusedRefCount = this.citations.length - this.usedRefCount;
                     }, (error) => {
                         // handle errors here
                          console.log('error ' + error);

@@ -102,20 +102,24 @@
         </div>
     </div>
 <div *ngIf="!createNewOnly">
+    <b>Used References Count:</b> {{usedRefCount}}
+    <br><b>Unused References Count:</b> {{unusedRefCount}}
 <table class="table table-hover">
     <thead>
         <tr>
             <td></td>
             <td><h3>Name</h3></td>
+            <td><h3>Status</h3></td>
             <td><h3>Citation Text</h3></td>
             <td><h3>URL</h3></td>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let citation of citations">
+        <tr *ngFor="let citation of citations; let i = index">
             <td><button class="" mat-raised-button (click)="editCitation(citation)"> Edit</button></td>
-            <td>{{citation.source_name}}</td>
-            <td>{{citation.description}}</td>
+            <td>{{citations[i].source_name}}</td>
+            <td>{{citations[i].used}}</td>
+            <td>{{citations[i].description}}</td>
             <td><a href={{citation.url}}>{{citation.url}}</a></td>
         </tr>
     </tbody>

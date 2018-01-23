@@ -374,13 +374,23 @@ export class BaseStixComponent {
             console.log(currDiff);
             console.log(revDiff);
             for (let currArr of currDiff) {
-               this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId.name);
+                if (pattern.attributes.mitreId !== undefined) {
+                    this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId.name);
+                }
+                else {
+                    this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, undefined);
+                }
             }
             for (let i = 0; ( i + 1 ) < pattern.attributes.previous_versions.length; i++) {
                 let currVerDiff = odiff(pattern.attributes.previous_versions[i + 1], pattern.attributes.previous_versions[i]);
                 let revVerDiff = odiff(pattern.attributes.previous_versions[i], pattern.attributes.previous_versions[i + 1]);
                 for (let currArr of currVerDiff) {
-                   this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId.name);
+                    if (pattern.attributes.mitreId !== undefined) {
+                        this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId.name);
+                    }
+                    else {
+                        this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, undefined);
+                    }
                 }
             }
             if (pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId !== undefined) {

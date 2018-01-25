@@ -16,6 +16,7 @@ import { Constance } from '../../../../utils/constance';
 export class SoftwareListComponent extends BaseStixComponent implements OnInit {
     public malwares: Malware[];
     public url: string;
+    public draftsOnly: boolean = false;
 
     constructor(
         public stixService: StixService,
@@ -43,6 +44,16 @@ export class SoftwareListComponent extends BaseStixComponent implements OnInit {
                         this.malwares = this.malwares.concat(newData);
                         this.malwares = this.malwares.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
                         this.malwares = this.malwares.filter((citation, index, self) => self.findIndex((t) => t.attributes.name === citation.attributes.name) === index);
+                        for (let i in this.malwares) {
+                            this.malwares[i]["hasId"] = false;
+                            if (this.malwares[i].attributes.external_references !== undefined) {
+                                for (let extRef of this.malwares[i].attributes.external_references) {
+                                    if (extRef.external_id !== undefined) {
+                                        this.malwares[i]["hasId"] = true;
+                                    }
+                                }
+                            }
+                        }
                     }, (error) => {
                         // handle errors here
                          console.log('error ' + error);
@@ -77,5 +88,9 @@ export class SoftwareListComponent extends BaseStixComponent implements OnInit {
                  super.deleteRels(software.id, false);
             }
         );
+    }
+
+    public draftToggleClicked(draftsOnly: boolean) {
+        this.draftsOnly = draftsOnly;
     }
 }

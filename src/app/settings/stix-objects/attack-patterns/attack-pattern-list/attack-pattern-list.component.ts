@@ -24,6 +24,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public displayedColumns: string[] = ['name', 'action'];
     public target: any;
     public foundCoA: CourseOfAction;
+    public draftsOnly: boolean = false;
+    public tempModel: any;
+    public tempPhaseMap: any = {};
 
     constructor(
         public stixService: StixService,
@@ -46,8 +49,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             'stix.kill_chain_phases': 1,
             'stix.id': 1
         };
-        const filterObj = { 'stix.external_references.source_name': 'mitre-attack' };
-        const filter = `sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}`;
+        const filter = `sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`;
         const subscription = super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
@@ -66,6 +68,25 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         );
     }
 
+    public draftsOnlyToggle() {
+        this.draftsOnly = !this.draftsOnly;
+        if (this.draftsOnly) {
+            this.tempModel = this.attackPatterns;
+            this.attackPatterns= this.attackPatterns.filter((h) => h.attributes["hasId"] === false);
+            for (let key in this.attackPatternByPhaseMap) {
+                this.tempPhaseMap[key] = this.attackPatternByPhaseMap[key];
+                this.attackPatternByPhaseMap[key] = this.attackPatternByPhaseMap[key].filter((h) => h.attributes["hasId"] === false);
+            }
+        }
+        else {
+            this.attackPatterns = this.tempModel;
+            for (let key in this.attackPatternByPhaseMap) {
+                this.attackPatternByPhaseMap[key] = this.tempPhaseMap[key];
+            }
+        }
+
+    }
+
     public populateAttackPatternByPhaseMap() {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let killChainPhases = attackPattern.attributes.kill_chain_phases;
@@ -79,10 +100,29 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                     if (this.attackPatternByPhaseMap[killChainPhase.phase_name] === undefined) {
                         this.attackPatternByPhaseMap[killChainPhase.phase_name] = [];
                     }
+                    if (this.hasAttackId(attackPattern)) {
+                        attackPattern.attributes["hasId"] = true;
+                    }
+                    else {
+                        attackPattern.attributes["hasId"] = false;
+                    }
+                    console.log(attackPattern.attributes["hasId"]);
                     this.attackPatternByPhaseMap[killChainPhase.phase_name].push(attackPattern);
                 });
             }
         });
+    }
+
+    public hasAttackId(attackPattern: any) {
+        let hasId = false;
+        if (attackPattern.attributes.external_references !== undefined) {
+            for (let extRef of attackPattern.attributes.external_references) {
+                if (extRef.external_id !== undefined) {
+                    hasId = true;
+                }
+            }
+        }
+        return hasId;
     }
 
     public onSelect(event: any, phaseNameGroup: any): void {
@@ -182,6 +222,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                         this.phaseNameGroups[phaseName] = attackPatternsProxies;
                     }
                     attackPatternsProxies.push(attackPattern);
+
                 });
             }
         });

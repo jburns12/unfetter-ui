@@ -1,3 +1,10 @@
+<br>
+<div class="col-md-4">
+        <mat-checkbox class="identity-margin" (change)="draftsOnlyToggle()">Show drafts only?</mat-checkbox><br>
+</div>
+<div class="pull-right">
+        <span *ngIf="model" class="right-align"><b>Items: {{ model.length }}</b></span>
+</div>
 <div class="row" *ngIf="model">
         <div class="col-md-12">
             <div style="margin-top: 1%;">
@@ -5,6 +12,7 @@
                     <ng-template let-data pTemplate="item">
                         <div class="row list-item-row">
                             <div class="col-lg-9 col-xs-12">
+                                <div *ngIf="!data.hasId" style="color:#FE6131"><small><b>*Draft</b></small></div>
                                 <div>
                                     <a class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
                                 </div>
@@ -20,7 +28,7 @@
                                     <mat-chip selected="true"  color="primary" *ngFor="let sector of data.attributes.sectors">{{sector}}</mat-chip>
                                 </mat-chip-list>
 
-                                    <mat-chip-list class="pull-left" *ngIf="showKillChainPhases">
+                                <mat-chip-list class="pull-left" *ngIf="showKillChainPhases">
                                     <mat-chip selected="true"  color="warn"  *ngFor="let kill_chain_phase of data.attributes.kill_chain_phases">{{kill_chain_phase.phase_name}}</mat-chip>
                                 </mat-chip-list>
 

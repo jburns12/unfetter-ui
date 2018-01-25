@@ -24,6 +24,7 @@ import { CourseOfAction } from '../../../../models';
 export class CourseOfActionListComponent extends CourseOfActionComponent implements OnInit {
     public courseOfActions: CourseOfAction[];
     public url: string;
+    public draftsOnly: boolean = false;
 
     constructor(
         public stixService: StixService,
@@ -42,6 +43,16 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
         const subscription = super.load(filter).subscribe(
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];
+                for (let i in this.courseOfActions) {
+                    this.courseOfActions[i]["hasId"] = false;
+                    if (this.courseOfActions[i].attributes.external_references !== undefined) {
+                        for (let extRef of this.courseOfActions[i].attributes.external_references) {
+                            if (extRef.external_id !== undefined) {
+                                this.courseOfActions[i]["hasId"] = true;
+                            }
+                        }
+                    }
+                }
                 // this.assignCopy();
             }, (error) => {
                 // handle errors here
@@ -61,5 +72,9 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
                 this.filteredItems = this.filteredItems.filter((h) => h.id !== courseOfAction.id);
             }
         );
+    }
+
+    public draftToggleClicked(draftsOnly: boolean) {
+        this.draftsOnly = draftsOnly;
     }
 }

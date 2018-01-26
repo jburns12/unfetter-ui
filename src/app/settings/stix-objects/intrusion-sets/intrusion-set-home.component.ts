@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IntrusionSetHomeComponent {
 
-    public pageTitle = 'Intrusion Sets';
+    public pageTitle = 'Groups';
     public pageIcon = 'assets/icon/stix-icons/svg/threat-actor-b.svg';
     public description = 'An Intrusion Set is a grouped set of adversarial behaviors and resources with common properties' +
             'that is believed to believedorchestrated by a single organization.  An Intrusion Set may caputre multiple ' +

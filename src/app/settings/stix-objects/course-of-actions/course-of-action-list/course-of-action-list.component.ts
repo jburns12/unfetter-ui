@@ -44,11 +44,11 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];
                 for (let i in this.courseOfActions) {
-                    this.courseOfActions[i]["hasId"] = false;
+                    this.courseOfActions[i]['hasId'] = false;
                     if (this.courseOfActions[i].attributes.external_references !== undefined) {
                         for (let extRef of this.courseOfActions[i].attributes.external_references) {
                             if (extRef.external_id !== undefined) {
-                                this.courseOfActions[i]["hasId"] = true;
+                                this.courseOfActions[i]['hasId'] = true;
                             }
                         }
                     }

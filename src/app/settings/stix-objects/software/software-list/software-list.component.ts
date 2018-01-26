@@ -45,11 +45,11 @@ export class SoftwareListComponent extends BaseStixComponent implements OnInit {
                         this.malwares = this.malwares.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
                         this.malwares = this.malwares.filter((citation, index, self) => self.findIndex((t) => t.attributes.name === citation.attributes.name) === index);
                         for (let i in this.malwares) {
-                            this.malwares[i]["hasId"] = false;
+                            this.malwares[i]['hasId'] = false;
                             if (this.malwares[i].attributes.external_references !== undefined) {
                                 for (let extRef of this.malwares[i].attributes.external_references) {
                                     if (extRef.external_id !== undefined) {
-                                        this.malwares[i]["hasId"] = true;
+                                        this.malwares[i]['hasId'] = true;
                                     }
                                 }
                             }

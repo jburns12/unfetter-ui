@@ -23,10 +23,10 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
     @Output() public deletButtonClicked: EventEmitter<any> = new EventEmitter();
     @Output() public draftToggleClicked: EventEmitter<any> = new EventEmitter();
 
-    private isLastRow: boolean;
     public draftsOnly: boolean = false;
     public tempModel: any;
 
+    private isLastRow: boolean;
     private index = 0;
      constructor(
         public route: ActivatedRoute,
@@ -47,8 +47,7 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         if (this.draftsOnly) {
             this.tempModel = this.model;
             this.model = this.model.filter((h) => h.hasId === false);
-        }
-        else {
+        } else {
             this.model = this.tempModel;
         }
         this.draftToggleClicked.emit(this.draftsOnly);

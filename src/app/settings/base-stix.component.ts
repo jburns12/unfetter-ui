@@ -376,8 +376,7 @@ export class BaseStixComponent {
             for (let currArr of currDiff) {
                 if (pattern.attributes.mitreId !== undefined) {
                     this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId.name);
-                }
-                else {
+                } else {
                     this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, undefined);
                 }
             }
@@ -387,8 +386,7 @@ export class BaseStixComponent {
                 for (let currArr of currVerDiff) {
                     if (pattern.attributes.mitreId !== undefined) {
                         this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId.name);
-                    }
-                    else {
+                    } else {
                         this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, undefined);
                     }
                 }

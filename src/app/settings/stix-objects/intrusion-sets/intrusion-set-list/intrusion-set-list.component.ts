@@ -35,11 +35,11 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
             (data) => {
                 this.intrusionSets = data as IntrusionSet[];
                 for (let i in this.intrusionSets) {
-                    this.intrusionSets[i]["hasId"] = false;
+                    this.intrusionSets[i]['hasId'] = false;
                     if (this.intrusionSets[i].attributes.external_references !== undefined) {
                         for (let extRef of this.intrusionSets[i].attributes.external_references) {
                             if (extRef.external_id !== undefined) {
-                                this.intrusionSets[i]["hasId"] = true;
+                                this.intrusionSets[i]['hasId'] = true;
                             }
                         }
                     }

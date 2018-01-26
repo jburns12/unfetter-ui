@@ -54,7 +54,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 let uri = Constance.CONFIG_URL;
-                let subscription =  super.getByUrl(uri).subscribe(
+                let subscript =  super.getByUrl(uri).subscribe(
                 (res) => {
                     if (res && res.length) {
                         for (let currRes of res) {
@@ -74,10 +74,10 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 console.log('error ' + error);
                 }, () => {
                 // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
+                if (subscript) {
+                    subscript.unsubscribe();
                 }
-            });
+                });
 
             }, (error) => {
                 // handle errors here
@@ -95,13 +95,12 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         this.draftsOnly = !this.draftsOnly;
         if (this.draftsOnly) {
             this.tempModel = this.attackPatterns;
-            this.attackPatterns= this.attackPatterns.filter((h) => h.attributes["hasId"] === false);
+            this.attackPatterns = this.attackPatterns.filter((h) => h.attributes['hasId'] === false);
             for (let key in this.attackPatternByPhaseMap) {
                 this.tempPhaseMap[key] = this.attackPatternByPhaseMap[key];
-                this.attackPatternByPhaseMap[key] = this.attackPatternByPhaseMap[key].filter((h) => h.attributes["hasId"] === false);
+                this.attackPatternByPhaseMap[key] = this.attackPatternByPhaseMap[key].filter((h) => h.attributes['hasId'] === false);
             }
-        }
-        else {
+        } else {
             this.attackPatterns = this.tempModel;
             for (let key in this.attackPatternByPhaseMap) {
                 this.attackPatternByPhaseMap[key] = this.tempPhaseMap[key];
@@ -124,12 +123,11 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                         this.attackPatternByPhaseMap[killChainPhase.phase_name] = [];
                     }
                     if (this.hasAttackId(attackPattern)) {
-                        attackPattern.attributes["hasId"] = true;
+                        attackPattern.attributes['hasId'] = true;
+                    } else {
+                        attackPattern.attributes['hasId'] = false;
                     }
-                    else {
-                        attackPattern.attributes["hasId"] = false;
-                    }
-                    console.log(attackPattern.attributes["hasId"]);
+                    console.log(attackPattern.attributes['hasId']);
                     this.attackPatternByPhaseMap[killChainPhase.phase_name].push(attackPattern);
                 });
             }

@@ -235,7 +235,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                 extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                 extRefs = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
                 for (let i in extRefs) {
-                    extRefs[i].used = "Used";
+                    extRefs[i].used = 'Used';
                 }
                 this.usedRefCount = extRefs.length;
                 let uri = Constance.CONFIG_URL;
@@ -254,7 +254,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                         this.citations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
                         for (let i in this.citations) {
                             if (this.citations[i].used === undefined) {
-                                this.citations[i].used = "Unused";
+                                this.citations[i].used = 'Unused';
                             }
                         }
                         this.unusedRefCount = this.citations.length - this.usedRefCount;

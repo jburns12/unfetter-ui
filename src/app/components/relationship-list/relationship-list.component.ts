@@ -13,7 +13,12 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     @Input() public model: any;
     public url: string;
     public relationshipMapping: any = [];
+    public relationshipMappingTechniques: any = [];
+    public relationshipMappingGroups: any = [];
+    public relationshipMappingSoftware: any = [];
     public relationships: Relationship[];
+    public tactics: any = [];
+    public tacticsOrder: any = [];
 
     constructor(public baseComponentService: BaseComponentService, public router: Router) {
         console.dir(this.model);
@@ -26,7 +31,9 @@ export class RelationshipListComponent implements OnInit, OnChanges {
 
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.model.currentValue.id !== undefined) {
-            this.relationshipMapping = [];
+            this.relationshipMappingTechniques = {};
+            this.relationshipMappingGroups = [];
+            this.relationshipMappingSoftware = [];
             this.loadRelationships({ 'stix.target_ref': changes.model.currentValue.id });
             this.loadRelationships({ 'stix.source_ref': changes.model.currentValue.id });
         }
@@ -37,6 +44,31 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         let sub =  this.baseComponentService.get( encodeURI(url) ).subscribe(
         (data) => {
             this.relationships = data as Relationship[];
+            let uri = Constance.CONFIG_URL;
+            let subscription =  this.baseComponentService.get(uri).subscribe(
+            (res) => {
+                if (res && res.length) {
+                    for (let currRes of res) {
+                        if (currRes.attributes.configKey === 'tactics') {
+                            for  (let currTactic of currRes.attributes.configValue) {
+                                if (currTactic.phase === 'act') {
+                                    if (this.tacticsOrder.find((r) => r === currTactic.tactic) === undefined) {
+                                        this.tacticsOrder.push(currTactic.tactic);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }, (error) => {
+            // handle errors here
+            console.log('error ' + error);
+            }, () => {
+            // prevent memory links
+            if (subscription) {
+                subscription.unsubscribe();
+            }
+        });
             this.relationships.forEach(
                 (relationship) => {
                     if (filter['stix.source_ref']) {
@@ -46,7 +78,6 @@ export class RelationshipListComponent implements OnInit, OnChanges {
                     }
                 }
             );
-            console.log(this.relationshipMapping);
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -82,15 +113,15 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         if (id.indexOf('indicator') >= 0) {
             this.load(Constance.INDICATOR_URL, id);
         } else if (id.indexOf('attack-pattern') >= 0) {
-            this.load(Constance.ATTACK_PATTERN_URL, id);
+            this.loadTechnique(Constance.ATTACK_PATTERN_URL, id);
         } else if (id.indexOf('campaign') >= 0) {
             this.load(Constance.CAMPAIGN_URL, id);
         } else if (id.indexOf('intrusion-set') >= 0) {
-            this.load(Constance.INTRUSION_SET_URL, id);
+            this.loadGroups(Constance.INTRUSION_SET_URL, id);
         }  else if (id.indexOf('malware') >= 0) {
-            this.load(Constance.MALWARE_URL, id);
+            this.loadSoftware(Constance.MALWARE_URL, id);
         }  else if (id.indexOf('tool') >= 0) {
-            this.load(Constance.TOOL_URL, id);
+            this.loadSoftware(Constance.TOOL_URL, id);
         }
     }
 
@@ -100,6 +131,63 @@ export class RelationshipListComponent implements OnInit, OnChanges {
             (data) => {
                 this.relationshipMapping.push(data);
                 this.relationshipMapping = this.relationshipMapping.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
+            }, (error) => {
+                console.log(error);
+            }, () => {
+                if (sub) {
+                    sub.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public loadTechnique(url: string, id: string ): void {
+        const uri = `${url}/${id}`;
+        let sub = this.baseComponentService.get(uri).subscribe(
+            (data) => {
+                for (let phase of data.attributes.kill_chain_phases) {
+                    if (this.relationshipMappingTechniques[phase.phase_name] === undefined) {
+                        this.relationshipMappingTechniques[phase.phase_name] = [];
+                    }
+                    this.relationshipMappingTechniques[phase.phase_name].push(data);
+                    this.relationshipMappingTechniques[phase.phase_name] = this.relationshipMappingTechniques[phase.phase_name].sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
+                    if (this.tactics.find((r) => r === phase.phase_name) === undefined) {
+                        this.tactics.push(phase.phase_name);
+                    }
+                    console.log(this.tactics);
+                }
+            }, (error) => {
+                console.log(error);
+            }, () => {
+                if (sub) {
+                    sub.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public loadGroups(url: string, id: string ): void {
+        const uri = `${url}/${id}`;
+        let sub = this.baseComponentService.get(uri).subscribe(
+            (data) => {
+                this.relationshipMappingGroups.push(data);
+                this.relationshipMappingGroups = this.relationshipMappingGroups.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
+            }, (error) => {
+                console.log(error);
+            }, () => {
+                if (sub) {
+                    sub.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public loadSoftware(url: string, id: string ): void {
+        const uri = `${url}/${id}`;
+        let sub = this.baseComponentService.get(uri).subscribe(
+            (data) => {
+                this.relationshipMappingSoftware.push(data);
+                this.relationshipMappingSoftware = this.relationshipMappingSoftware.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
             }, (error) => {
                 console.log(error);
             }, () => {

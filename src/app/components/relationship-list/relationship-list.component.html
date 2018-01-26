@@ -1,19 +1,50 @@
 
-<div class="row" *ngIf="relationshipMapping && relationshipMapping.length > 0">
+<div class="row" *ngIf="(relationshipMappingTechniques && relationshipMappingTechniques.length > 0) || (relationshipMappingGroups && relationshipMappingGroups.length > 0) || (relationshipMappingSoftware && relationshipMappingSoftware.length > 0)">
     <div class="col-md-12">
         <mat-card>
             <mat-card-header style="border-bottom: 1px solid lightgray;">
-                <mat-card-title><h4>Relationships</h4></mat-card-title>
+                <mat-card-title><h3>Relationships</h3></mat-card-title>
             </mat-card-header>
-            <mat-card-content>
-                <div class="row" >
-                    <div class="col-md-4" *ngFor="let relationshipMap of relationshipMapping; let i = index" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
-                            <h5>
-                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
-                            </h5>
+            <div *ngIf="(relationshipMappingTechniques | json) != '{}'">
+                <h4>Techniques</h4>
+                <div *ngFor="let tactic of tacticsOrder">
+                    <div *ngIf="relationshipMappingTechniques[tactic] !== undefined">    <b>{{ tactic | capitalize }}</b>
+                    <mat-card-content>
+                        <div class="row" >
+                            <div class="col-md-4" *ngFor="let relationshipMap of relationshipMappingTechniques[tactic]; let i = index" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
+                                    <h5>
+                                        <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                    </h5>
+                            </div>
+                        </div>
+                    </mat-card-content>
                     </div>
                 </div>
-            </mat-card-content>
+            </div>
+            <div *ngIf="relationshipMappingGroups && relationshipMappingGroups.length > 0">
+            <h4>Groups</h4>
+                <mat-card-content>
+                    <div class="row" >
+                        <div class="col-md-4" *ngFor="let relationshipMap of relationshipMappingGroups; let i = index" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
+                                <h5>
+                                    <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                </h5>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </div>
+            <div *ngIf="relationshipMappingSoftware && relationshipMappingSoftware.length > 0">
+                <h4>Software</h4>
+                <mat-card-content>
+                    <div class="row" >
+                        <div class="col-md-4" *ngFor="let relationshipMap of relationshipMappingSoftware; let i = index" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
+                                <h5>
+                                    <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                </h5>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </div>
         </mat-card>
     </div>
 </div>

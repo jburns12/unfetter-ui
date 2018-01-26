@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, ViewChild, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnInit, OnChanges, ViewChild, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Constance } from '../../../utils/constance';
 import { DataSource } from '@angular/cdk/collections';
@@ -13,7 +13,7 @@ import { StixTableDataSource } from './stix-table.datasource';
     styleUrls: ['stix-table.component.scss'],
     templateUrl: 'stix-table.component.html'
 })
-export class StixTableComponent implements OnInit {
+export class StixTableComponent implements OnChanges {
 
     @Input('stixData') public stixData: any[];
     @Output() public delete: EventEmitter<any> = new EventEmitter();
@@ -24,7 +24,7 @@ export class StixTableComponent implements OnInit {
 
     constructor(router: Router, route: ActivatedRoute) {}
 
-    public ngOnInit() {
+    public ngOnChanges() {
         this.dataSource = new StixTableDataSource(this.stixData, this.paginator);
     }
 

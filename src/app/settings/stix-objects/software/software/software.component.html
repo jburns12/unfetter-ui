@@ -36,7 +36,7 @@
             <mat-card-content>
               <mat-card-header style="border-bottom: 1px solid lightgray;">
                     <mat-card-title *ngIf="attackId != undefined"><h3>{{ malware.attributes.name }} - {{ attackId }}</h3></mat-card-title>
-                    <mat-card-title *ngIf="attackId == undefined"><h3>{{ malware.attributes.name }}</h3></mat-card-title>
+                    <mat-card-title *ngIf="attackId == undefined"><h4 style="color:#FE6131">*Draft</h4><h3>{{ malware.attributes.name }}</h3></mat-card-title>
               </mat-card-header>
                     <div class="row">
                         <div class="col-md-12">

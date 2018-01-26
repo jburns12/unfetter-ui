@@ -24,6 +24,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
     public diff: any;
     public allRels: any = [];
     public allCitations: any = [];
+    public hasId: boolean = false;
 
      constructor(
         public stixService: StixService,
@@ -158,12 +159,23 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         );
     }
 
+    public searchForId(): void {
+        if (this.courseOfAction.attributes.external_references !== undefined) {
+            for (let extRef of this.courseOfAction.attributes.external_references) {
+                if (extRef.external_id !== undefined) {
+                    this.hasId = true;
+                }
+            }
+        }
+    }
+
     public loadCourseOfAction(): void {
         let subscription =  super.get().subscribe(
             (data) => {
                 this.courseOfAction = data as CourseOfAction;
                 this.getCitations();
                 this.assignCitations();
+                this.searchForId();
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

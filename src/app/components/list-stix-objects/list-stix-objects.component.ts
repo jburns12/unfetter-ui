@@ -21,7 +21,11 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
     @Input() public showExternalReferences: boolean;
     @Input() public showSectors: boolean;
     @Output() public deletButtonClicked: EventEmitter<any> = new EventEmitter();
+    @Output() public draftToggleClicked: EventEmitter<any> = new EventEmitter();
+
     private isLastRow: boolean;
+    public draftsOnly: boolean = false;
+    public tempModel: any;
 
     private index = 0;
      constructor(
@@ -35,6 +39,19 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
 
     public ngOnInit() {
         this.url = this.url ? this.url.replace('api', '') : '';
+
+    }
+
+    public draftsOnlyToggle() {
+        this.draftsOnly = !this.draftsOnly;
+        if (this.draftsOnly) {
+            this.tempModel = this.model;
+            this.model = this.model.filter((h) => h.hasId === false);
+        }
+        else {
+            this.model = this.tempModel;
+        }
+        this.draftToggleClicked.emit(this.draftsOnly);
     }
 
     public editButtonClicked(item: any): void {

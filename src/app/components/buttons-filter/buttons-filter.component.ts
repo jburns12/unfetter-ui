@@ -6,11 +6,16 @@ import { FormControl } from '@angular/forms';
   templateUrl: './buttons-filter.component.html'
 })
 
-export class ButtonsFilterComponent {
+export class ButtonsFilterComponent implements OnChanges {
     @Input() public model: any[];
     @Input() public filteredItems: any[];
     @Input() public showGrid = false;
+    @Input() public draftsOnly: boolean;
     @Output() public filterItemsChange = new EventEmitter<any[]>();
+
+    public ngOnChanges() {
+
+    }
 
     public onFilterItemsChange(filterItems: any[]): void {
         this.filterItemsChange.emit(filterItems);

@@ -53,9 +53,32 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         const subscription = super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
-                this.getPhaseNameAttackPatterns();
-                this.populateAttackPatternByPhaseMap();
-                this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups).sort();
+                let uri = Constance.CONFIG_URL;
+                let subscription =  super.getByUrl(uri).subscribe(
+                (res) => {
+                    if (res && res.length) {
+                        for (let currRes of res) {
+                            if (currRes.attributes.configKey === 'tactics') {
+                                for  (let currTactic of currRes.attributes.configValue) {
+                                    if (currTactic.phase === 'act') {
+                                        this.phaseNameGroups[currTactic.tactic] = [];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    this.populateAttackPatternByPhaseMap();
+                    this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups);
+                }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+                }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            });
+
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -200,32 +223,6 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             }
         }
     );
-    }
-
-    public getPhaseNameAttackPatterns() {
-        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
-            let killChainPhases = attackPattern.attributes.kill_chain_phases;
-            if (attackPattern.attributes.name === 'test attack') {
-                console.dir(killChainPhases);
-            }
-            if (!killChainPhases || killChainPhases.length === 0) {
-                let attackPatternsProxies = this.phaseNameGroups['unspecified'];
-                if (attackPatternsProxies) {
-                    attackPatternsProxies.push(attackPattern);
-                }
-            } else {
-                killChainPhases.forEach((killChainPhase: KillChainPhase) => {
-                    let phaseName = killChainPhase.phase_name.toLowerCase();
-                    let attackPatternsProxies = this.phaseNameGroups[phaseName];
-                    if (attackPatternsProxies === undefined) {
-                        attackPatternsProxies = [];
-                        this.phaseNameGroups[phaseName] = attackPatternsProxies;
-                    }
-                    attackPatternsProxies.push(attackPattern);
-
-                });
-            }
-        });
     }
 
     public onTabShow(event: any): void {

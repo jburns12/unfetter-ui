@@ -27,6 +27,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ClipboardModule } from 'ngx-clipboard';
 import { GlobalModule } from '../global/global.module';
+import { PopoverModule } from 'ngx-popover';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { GlobalModule } from '../global/global.module';
     BsDropdownModule.forRoot(),
     CollapseModule.forRoot(),
     ClipboardModule,
-    GlobalModule
+    GlobalModule,
+    PopoverModule
   ],
   exports: [
     PageHeaderComponent,

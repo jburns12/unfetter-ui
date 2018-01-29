@@ -12,9 +12,21 @@
                     <mat-card-content>
                         <div class="row" >
                             <div class="col-md-4" *ngFor="let relationshipMap of relationshipMappingTechniques[tactic]; let i = index" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
+                                <div *ngIf="i % 3 == 0">
                                     <h5>
-                                        <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                            <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="right" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
                                     </h5>
+                                </div>
+                                <div *ngIf="i % 3 == 1">
+                                    <h5>
+                                            <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="top" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                    </h5>
+                                </div>
+                                <div *ngIf="i % 3 == 2">
+                                    <h5>
+                                            <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="left" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                    </h5>
+                                </div>
                             </div>
                         </div>
                     </mat-card-content>
@@ -26,9 +38,21 @@
                 <mat-card-content>
                     <div class="row" >
                         <div class="col-md-4" *ngFor="let relationshipMap of relationshipMappingGroups; let i = index" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
-                                <h5>
-                                    <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
-                                </h5>
+                                <div *ngIf="i % 3 == 0">
+                                        <h5>
+                                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="right" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                        </h5>
+                                    </div>
+                                    <div *ngIf="i % 3 == 1">
+                                        <h5>
+                                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="top" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                        </h5>
+                                    </div>
+                                    <div *ngIf="i % 3 == 2">
+                                        <h5>
+                                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="left" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                        </h5>
+                                    </div>
                         </div>
                     </div>
                 </mat-card-content>
@@ -38,9 +62,21 @@
                 <mat-card-content>
                     <div class="row" >
                         <div class="col-md-4" *ngFor="let relationshipMap of relationshipMappingSoftware; let i = index" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
-                                <h5>
-                                    <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
-                                </h5>
+                                <div *ngIf="i % 3 == 0">
+                                        <h5>
+                                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="right" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                        </h5>
+                                    </div>
+                                    <div *ngIf="i % 3 == 1">
+                                        <h5>
+                                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="top" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                        </h5>
+                                    </div>
+                                    <div *ngIf="i % 3 == 2">
+                                        <h5>
+                                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}" popover="{{relationshipMap.attributes.description}}" popoverTitle="Description" popoverPlacement="left" [popoverOnHover]="true"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                        </h5>
+                                    </div>
                         </div>
                     </div>
                 </mat-card-content>

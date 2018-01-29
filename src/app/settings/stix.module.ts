@@ -12,6 +12,7 @@ import { StixService } from './stix.service';
 import { StixRoutingModule } from './stix-routing.module';
 import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 import { DiffMatchPatchModule } from 'ng-diff-match-patch';
+import { PopoverModule } from 'ngx-popover';
 
 import {
   AttackPatternListComponent, AttackPatternsHomeComponent,
@@ -76,7 +77,8 @@ import { GlobalModule } from '../global/global.module';
       DataListModule,
       StixRoutingModule,
       GlobalModule,
-      DiffMatchPatchModule
+      DiffMatchPatchModule,
+      PopoverModule
   ],
   declarations: [
     // Components / Directives/ Pipes

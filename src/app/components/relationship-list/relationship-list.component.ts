@@ -227,9 +227,9 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         } else if (relationshipMap.type === Constance.INTRUSION_SET_TYPE) {
             url = Constance.INTRUSION_SET_URL;
         } else if (relationshipMap.type === Constance.MALWARE_TYPE) {
-            url = Constance.MALWARE_URL;
+            url = Constance.SOFTWARE_URL;
         } else if (relationshipMap.type === Constance.TOOL_TYPE) {
-            url = Constance.TOOL_URL;
+            url = Constance.SOFTWARE_URL;
         }
         return url.replace('api', '');
     }

@@ -118,6 +118,10 @@ import {
   CitationsHomeComponent
 } from './stix-objects/citations';
 
+import {
+  TacticsHomeComponent
+} from './stix-objects/tactics';
+
 import { AuthGuard } from '../global/services/auth.guard';
 
 const stixRoutes: Routes = [{
@@ -175,6 +179,15 @@ const stixRoutes: Routes = [{
       {
         path: 'citations',
         component: CitationsHomeComponent
+      },
+      {
+        path: 'tactics',
+        component: TacticsHomeComponent,
+
+      },
+      {
+        path: 'tactics/:tactic',
+        component: TacticsHomeComponent,
       },
       {
         path: 'course-of-actions',

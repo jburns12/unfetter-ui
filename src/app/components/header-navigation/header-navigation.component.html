@@ -32,6 +32,15 @@
           <li *ngIf="authService.loggedIn()"><a target="_blank" href="/api/explorer/">View API</a></li>-->
 
           <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
+              <a dropdownToggle class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tactics<span class="caret"></span></a>
+              <ul  class="dropdown-menu">
+                <li *ngFor="let nav of tacticNavigations">
+                  <a [routerLink]="[nav.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{nav.label | capitalize}}</a>
+                </li>
+              </ul>
+            </li>
+
+          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
             <a dropdownToggle class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">STIX<span class="caret"></span></a>
             <ul  class="dropdown-menu">
               <li *ngFor="let navigation of navigations">

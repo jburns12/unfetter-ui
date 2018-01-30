@@ -15,7 +15,7 @@ import { StixService } from '../../stix.service';
   styleUrls: ['./tactics-home.component.scss']
 })
 
-export class TacticsHomeComponent extends BaseStixComponent implements OnInit, OnChange {
+export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
     public attackPatterns: AttackPattern[] = [];
 
     constructor(

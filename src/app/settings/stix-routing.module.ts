@@ -119,6 +119,10 @@ import {
 } from './stix-objects/citations';
 
 import {
+  HistoryHomeComponent
+} from './stix-objects/history';
+
+import {
   TacticsHomeComponent
 } from './stix-objects/tactics';
 
@@ -188,6 +192,10 @@ const stixRoutes: Routes = [{
       {
         path: 'tactics/:tactic',
         component: TacticsHomeComponent,
+      },
+      {
+        path: 'history',
+        component: HistoryHomeComponent,
       },
       {
         path: 'course-of-actions',

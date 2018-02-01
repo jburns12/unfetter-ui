@@ -38,6 +38,7 @@ import {
     SightingComponent } from './stix-objects/sightings';
 
 import { CitationsHomeComponent } from './stix-objects/citations';
+import { HistoryHomeComponent } from './stix-objects/history';
 import { TacticsHomeComponent } from './stix-objects/tactics';
 import { SensorHomeComponent, SensorListComponent, SensorNewComponent, SensorEditComponent, SensorComponent } from './stix-objects/sensors';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
@@ -103,6 +104,8 @@ import { GlobalModule } from '../global/global.module';
 
     CitationsHomeComponent,
 
+    HistoryHomeComponent,
+    
     TacticsHomeComponent,
     
     SightingHomeComponent,

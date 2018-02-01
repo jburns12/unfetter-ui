@@ -27,7 +27,7 @@
             </mat-card-header>
             <br>
           <mat-card-content *ngFor="let relHistoryStr of relHistoryArr">
-            <b>{{relHistoryStr}}</b>
+                <b>{{relHistoryStr.date}}: {{relHistoryStr.source_ref}}{{relHistoryStr.target_ref}}{{relHistoryStr.action}}{{relHistoryStr.id}}</b>
           </mat-card-content>
         </mat-card>
         <br>

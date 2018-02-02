@@ -14,6 +14,7 @@ import odiff from 'odiff';
 export class BaseStixComponent {
     public filteredItems: any[];
     public allRels: any;
+    public name: string;
     private duration = 3000;
 
     constructor(
@@ -368,6 +369,17 @@ export class BaseStixComponent {
     }
 
     public getHistory(pattern: any, historyArr: any[]): void {
+        this.name = pattern.attributes.name;
+
+        if (pattern.attributes.external_references !== undefined) {
+            for (let i in pattern.attributes.external_references) {
+                if (pattern.attributes.external_references[i].external_id !== undefined) {
+                    this.name = pattern.attributes.external_references[i].external_id;
+                }
+            }
+        }
+    
+
         if (pattern.attributes.previous_versions && (pattern.attributes.previous_versions.length > 0) ) {
             let currDiff = odiff(pattern.attributes.previous_versions[0], pattern.attributes);
             let revDiff = odiff(pattern.attributes, pattern.attributes.previous_versions[0]);
@@ -375,9 +387,9 @@ export class BaseStixComponent {
             console.log(revDiff);
             for (let currArr of currDiff) {
                 if (pattern.attributes.mitreId !== undefined) {
-                    this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId.name, pattern.attributes.name);
+                    this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, pattern.attributes.mitreId.name, this.name);
                 } else {
-                    this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, undefined, pattern.attributes.name);
+                    this.getHistoryLine(currArr, historyArr, pattern.attributes.modified, revDiff, undefined, this.name);
                 }
             }
             for (let i = 0; ( i + 1 ) < pattern.attributes.previous_versions.length; i++) {
@@ -385,30 +397,40 @@ export class BaseStixComponent {
                 let revVerDiff = odiff(pattern.attributes.previous_versions[i], pattern.attributes.previous_versions[i + 1]);
                 for (let currArr of currVerDiff) {
                     if (pattern.attributes.mitreId !== undefined) {
-                        this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId.name, pattern.attributes.name);
+                        this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, pattern.attributes.previous_versions[i].mitreId.name, this.name);
                     } else {
-                        this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, undefined, pattern.attributes.name);
+                        this.getHistoryLine(currArr, historyArr, pattern.attributes.previous_versions[i].modified, revVerDiff, undefined, this.name);
                     }
                 }
             }
             if (pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId !== undefined) {
                 let name = pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].mitreId.name;
-                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'objName': pattern.attributes.name + ' ', 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ' by ' + name});
+                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'objName': this.name + ' ', 'path2': '', 'path': '', 'type': ' CREATED', 'name': ' by ' + name});
             } else {
-                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'objName': pattern.attributes.name + ' ', 'path2': '',  'path': pattern.attributes.name, 'type': ' CREATED', 'name': ''});
+                historyArr.push({'date': pattern.attributes.previous_versions[pattern.attributes.previous_versions.length - 1].created, 'objName': this.name + ' ', 'path2': '', 'path': '', 'type': ' CREATED', 'name': ''});
             }
             historyArr.reverse();
             console.log(historyArr);
         } else {
             if (pattern.attributes.mitreId !== undefined) {
-                historyArr.push({'date': pattern.attributes.created, 'objName': pattern.attributes.name + ' ', 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ' by ' + pattern.attributes.mitreId.name});
+                historyArr.push({'date': pattern.attributes.created, 'objName': this.name + ' ', 'path2': '', 'path': '', 'type': ' CREATED', 'name': ' by ' + pattern.attributes.mitreId.name});
             } else {
-                historyArr.push({'date': pattern.attributes.created, 'objName': pattern.attributes.name + ' ', 'path2': '', 'path': pattern.attributes.name, 'type': ' CREATED', 'name': ''});
+                historyArr.push({'date': pattern.attributes.created, 'objName': this.name + ' ', 'path2': '', 'path': '', 'type': ' CREATED', 'name': ''});
             }
         }
     }
 
     public getRelHistory(pattern: any, relHistoryArr: any, relationships: any): void {
+        this.name = pattern.attributes.name;
+
+        if (pattern.attributes.external_references !== undefined) {
+            for (let i in pattern.attributes.external_references) {
+                if (pattern.attributes.external_references[i].external_id !== undefined) {
+                    this.name = pattern.attributes.external_references[i].external_id;
+                }
+            }
+        }
+
         let dateArr = [];
         if (pattern.attributes.deletedRelationships !== undefined) {
             for (let currRel of pattern.attributes.deletedRelationships) {
@@ -460,9 +482,9 @@ export class BaseStixComponent {
         dateArr = dateArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
         for (let currArr of dateArr) {
             if (currArr.id !== undefined) {
-                relHistoryArr.push({'rel_id': currArr.relId, 'date': currArr.date, 'source_ref': pattern.attributes.name + '\'s relationship with "', 'target_ref': currArr.ref + '" ', 'action': currArr.action, 'id': ' by ' + currArr.id});
+                relHistoryArr.push({'type': 'relationship', 'rel_id': currArr.relId, 'date': currArr.date, 'source_ref': this.name + '\'s relationship with ', 'target_ref': currArr.ref + ' ', 'action': currArr.action, 'id': ' by ' + currArr.id});
             } else {
-                relHistoryArr.push({'rel_id': currArr.relId, 'date': currArr.date, 'source_ref': pattern.attributes.name + '\'s relationship with "', 'target_ref': currArr.ref + '" ', 'action': currArr.action, 'id': ''});
+                relHistoryArr.push({'type': 'relationship', 'rel_id': currArr.relId, 'date': currArr.date, 'source_ref': this.name + '\'s relationship with ', 'target_ref': currArr.ref + ' ', 'action': currArr.action, 'id': ''});
             }
         }
     }
@@ -478,17 +500,33 @@ export class BaseStixComponent {
             }
           
             let sourceObj = allObjects.find((h) => h.id === rel.attributes.source_ref);
-            relHash['source_ref'] = sourceObj.attributes.name;
             let targetObj = allObjects.find((h) => h.id === rel.attributes.target_ref);
+            relHash['source_ref'] = sourceObj.attributes.name;          
             relHash['target_ref'] = targetObj.attributes.name;
+
+            if (sourceObj.attributes.external_references !== undefined) {
+                for (let i in sourceObj.attributes.external_references) {
+                    if (sourceObj.attributes.external_references[i].external_id !== undefined) {
+                        relHash['source_ref'] = sourceObj.attributes.external_references[i].external_id;
+                    }
+                }
+            }
+
+            if (targetObj.attributes.external_references !== undefined) {
+                for (let i in targetObj.attributes.external_references) {
+                    if (targetObj.attributes.external_references[i].external_id !== undefined) {
+                        relHash['target_ref'] = targetObj.attributes.external_references[i].external_id;
+                    }
+                }
+            }
 
             dateArr.push(relHash);
         }
         for (let currArr of dateArr) {
             if (currArr.id !== undefined) {
-                allRelHistory.push({'date': currArr.date, 'source_ref': currArr.source_ref + '\'s relationship with "', 'target_ref': currArr.target_ref + '" ', 'action': currArr.action, 'id': ' by ' + currArr.id});
+                allRelHistory.push({'type': 'relationship', 'date': currArr.date, 'source_ref': currArr.source_ref + '\'s relationship with ', 'target_ref': currArr.target_ref + ' ', 'action': currArr.action, 'id': ' by ' + currArr.id});
             } else {
-                allRelHistory.push({'date': currArr.date, 'source_ref': currArr.source_ref + '\'s relationship with "', 'target_ref': currArr.target_ref + '" ', 'action': currArr.action, 'id': ''});
+                allRelHistory.push({'type': 'relationship', 'date': currArr.date, 'source_ref': currArr.source_ref + '\'s relationship with ', 'target_ref': currArr.target_ref + ' ', 'action': currArr.action, 'id': ''});
             }
         }
     }

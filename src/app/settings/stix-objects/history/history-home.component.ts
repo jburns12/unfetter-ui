@@ -18,14 +18,19 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
     public getHistoryFromTo: boolean = false;
     public showAllHistory: boolean = false;
     public historyFound: boolean = false;
+    public errMsg: string = '';
     public historyArr: any[] = [];
     public relHistoryArr: any = [];
+    public filterHistoryArr: any[] = [];
+    public filterRelHistoryArr: any = [];
+    public displayArr: any = [];
     public startDate: any;
     public endDate: any;
     public allObjects: any = [];
     public allRels: any = [];
     public relationships: any = [];
     public urls: any = [Constance.ATTACK_PATTERN_URL, Constance.COURSE_OF_ACTION_URL, Constance.INTRUSION_SET_URL, Constance.MALWARE_URL, Constance.TOOL_URL];
+    public settings = { timePicker: true, format: 'MM-dd-yyyy hh:mm a' };
 
     constructor(
         public stixService: StixService,
@@ -41,7 +46,10 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
 
     public ngOnInit() {
         this.getAllObjects();
-        this.endDate = new Date();
+        this.startDate = new Date("05/31/2017");
+        console.log(this.startDate.getTime());
+        console.log(this.startDate.getTimezoneOffset());
+        this.endDate = new Date().setSeconds(0, 0);
     }
 
     public getAllObjects(): void {
@@ -78,15 +86,29 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
     }
 
     public searchHistory(): void {
-        console.log(this.allObjects);
+        let currDate = this.allObjects[0].attributes.modified;
+        currDate = new Date(currDate);
+
+        this.startDate = new Date(this.startDate);
+        this.endDate = new Date(this.endDate);
         console.log(this.startDate);
-        console.log(this.endDate);
+        console.log(this.allObjects[0].id);
+        console.log(currDate);
+        if (this.startDate.getTime() > this.endDate.getTime()) {
+            console.log('NOOO');
+            this.errMsg = 'Please choose an end date later than the start date.';
+        }
+        else {
+            this.errMsg = '';
+            this.showAll(this.startDate, this.endDate);
+        }
+        this.getHistoryFromTo = false;
     }
 
     public cancelButtonClicked(): void {
         this.getHistoryFromTo = false;
-        this.endDate = new Date();
-        this.startDate = undefined;
+        this.endDate = new Date().setSeconds(0, 0);
+        this.startDate = new Date("05/31/2017");
     }
     public getFromTo(): void {
         this.getHistoryFromTo = true;
@@ -96,8 +118,9 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
         this.showAllHistory = false;
     }
 
-    public showAll(): void {
+    public showAll(start: Date, end: Date): void {
         if(!this.historyFound) {
+            let allRelHistory = [];
             for (let pattern of this.allObjects) {
                 let currHistory = [];
                 let relHistory = [];
@@ -106,15 +129,21 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
                 this.historyArr = this.historyArr.concat(Array.from(new Set(currHistory)));
                 //this.relHistoryArr = this.relHistoryArr.concat(Array.from(new Set(relHistory)));
             }
-            let allRelHistory = [];
             super.getAllHistory(this.relationships, this.allObjects, allRelHistory);
-
-            this.historyArr = this.historyArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
             this.relHistoryArr = this.relHistoryArr.concat(Array.from(new Set(allRelHistory)));
-            this.relHistoryArr = this.relHistoryArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
             this.historyFound = true;
-            
         }
+        if (start !== undefined && end !== undefined) {
+            this.filterHistoryArr = this.historyArr.filter((h) => new Date(h.date).getTime() >= start.getTime() - (start.getTimezoneOffset() * 60000) && new Date(h.date).getTime() <= end.getTime() - (end.getTimezoneOffset() * 60000));
+            this.filterRelHistoryArr = this.relHistoryArr.filter((h) => new Date(h.date).getTime() >= start.getTime() - (start.getTimezoneOffset() * 60000) && new Date(h.date).getTime() <= end.getTime() - (end.getTimezoneOffset() * 60000));
+        }
+        else {
+            this.filterHistoryArr = this.historyArr;
+            this.filterRelHistoryArr = this.relHistoryArr;
+        }
+        this.displayArr = this.filterHistoryArr.concat(this.filterRelHistoryArr);
+        this.displayArr = this.displayArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
+
         this.showAllHistory = true;
     }
 } 

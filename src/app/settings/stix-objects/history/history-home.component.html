@@ -1,0 +1,49 @@
+<br>
+<div class="row">
+    <div class="col-md-12">
+            <div *ngIf="!getHistoryFromTo" class="button-row">
+                    <a class=" " mat-raised-button (click)="getFromTo()"><i class="material-icons">add</i> GET HISTORY FROM-TO</a>
+              </div>
+                    <mat-card *ngIf="getHistoryFromTo" style="margin: 10px 0px;">
+                          <mat-card-content>
+                              <h3>Get History</h3>
+                              <div class="row">
+                                    <div *ngIf="errMsg != ''" class="alert alert-info">{{errMsg}}</div>
+                                    <div class="col-md-6">
+                                        <angular2-date-picker [(ngModel)]="startDate" [settings]="settings"></angular2-date-picker>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <angular2-date-picker [(ngModel)]="endDate" [settings]="settings"></angular2-date-picker>
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <div class="button-row">
+                                    <a class="" mat-raised-button (click)="searchHistory()" [disabled]="!startDate || !endDate"><i class="material-icons">save</i> SUBMIT</a>
+                                    <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                                </div>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </div>
+                <div *ngIf="!showAllHistory && !getHistoryFromTo" class="button-row">
+                        <br>
+                        <a class=" " mat-raised-button (click)="showAll(undefined, undefined)"><i class="material-icons">add</i> SHOW FULL HISTORY</a>
+                  </div>
+                  <div *ngIf="showAllHistory" class="button-row">
+                        <br>
+                        <a *ngIf="!getHistoryFromTo" class=" " mat-raised-button (click)="hideShowAllButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> HIDE HISTORY</a>
+                        <br><br>
+                        <mat-card>
+                                <mat-card-header style="border-bottom: 1px solid lightgray;">
+                                  <mat-card-title><h3>History</h3></mat-card-title>
+                                </mat-card-header>
+                                <br>
+                                <mat-card-content *ngFor="let historyStr of displayArr"> 
+                                <b *ngIf="historyStr.type != 'relationship'">{{historyStr.date}}: {{historyStr.objName}} - {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
+                                <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
+                                <b *ngIf="historyStr.type == 'relationship'">{{historyStr.date}}: {{historyStr.source_ref}}{{historyStr.target_ref}}{{historyStr.action}}{{historyStr.id}}</b>
+                                </mat-card-content>
+                        </mat-card><br>
+                  </div>

@@ -20,7 +20,7 @@
               </mat-card-header>
               <br>
               <mat-card-content *ngFor="let historyStr of historyArr">
-              <b>{{historyStr.date}}: {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
+              <b>{{historyStr.date}}: {{historyStr.objName}} - {{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
               <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
               </mat-card-content>
             </mat-card><br>
@@ -30,7 +30,7 @@
                 </mat-card-header>
                 <br>
               <mat-card-content *ngFor="let relHistoryStr of relHistoryArr">
-                <b>{{relHistoryStr}}</b>
+                    <b>{{relHistoryStr.date}}: {{relHistoryStr.source_ref}}{{relHistoryStr.target_ref}}{{relHistoryStr.action}}{{relHistoryStr.id}}</b>
               </mat-card-content>
             </mat-card>
             <br>

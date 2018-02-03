@@ -219,6 +219,13 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                         (multiplesData) => {
                               console.log(multiplesData);
                               relationship.attributes.name = multiplesData[0].attributes.name;
+                              if (multiplesData[0].attributes.external_references !== undefined) {
+                                for (let i in multiplesData[0].attributes.external_references) {
+                                    if (multiplesData[0].attributes.external_references[i].external_id !== undefined) {
+                                        relationship.attributes.name = multiplesData[0].attributes.external_references[i].external_id;
+                                    }
+                                }
+                            }
                               this.allRels.push(relationship);
                            }, (error) => {
                             // handle errors here

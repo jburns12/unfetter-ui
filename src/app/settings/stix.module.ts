@@ -13,6 +13,7 @@ import { StixRoutingModule } from './stix-routing.module';
 import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 import { DiffMatchPatchModule } from 'ng-diff-match-patch';
 import { PopoverModule } from 'ngx-popover';
+import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
 
 import {
   AttackPatternListComponent, AttackPatternsHomeComponent,
@@ -38,6 +39,7 @@ import {
     SightingComponent } from './stix-objects/sightings';
 
 import { CitationsHomeComponent } from './stix-objects/citations';
+import { HistoryHomeComponent } from './stix-objects/history';
 import { TacticsHomeComponent } from './stix-objects/tactics';
 import { SensorHomeComponent, SensorListComponent, SensorNewComponent, SensorEditComponent, SensorComponent } from './stix-objects/sensors';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
@@ -79,7 +81,8 @@ import { GlobalModule } from '../global/global.module';
       StixRoutingModule,
       GlobalModule,
       DiffMatchPatchModule,
-      PopoverModule
+      PopoverModule,
+      AngularDateTimePickerModule
   ],
   declarations: [
     // Components / Directives/ Pipes
@@ -102,6 +105,8 @@ import { GlobalModule } from '../global/global.module';
     CourseOfActionComponent,
 
     CitationsHomeComponent,
+
+    HistoryHomeComponent,
 
     TacticsHomeComponent,
     

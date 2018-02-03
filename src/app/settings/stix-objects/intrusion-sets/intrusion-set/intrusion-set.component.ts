@@ -146,6 +146,13 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                                 this.origRels.push(relationship);
                                 let relCopy = Object.assign({}, relationship);
                                 relCopy.attributes.name = tech[0].name;
+                                if (tech[0].extRefs !== undefined) {
+                                    for (let i in tech[0].extRefs) {
+                                        if (tech[0].extRefs[i].external_id !== undefined) {
+                                            relCopy.attributes.name = tech[0].extRefs[i].external_id;
+                                        }
+                                    }
+                                }
                                 this.allRels.push(relCopy);
                                 this.currTechniques[i] = this.techniques;
                                 for (let index in this.currTechniques) {
@@ -163,6 +170,13 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                                 this.origRels.push(relationship);
                                 let relCopy = Object.assign({}, relationship);
                                 relCopy.attributes.name = sw[0].name;
+                                if (sw[0].extRefs !== undefined) {
+                                    for (let i in sw[0].extRefs) {
+                                        if (sw[0].extRefs[i].external_id !== undefined) {
+                                            relCopy.attributes.name = sw[0].extRefs[i].external_id;
+                                        }
+                                    }
+                                }
                                 this.allRels.push(relCopy);
                                 this.addedSoftwares.push({'name': sw[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id})
                                 this.currSoftwares[i] = this.softwares;
@@ -195,7 +209,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
             (data) => {
                 let target = data as AttackPattern[];
                 target.forEach((attackPattern: AttackPattern) => {
-                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
+                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id, 'extRefs': attackPattern.attributes.external_references});
                 });
                 this.techniques = this.techniques.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                 if (!create) {
@@ -219,7 +233,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
             (data) => {
                 let target = data as Malware[];
                 target.forEach((malware: Malware) => {
-                    this.softwares.push({'name': malware.attributes.name, 'id': malware.id});
+                    this.softwares.push({'name': malware.attributes.name, 'id': malware.id, 'extRefs': malware.attributes.external_references});
                 });
                 this.getTools(create);
                }, (error) => {
@@ -239,7 +253,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
             (data) => {
                 let target = data as Tool[];
                 target.forEach((tool: Tool) => {
-                    this.softwares.push({'name': tool.attributes.name, 'id': tool.id});
+                    this.softwares.push({'name': tool.attributes.name, 'id': tool.id, 'extRefs': tool.attributes.external_references});
                 });
                 this.softwares = this.softwares.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
                 if (!create) {

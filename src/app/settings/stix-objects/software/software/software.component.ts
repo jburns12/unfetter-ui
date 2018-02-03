@@ -101,7 +101,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
             (data) => {
                 let target = data as IntrusionSet[];
                 target.forEach((intrusionSet: IntrusionSet) => {
-                    this.groups.push({'name': intrusionSet.attributes.name, 'id': intrusionSet.id});
+                    this.groups.push({'name': intrusionSet.attributes.name, 'id': intrusionSet.id, 'extRefs': intrusionSet.attributes.external_references});
                 });
                 this.getTechniques(false);
                }, (error) => {
@@ -131,6 +131,13 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                             this.origRels.push(relationship);
                             let relCopy = Object.assign({}, relationship);
                             relCopy.attributes.name = tech[0].name;
+                            if (tech[0].extRefs !== undefined) {
+                                for (let i in tech[0].extRefs) {
+                                    if (tech[0].extRefs[i].external_id !== undefined) {
+                                        relCopy.attributes.name = tech[0].extRefs[i].external_id;
+                                    }
+                                }
+                            }
                             this.allRels.push(relCopy);
                             this.currTechniques[i] = this.techniques;
                             for (let index in this.currTechniques) {
@@ -163,6 +170,13 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                     let group = this.groups.filter((h) => h.id === relationship.attributes.source_ref);
                     if (group.length > 0) {
                         relationship.attributes.name = group[0].name;
+                        if (group[0].extRefs !== undefined) {
+                            for (let i in group[0].extRefs) {
+                                if (group[0].extRefs[i].external_id !== undefined) {
+                                    relationship.attributes.name = group[0].extRefs[i].external_id;
+                                }
+                            }
+                        }
                         this.allRels.push(relationship);
                     }
                   });
@@ -183,7 +197,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
             (data) => {
                 let target = data as AttackPattern[];
                 target.forEach((attackPattern: AttackPattern) => {
-                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id});
+                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id, 'extRefs': attackPattern.attributes.external_references});
                 });
                 this.techniques = this.techniques.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                 if (!create) {

@@ -17,8 +17,8 @@
           </mat-card-header>
           <br>
           <mat-card-content *ngFor="let historyStr of historyArr">
-          <b>{{historyStr.date}}: {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
-          <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
+                <b>{{historyStr.date}}: {{historyStr.objName}} - {{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
+                <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
           </mat-card-content>
         </mat-card><br>
         <mat-card *ngIf="relHistoryArr.length > 0">

@@ -32,12 +32,12 @@
                                         </div>
                                     </div>
                                 </mat-card-content>
-                                <mat-card-actions *ngIf="extToFind.source_name != 'mitre-attack' && extToFind.citeButton">
+                                <!--<mat-card-actions *ngIf="extToFind.source_name != 'mitre-attack' && extToFind.citeButton">
                                     <div class="button-row">
                                         <a class="" mat-raised-button (click)="generateCitation(extToFind)"> {{ extToFind.citeButton }} </a><br>
                                     </div>
-                                </mat-card-actions>
-                                <mat-card-actions *ngIf="extToFind.source_name != 'mitre-attack' && extToFind.citeButton == 'Hide Citation Text'">
+                                </mat-card-actions>-->
+                                <mat-card-actions *ngIf="extToFind.source_name != 'mitre-attack'">
                                     <div class="button-row">
                                         <a class="" mat-raised-button [ngxClipboard]="copyCitation"> Copy</a>
                                         <input class="display-citation" size="100" #copyCitation value="{{ extToFind.citation }}" [(ngModel)]=extToFind.citation>
@@ -86,12 +86,12 @@
                                     </div>
                                 </div>
                             </mat-card-content>
-                            <mat-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton">
+                            <!--<mat-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton">
                                 <div class="button-row">
                                     <a class="" mat-raised-button (click)="generateCitation(externalReference)"> {{ externalReference.citeButton }} </a><br>
                                 </div>
-                            </mat-card-actions>
-                            <mat-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton == 'Hide Citation Text'">
+                            </mat-card-actions>-->
+                            <mat-card-actions *ngIf="externalReference.source_name != 'mitre-attack' && externalReference.citeButton">
                                 <div class="button-row">
                                     <a class="" mat-raised-button [ngxClipboard]="copyCitation"> Copy</a>
                                     <input class="display-citation" size="100" #copyCitation value="{{ externalReference.citation }}" [(ngModel)]=externalReference.citation>

@@ -12,9 +12,13 @@
                     <ng-template let-data pTemplate="item">
                         <div class="row list-item-row">
                             <div class="col-lg-9 col-xs-12">
-                                <div *ngIf="!data.hasId" style="color:#FE6131"><small><b>*Draft</b></small></div>
-                                <div>
+                                <div *ngIf="!data.hasId" style="color:#FE6131"><small><b>*Draft</b></small><br>
                                     <a class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
+                                </div>
+                                <div *ngIf="data.hasId">
+                                    <div *ngFor="let extRef of data.attributes.external_references">
+                                        <a *ngIf="extRef.external_id != undefined && extRef.source_name == 'mitre-attack'" class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}} - {{extRef.external_id}}</a>
+                                    </div>
                                 </div>
                                 <div class="truncate">
                                     <small [innerHTML]="formatText(data.attributes.description)"></small>

@@ -18,6 +18,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public contributors: string[] = [];
     public dataSources: string[] = [];
     public id: string;
+    public idLink: string = "{{LinkById|";
     public allCitations: any = [];
     public attackPatterns: AttackPattern[];
     public tacticConfig: string[] = [];
@@ -242,8 +243,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
                 ).sort().filter(Boolean);
             this.id = 'T' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
-            console.log(this.id);
-            }
+        }
     }
 
     public getNewCitation(refToAdd) {

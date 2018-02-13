@@ -13,6 +13,11 @@
                 <input matInput placeholder="ID" [(ngModel)]="id">
             </mat-input-container>
         </div>
+        <div class="button-row">
+            <a class="" mat-raised-button [ngxClipboard]="copyId"> Copy</a>
+            <input class="" size="100" #copyId value="{{idLink}}{{id}}}}">
+        </div>
+        <br>
     </div>
 <div class="row">
     <div class="col-md-12">

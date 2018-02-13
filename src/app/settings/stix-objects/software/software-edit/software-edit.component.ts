@@ -31,6 +31,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public malwares: Malware[];
     public tools: Tool[];
     public id: string;
+    public idLink: string = "{{LinkById|";
 
    constructor(
         public stixService: StixService,

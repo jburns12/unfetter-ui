@@ -3,6 +3,7 @@
         <tr>
             <td><h3>Name</h3></td>
             <td><h3>Tactics</h3></td>
+            <td><h3>ID</h3></td>
             <td><h3>Technical Description</h3></td>
         </tr>
     </thead>
@@ -11,6 +12,12 @@
             <td><a routerLink="/stix/attack-patterns/{{attackPatterns[i].id}}">{{attackPatterns[i].attributes.name}}</a></td>
             <td><span *ngFor="let phase of attackPatterns[i].attributes.kill_chain_phases">
                     <a routerLink="/stix/tactics/{{phase.phase_name}}">{{phase.phase_name | capitalize}}<br><br></a>
+                </span>
+            </td>
+            <td><span *ngFor="let extRef of attackPatterns[i].attributes.external_references">
+                <div *ngIf="extRef.external_id != undefined && extRef.source_name == 'mitre-attack'">
+                    {{extRef.external_id}}
+                </div>
                 </span>
             </td>
             <td>{{attackPatterns[i].attributes.description}}</td>

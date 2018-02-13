@@ -54,6 +54,7 @@ import { ToolHomeComponent, ToolListComponent, ToolComponent, ToolEditComponent,
 import { LinkExplorerComponent } from './link-explorer';
 import { StixHomeComponent } from './stix-home.component';
 import { GlobalModule } from '../global/global.module';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   imports: [
@@ -82,7 +83,8 @@ import { GlobalModule } from '../global/global.module';
       GlobalModule,
       DiffMatchPatchModule,
       PopoverModule,
-      AngularDateTimePickerModule
+      AngularDateTimePickerModule,
+      ClipboardModule
   ],
   declarations: [
     // Components / Directives/ Pipes

@@ -32,6 +32,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public motivationCtrl: FormControl;
     public resourceLevelCtrl: FormControl;
     public editComponent: boolean = true;
+    public idLink: string = "{{LinkById|";
 
     public labels = [
         {label: 'activist'},

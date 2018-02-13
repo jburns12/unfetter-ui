@@ -12,14 +12,14 @@
 
       <ul class="nav nav-pills">
           <h3 *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
-              <a *ngIf="navigation.label !== 'References'" [routerLink]="[navigation.url]">{{navigation.label}}</a>
+              <a *ngIf="navigation.label !== 'References' && navigation.label !== 'History'" [routerLink]="[navigation.url]">{{navigation.label}}</a>
           </h3>
       </ul>
-      <h2>View References:</h2>
+      <h2>References and History:</h2>
 
       <ul class="nav nav-pills">
           <h3 *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
-              <a *ngIf="navigation.label === 'References'" [routerLink]="[navigation.url]">{{navigation.label}}</a>
+              <a *ngIf="navigation.label === 'References' || navigation.label === 'History'" [routerLink]="[navigation.url]">{{navigation.label}}</a>
           </h3>
       </ul>
 

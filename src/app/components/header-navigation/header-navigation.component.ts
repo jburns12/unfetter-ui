@@ -25,7 +25,8 @@ export class HeaderNavigationComponent implements OnInit {
     // { url: 'stix/threat-actors', label: 'Threat Actors' },
     { url: 'stix/softwares', label: 'Software' },
     { url: 'stix/intrusion-sets', label: 'Groups' },
-    { url: 'stix/citations', label: 'References'}
+    { url: 'stix/citations', label: 'References'},
+    { url: 'stix/history', label: 'History'}
     // { url: 'stix/reports', label: 'Reports' },
     // { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];

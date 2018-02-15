@@ -47,9 +47,8 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
     public ngOnInit() {
         this.getAllObjects();
         this.startDate = new Date("05/31/2017");
-        console.log(this.startDate.getTime());
-        console.log(this.startDate.getTimezoneOffset());
-        this.endDate = new Date().setSeconds(0, 0);
+        this.endDate = new Date(Date.now()+(new Date().getTimezoneOffset()*60000));
+        this.endDate.setSeconds(0, 0);
     }
 
     public getAllObjects(): void {
@@ -91,18 +90,13 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
 
         this.startDate = new Date(this.startDate);
         this.endDate = new Date(this.endDate);
-        console.log(this.startDate);
-        console.log(this.allObjects[0].id);
-        console.log(currDate);
         if (this.startDate.getTime() > this.endDate.getTime()) {
-            console.log('NOOO');
             this.errMsg = 'Please choose an end date later than the start date.';
         }
         else {
             this.errMsg = '';
             this.showAll(this.startDate, this.endDate);
         }
-        this.getHistoryFromTo = false;
     }
 
     public cancelButtonClicked(): void {
@@ -127,7 +121,6 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
                 super.getHistory(pattern, currHistory);
                 super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
                 this.historyArr = this.historyArr.concat(Array.from(new Set(currHistory)));
-                //this.relHistoryArr = this.relHistoryArr.concat(Array.from(new Set(relHistory)));
             }
             super.getAllHistory(this.relationships, this.allObjects, allRelHistory);
             this.relHistoryArr = this.relHistoryArr.concat(Array.from(new Set(allRelHistory)));
@@ -143,6 +136,9 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
         }
         this.displayArr = this.filterHistoryArr.concat(this.filterRelHistoryArr);
         this.displayArr = this.displayArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
+        for (let i in this.displayArr) {
+            this.displayArr[i].date = new Date(this.displayArr[i].date).toUTCString();
+        }
 
         this.showAllHistory = true;
     }

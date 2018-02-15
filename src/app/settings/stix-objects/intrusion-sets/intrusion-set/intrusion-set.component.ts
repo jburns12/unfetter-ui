@@ -99,6 +99,11 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     super.getHistory(pattern, currHistory);
                     super.getRelHistory(pattern, this.relHistoryArr, this.allRels);
                     this.historyArr = Array.from(new Set(currHistory));
+                    this.historyArr = this.historyArr.concat(this.relHistoryArr);
+                    this.historyArr = this.historyArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
+                    for (let i in this.historyArr) {
+                        this.historyArr[i].date = new Date(this.historyArr[i].date).toUTCString();
+                    }
                     this.history = !this.history;
                     this.historyFound = true;
                    }, (error) => {

@@ -12,28 +12,20 @@
             </div>
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-12">
-                  <div *ngIf="history">
-                    <mat-card>
-                      <mat-card-header style="border-bottom: 1px solid lightgray;">
-                        <mat-card-title><h3>Object History</h3></mat-card-title>
-                      </mat-card-header>
-                      <br>
-                      <mat-card-content *ngFor="let historyStr of historyArr">
-                            <b>{{historyStr.date}}: {{historyStr.objName}} - {{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
-                            <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
-                      </mat-card-content>
-                    </mat-card><br>
-                    <mat-card *ngIf="relHistoryArr.length > 0">
-                        <mat-card-header style="border-bottom: 1px solid lightgray;">
-                          <mat-card-title><h3>Relationship History</h3></mat-card-title>
-                        </mat-card-header>
-                        <br>
-                      <mat-card-content *ngFor="let relHistoryStr of relHistoryArr">
-                            <b>{{relHistoryStr.date}}: {{relHistoryStr.source_ref}}{{relHistoryStr.target_ref}}{{relHistoryStr.action}}{{relHistoryStr.id}}</b>
-                      </mat-card-content>
-                    </mat-card>
-                    <br>
-                  </div>
+                        <div *ngIf="history">
+                                <mat-card>
+                                  <mat-card-header style="border-bottom: 1px solid lightgray;">
+                                    <mat-card-title><h3>History</h3></mat-card-title>
+                                  </mat-card-header>
+                                  <br>
+                                  <mat-card-content *ngFor="let historyStr of historyArr">
+                                        <span *ngIf="historyStr.type != 'relationship'"><b>{{historyStr.date}}:</b> {{historyStr.objName}} - {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</span>
+                                        <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
+                                        <span *ngIf="historyStr.type == 'relationship'"><b>{{historyStr.date}}:</b> {{historyStr.source_ref}}{{historyStr.target_ref}}{{historyStr.action}}{{historyStr.id}}</span>
+                                  </mat-card-content>
+                                </mat-card><br>
+                                <br>
+                              </div>
                     <mat-card>
                         <mat-card-content>
                           <mat-card-header style="border-bottom: 1px solid lightgray;">

@@ -41,9 +41,9 @@
                                 </mat-card-header>
                                 <br>
                                 <mat-card-content *ngFor="let historyStr of displayArr"> 
-                                <b *ngIf="historyStr.type != 'relationship'">{{historyStr.date}}: {{historyStr.objName}} - {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</b>
+                                <span *ngIf="historyStr.type != 'relationship'"><b>{{historyStr.date}}:</b> {{historyStr.objName}} - {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</span>
                                 <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
-                                <b *ngIf="historyStr.type == 'relationship'">{{historyStr.date}}: {{historyStr.source_ref}}{{historyStr.target_ref}}{{historyStr.action}}{{historyStr.id}}</b>
+                                <span *ngIf="historyStr.type == 'relationship'"><b>{{historyStr.date}}:</b> {{historyStr.source_ref}}{{historyStr.target_ref}}{{historyStr.action}}{{historyStr.id}}</span>
                                 </mat-card-content>
                         </mat-card><br>
                   </div>

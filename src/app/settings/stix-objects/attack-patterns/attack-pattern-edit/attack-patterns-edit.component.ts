@@ -411,7 +411,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             let citation = this.allCitations.find((p) => p.source_name === name);
             console.log(citation);
             if (citation !== undefined) {
-                this.attackPattern.attributes.external_references.push(citation);
+                if (this.attackPattern.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                    this.attackPattern.attributes.external_references.push(citation);
+                }
             }
         }
     }

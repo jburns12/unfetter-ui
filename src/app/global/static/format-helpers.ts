@@ -11,7 +11,15 @@ export class FormatHelpers {
         return inputString ? inputString.replace(/\[\[CiteRef::([^\]\]]*)\]\]/g, `&nbsp;<small><cite class="text-muted">($1)</cite></small>`) : '';
     }
 
+    public static mitreLinkToHtml(inputString: string): string {
+        return inputString ? inputString.replace(/{{LinkById\|(.*?)}}/g, `<b>$1</b>`) : '';
+    }
+
+    public static tacticsToHtml(inputString: string): string {
+        return inputString ? inputString.replace(/\[\[(.*?)\]\]/g, `<b>$1</b>`) : '';
+    }
+
     public static formatAll(inputString) {
-        return FormatHelpers.whitespaceToBreak(FormatHelpers.mitreCitationsToHtml(FormatHelpers.mitreCiteRefToHtml(inputString)));
+        return FormatHelpers.tacticsToHtml(FormatHelpers.whitespaceToBreak(FormatHelpers.mitreCitationsToHtml(FormatHelpers.mitreCiteRefToHtml(FormatHelpers.mitreLinkToHtml(inputString)))));
     }
 }

@@ -56,9 +56,10 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
         let citationArr = super.matchCitations(this.courseOfAction.attributes.description);
         for (let name of citationArr) {
             let citation = this.allCitations.find((p) => p.source_name === name);
-            console.log(citation);
             if (citation !== undefined) {
-                this.courseOfAction.attributes.external_references.push(citation);
+                if (this.courseOfAction.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                    this.courseOfAction.attributes.external_references.push(citation);
+                }
             }
         }
     }

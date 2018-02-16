@@ -104,7 +104,9 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
             let citation = this.allCitations.find((p) => p.source_name === name);
             console.log(citation);
             if (citation !== undefined) {
-                this.intrusionSet.attributes.external_references.push(citation);
+                if (this.intrusionSet.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                    this.intrusionSet.attributes.external_references.push(citation);
+                }
             }
         }
     }

@@ -368,13 +368,13 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.malware.attributes.external_references.push(this.mitreId);
         }
-        console.log(citationArr);
-        console.log(this.allCitations);
         for (let name of citationArr) {
             let citation = this.allCitations.find((p) => p.source_name === name);
             console.log(citation);
             if (citation !== undefined) {
-                this.malware.attributes.external_references.push(citation);
+                if (this.malware.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                    this.malware.attributes.external_references.push(citation);
+                }
             }
         }
     }
@@ -398,7 +398,6 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         this.addExtRefs();
         this.addAliasesToMalware();
         this.removeContributors();
-        this.malware.attributes.external_references.reverse();
         if (this.softwareType === 'Tool/Utility') {
             this.stixService.url = Constance.TOOL_URL;
         } else {

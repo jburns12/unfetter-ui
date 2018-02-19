@@ -418,6 +418,72 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
+    public saveCourseOfAction(attackPatternId: string, citations: any): void {
+        if (this.coaId !== '') {
+            console.log(this.courseOfAction.attributes.external_references);
+            if (this.mitigation !== this.courseOfAction.attributes.description || (this.coaMitreId === undefined && this.mitreId !== undefined && this.mitreId.external_id !== "")) {
+                this.courseOfAction.attributes.description = this.mitigation;
+                this.courseOfAction.attributes.external_references = [];
+                if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
+                    this.courseOfAction.attributes.external_references.push(this.mitreId);
+                }
+                let citationArr = super.matchCitations(this.mitigation);
+                for (let name of citationArr) {
+                    let citation = citations.find((p) => p.source_name === name);
+                    console.log(citation);
+                    if (citation !== undefined) {
+                        this.courseOfAction.attributes.external_references.push(citation);
+                    }
+                }
+                this.stixService.url = Constance.COURSE_OF_ACTION_URL;
+                let subscription = super.save(this.courseOfAction).subscribe(
+                    (data) => {
+
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+        } else {
+            if (this.mitigation !== '') {
+                this.courseOfAction.attributes.description = this.mitigation;
+                this.courseOfAction.attributes.name = this.attackPattern.attributes.name + ' Mitigation';
+                this.courseOfAction.attributes.external_references = [];
+                if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
+                    this.courseOfAction.attributes.external_references.push(this.mitreId);
+                }
+                let citationArr = super.matchCitations(this.mitigation);
+                for (let name of citationArr) {
+                    let citation = citations.find((p) => p.source_name === name);
+                    console.log(citation);
+                    if (citation !== undefined) {
+                        this.courseOfAction.attributes.external_references.push(citation);
+                    }
+                }   
+                console.log(this.courseOfAction);
+                let subscription = super.create(this.courseOfAction).subscribe(
+                    (stixObject) => {
+                        this.saveRelationship(attackPatternId, stixObject[0].id);
+                    }, (error) => {
+                        // handle errors here
+                         console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+        }
+    }
+    
     public saveAttackPattern(): void {
         this.removeEmpties();
         if (this.mitreId === '' || this.mitreId === undefined ) {

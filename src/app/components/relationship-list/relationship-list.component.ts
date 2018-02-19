@@ -129,6 +129,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
+                data.attributes.description = this.formatAll(data.attributes.description);
                 this.relationshipMapping.push(data);
                 this.relationshipMapping = this.relationshipMapping.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
             }, (error) => {
@@ -145,6 +146,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
+                data.attributes.description = this.formatAll(data.attributes.description);
                 for (let phase of data.attributes.kill_chain_phases) {
                     if (this.relationshipMappingTechniques[phase.phase_name] === undefined) {
                         this.relationshipMappingTechniques[phase.phase_name] = [];
@@ -170,6 +172,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
+                data.attributes.description = this.formatAll(data.attributes.description);
                 this.relationshipMappingGroups.push(data);
                 this.relationshipMappingGroups = this.relationshipMappingGroups.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
             }, (error) => {
@@ -186,6 +189,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
+                data.attributes.description = this.formatAll(data.attributes.description);
                 this.relationshipMappingSoftware.push(data);
                 this.relationshipMappingSoftware = this.relationshipMappingSoftware.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
             }, (error) => {
@@ -245,5 +249,25 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     public gotoDetail(relationshipMap: any): void {
         let url = relationshipMap.type + '/' + relationshipMap.id;
         this.router.navigateByUrl(url);
+    }
+
+    public mitreCitationsClean(inputString: string): string {
+        return inputString ? inputString.replace(/\[\[Citation: ([^\]\]]*)\]\]/g, '(Citation: $1)') : '';
+    }
+
+    public mitreCiteRefClean(inputString: string): string {
+        return inputString ? inputString.replace(/\[\[CiteRef::([^\]\]]*)\]\]/g, '(Citation: $1)') : '';
+    }
+
+    public mitreLinkClean(inputString: string): string {
+        return inputString ? inputString.replace(/{{LinkById\|(.*?)}}/g, '$1') : '';
+    }
+
+    public tacticsClean(inputString: string): string {
+        return inputString ? inputString.replace(/\[\[(.*?)\]\]/g, '$1') : '';
+    }
+
+    public formatAll(inputString) {
+        return this.tacticsClean(this.mitreCitationsClean(this.mitreCiteRefClean(this.mitreLinkClean(inputString))));
     }
 }

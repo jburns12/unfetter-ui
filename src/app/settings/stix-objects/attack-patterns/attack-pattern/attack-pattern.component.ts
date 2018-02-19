@@ -22,6 +22,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public courseOfAction: CourseOfAction = new CourseOfAction();
     public relationship: Relationship = new Relationship();
     public coaId: string = '';
+    public coaMitreId: string;
     public target: any;
     public history: boolean = false;
     public historyArr: any[];
@@ -298,6 +299,9 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 this.coaId = coaId;
                 this.courseOfAction = data as CourseOfAction;
                 for (let i in this.courseOfAction.attributes.external_references) {
+                    if (this.courseOfAction.attributes.external_references[i].source_name === 'mitre-attack') {
+                        this.coaMitreId = this.courseOfAction.attributes.external_references[i].external_id;
+                    }
                     this.courseOfAction.attributes.external_references[i].citeButton = 'Generate Citation Text';
                     this.courseOfAction.attributes.external_references[i].citation = '[[Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
                     this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
@@ -313,66 +317,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 }
             }
         );
-    }
-
-    public saveCourseOfAction(attackPatternId: string, citations: any): void {
-        if (this.coaId !== '') {
-            console.log(this.courseOfAction.attributes.external_references);
-            if (this.mitigation !== this.courseOfAction.attributes.description) {
-                this.courseOfAction.attributes.description = this.mitigation;
-                this.courseOfAction.attributes.external_references = [];
-                let citationArr = super.matchCitations(this.mitigation);
-                for (let name of citationArr) {
-                    let citation = citations.find((p) => p.source_name === name);
-                    console.log(citation);
-                    if (citation !== undefined) {
-                        this.courseOfAction.attributes.external_references.push(citation);
-                    }
-                }
-                this.stixService.url = Constance.COURSE_OF_ACTION_URL;
-                let subscription = super.save(this.courseOfAction).subscribe(
-                    (data) => {
-
-                    }, (error) => {
-                        // handle errors here
-                        console.log('error ' + error);
-                    }, () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
-                    }
-                );
-            }
-        } else {
-            if (this.mitigation !== '') {
-               this.courseOfAction.attributes.description = this.mitigation;
-               this.courseOfAction.attributes.name = this.attackPattern.attributes.name + ' Mitigation';
-               this.courseOfAction.attributes.external_references = [];
-               let citationArr = super.matchCitations(this.mitigation);
-               for (let name of citationArr) {
-                   let citation = citations.find((p) => p.source_name === name);
-                   console.log(citation);
-                   if (citation !== undefined) {
-                       this.courseOfAction.attributes.external_references.push(citation);
-                   }
-               }
-               console.log(this.courseOfAction);
-               let subscription = super.create(this.courseOfAction).subscribe(
-                    (stixObject) => {
-                        this.saveRelationship(attackPatternId, stixObject[0].id);
-                    }, (error) => {
-                        // handle errors here
-                         console.log('error ' + error);
-                    }, () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
-                    }
-                );
-            }
-        }
     }
 
     public saveRelationship(attackPatternId: string, coaId: string): void {

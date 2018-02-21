@@ -1,4 +1,11 @@
-<br><br><table class="table table-hover">
+<div *ngIf="!tactic">
+    <h2>All Techniques by Tactic</h2>
+</div>
+<div *ngIf="tactic">
+    <h2>Tactic: {{ tactic.tactic | capitalize }}</h2>
+    <p>{{ tactic.description }}</p>
+</div>
+<br><table class="table table-hover">
     <thead>
         <tr>
             <td><h3>Name</h3></td>
@@ -20,7 +27,7 @@
                 </div>
                 </span>
             </td>
-            <td>{{attackPatterns[i].attributes.description}}</td>
+            <td [innerHTML]="formatText(attackPatterns[i].attributes.description)"></td>
         </tr>
     </tbody>
 </table>

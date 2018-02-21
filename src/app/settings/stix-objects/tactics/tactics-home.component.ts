@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { AttackPattern } from '../../../models';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
+import { FormatHelpers } from '../../../global/static/format-helpers';
 
 @Component({
   selector: 'tactics',
@@ -17,6 +18,8 @@ import { StixService } from '../../stix.service';
 
 export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
     public attackPatterns: AttackPattern[] = [];
+    public tactics: any = [];
+    public tactic: any;
 
     constructor(
         public stixService: StixService,
@@ -31,28 +34,60 @@ export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.route.params.map(params => params['tactic']).
-            subscribe((tactic) => {
-                console.log(tactic);
-                const filterObj = { 'stix.kill_chain_phases.phase_name': tactic };
-                const filter = `filter=${JSON.stringify(filterObj)}`;
-                console.log(filter);
-                const subscription = super.load(filter).subscribe(
-                    (data) => {
-                        this.attackPatterns = data as AttackPattern[];
-                        console.log(this.attackPatterns);
-                        
-                    }, (error) => {
-                        // handle errors here
-                        console.log('error ' + error);
-                    }, () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
-                    }
-                );
+        this.getTactics();
+    }
+
+    public formatText(inputString): string {
+        return FormatHelpers.formatAll(inputString);
+    }
+
+    public getTactics(): void {
+        let uri = Constance.CONFIG_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (res) => {
+              if (res && res.length) {
+                  for (let currRes of res) {
+                      if (currRes.attributes.configKey === 'tactics') {
+                          for  (let currTactic of currRes.attributes.configValue) {
+                              this.tactics.push({"tactic": currTactic.tactic, "description": currTactic.description});
+                          }
+                      }
+                  }
+              }
+              this.route.params.map(params => params['tactic']).
+              subscribe((tactic) => {
+                  this.tactic = this.tactics.find((h) => (h.tactic === tactic));
+                  console.log(tactic);
+                  console.log(this.tactic);
+                  const filterObj = { 'stix.kill_chain_phases.phase_name': tactic };
+                  const filter = `filter=${JSON.stringify(filterObj)}`;
+                  console.log(filter);
+                  const subscription = super.load(filter).subscribe(
+                      (data) => {
+                          this.attackPatterns = data as AttackPattern[];
+                          console.log(this.attackPatterns);
+                          
+                      }, (error) => {
+                          // handle errors here
+                          console.log('error ' + error);
+                      }, () => {
+                          // prevent memory links
+                          if (subscription) {
+                              subscription.unsubscribe();
+                          }
+                      }
+                  );
+              }
+          )
+           }, (error) => {
+            // handle errors here
+             console.log('error ' + error);
+        }, () => {
+            // prevent memory links
+            if (subscription) {
+                subscription.unsubscribe();
             }
-        )
+        }
+        );
     }
 }

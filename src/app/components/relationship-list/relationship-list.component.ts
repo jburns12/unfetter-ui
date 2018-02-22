@@ -72,9 +72,9 @@ export class RelationshipListComponent implements OnInit, OnChanges {
             this.relationships.forEach(
                 (relationship) => {
                     if (filter['stix.source_ref']) {
-                        this.loadStixObject(relationship.attributes.target_ref);
+                        this.loadStixObject(relationship.attributes.target_ref, relationship.attributes.description);
                     } else {
-                        this.loadStixObject(relationship.attributes.source_ref);
+                        this.loadStixObject(relationship.attributes.source_ref, relationship.attributes.description);
                     }
                 }
             );
@@ -109,19 +109,19 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    public loadStixObject(id: string): void {
+    public loadStixObject(id: string, description: string): void {
         if (id.indexOf('indicator') >= 0) {
             this.load(Constance.INDICATOR_URL, id);
         } else if (id.indexOf('attack-pattern') >= 0) {
-            this.loadTechnique(Constance.ATTACK_PATTERN_URL, id);
+            this.loadTechnique(Constance.ATTACK_PATTERN_URL, id, description);
         } else if (id.indexOf('campaign') >= 0) {
             this.load(Constance.CAMPAIGN_URL, id);
         } else if (id.indexOf('intrusion-set') >= 0) {
-            this.loadGroups(Constance.INTRUSION_SET_URL, id);
+            this.loadGroups(Constance.INTRUSION_SET_URL, id, description);
         }  else if (id.indexOf('malware') >= 0) {
-            this.loadSoftware(Constance.MALWARE_URL, id);
+            this.loadSoftware(Constance.MALWARE_URL, id, description);
         }  else if (id.indexOf('tool') >= 0) {
-            this.loadSoftware(Constance.TOOL_URL, id);
+            this.loadSoftware(Constance.TOOL_URL, id, description);
         }
     }
 
@@ -142,11 +142,11 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    public loadTechnique(url: string, id: string ): void {
+    public loadTechnique(url: string, id: string, description: string): void {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
-                data.attributes.description = this.formatAll(data.attributes.description);
+                data.attributes.description = this.formatAll(description);
                 for (let phase of data.attributes.kill_chain_phases) {
                     if (this.relationshipMappingTechniques[phase.phase_name] === undefined) {
                         this.relationshipMappingTechniques[phase.phase_name] = [];
@@ -168,11 +168,11 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    public loadGroups(url: string, id: string ): void {
+    public loadGroups(url: string, id: string, description: string): void {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
-                data.attributes.description = this.formatAll(data.attributes.description);
+                data.attributes.description = this.formatAll(description);
                 this.relationshipMappingGroups.push(data);
                 this.relationshipMappingGroups = this.relationshipMappingGroups.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
             }, (error) => {
@@ -185,11 +185,11 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    public loadSoftware(url: string, id: string ): void {
+    public loadSoftware(url: string, id: string, description: string): void {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
-                data.attributes.description = this.formatAll(data.attributes.description);
+                data.attributes.description = this.formatAll(description);
                 this.relationshipMappingSoftware.push(data);
                 this.relationshipMappingSoftware = this.relationshipMappingSoftware.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
             }, (error) => {

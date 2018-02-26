@@ -40,7 +40,7 @@
         </div>
     </div>
     <mat-input-container class="full-width">
-        <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="malware.attributes.description">{{malware.attributes.description}}</textarea>
+        <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="malware.attributes.description">{{malware.attributes.description}}</textarea>
     </mat-input-container>
     <div class="row">
         <div class="col-md-12">
@@ -152,8 +152,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="button-row pull-right">
-                    <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                    <a class=" " mat-raised-button (click)="saveMalware()" [disabled]="!malware.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                    <button class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
+                    <button type="submit" class=" " mat-raised-button (click)="saveMalware()" [disabled]="!malware.attributes.name || !malware.attributes.description"><i class="material-icons">save</i> SAVE & CLOSE</button>
             </div>
         </div>
     </div>

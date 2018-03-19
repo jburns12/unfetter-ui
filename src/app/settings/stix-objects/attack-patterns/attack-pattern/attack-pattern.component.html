@@ -41,7 +41,7 @@
                         <div *ngIf="attackPattern.attributes.x_mitre_detection" class="row">
                            <div class="col-md-12">
                                 <label>Detection</label>
-                                <h5>{{attackPattern.attributes.x_mitre_detection}}</h5>
+                                <h5 [innerHTML]="formatText(attackPattern.attributes.x_mitre_detection)"></h5>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_system_requirements" class="row">

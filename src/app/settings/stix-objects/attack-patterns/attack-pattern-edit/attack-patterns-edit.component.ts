@@ -401,7 +401,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addExtRefs(): void {
-        let citationArr = super.matchCitations(this.attackPattern.attributes.description);
+        let citationArr = super.matchCitations(this.attackPattern.attributes.description).concat(super.matchCitations(this.attackPattern.attributes.x_mitre_detection));
         if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.attackPattern.attributes.external_references.push(this.mitreId);
         }

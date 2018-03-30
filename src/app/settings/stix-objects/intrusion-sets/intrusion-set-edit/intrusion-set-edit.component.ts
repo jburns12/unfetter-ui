@@ -184,6 +184,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         let relationship = new Relationship();
         relationship.attributes.source_ref = source_ref;
         relationship.attributes.target_ref = target_ref;
+        relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
         if (description !== '') {
             relationship.attributes.external_references = [];
             relationship.attributes.description = description;

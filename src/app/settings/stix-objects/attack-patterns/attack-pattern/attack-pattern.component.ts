@@ -323,6 +323,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         this.relationship.attributes.source_ref = coaId;
         this.relationship.attributes.target_ref = attackPatternId;
         this.relationship.attributes.relationship_type = 'mitigates';
+        this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
         let subscription = super.create(this.relationship).subscribe(
             (data) => {
                 console.log(data);

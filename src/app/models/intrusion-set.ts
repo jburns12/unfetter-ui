@@ -27,6 +27,7 @@ export class IntrusionSet {
         x_mitre_contributors: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+        x_mitre_collections: string[];
     };
 
     constructor(data?: IntrusionSet) {

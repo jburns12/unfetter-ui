@@ -465,8 +465,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                     if (citation !== undefined) {
                         this.courseOfAction.attributes.external_references.push(citation);
                     }
-                }   
+                }
                 console.log(this.courseOfAction);
+                this.courseOfAction.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
                 let subscription = super.create(this.courseOfAction).subscribe(
                     (stixObject) => {
                         this.saveRelationship(attackPatternId, stixObject[0].id);
@@ -483,7 +484,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             }
         }
     }
-    
+
     public saveAttackPattern(): void {
         this.removeEmpties();
         if (this.mitreId === '' || this.mitreId === undefined ) {

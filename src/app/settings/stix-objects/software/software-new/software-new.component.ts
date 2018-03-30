@@ -45,6 +45,7 @@ export class SoftwareNewComponent extends SoftwareEditComponent implements OnIni
         this.addExtRefs();
         this.addAliasesToMalware();
         this.removeContributors();
+        this.malware.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
         if (this.softwareType === 'Malware') {
             this.malware.type = 'malware';
             this.malware.attributes.labels = ['malware'];

@@ -67,6 +67,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
             this.mitreId.source_name = 'mitre-attack';
         }
         this.addExtRefs();
+        this.attackPattern.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
         let sub = super.create(this.attackPattern).subscribe(
             (data) => {
                  this.location.back();

@@ -27,6 +27,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public createNewOnly: boolean = true;
     public mitreId: any;
     public addId: boolean = false;
+    public deprecated: boolean = false;
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -71,6 +72,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.assignCitations();
                this.getMitreId();
                this.getId();
+               this.getDeprecated();
            }, (error) => {
                // handle errors here
                console.log('error ' + error);
@@ -81,6 +83,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                }
            }
        );
+    }
+
+    public getDeprecated(): void {
+        if (this.attackPattern.attributes.x_mitre_deprecated) {
+            this.deprecated = this.attackPattern.attributes.x_mitre_deprecated;
+        }
     }
 
     public filterOptions(stringToMatch: string, listToParse: any): void {
@@ -502,6 +510,15 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
         }
         this.addExtRefs();
+        console.log(this.deprecated);
+        if (this.deprecated === true) {
+            this.attackPattern.attributes.x_mitre_deprecated = true;
+        }
+        else {
+            if (this.attackPattern.attributes.x_mitre_deprecated !== undefined) {
+                delete this.attackPattern.attributes['x_mitre_deprecated'];
+            }
+        }
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log(data);

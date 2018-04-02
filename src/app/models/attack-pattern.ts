@@ -31,6 +31,7 @@ export class AttackPattern {
         x_mitre_permissions_required: string[];
         x_mitre_network_requirements: boolean;
         x_mitre_collections: string[];
+        x_mitre_deprecated: boolean;
     };
 
     constructor(data?: AttackPattern) {

@@ -10,6 +10,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                        <mat-checkbox class="identity-margin" [(ngModel)]="deprecated">Deprecate?</mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row" *ngIf="addId || (mitreId !== undefined && mitreId !== '')">
                             <div class="col-md-12">
                                 <mat-input-container class="full-width">
@@ -191,7 +200,7 @@
                                 </mat-card>
                         </div>
             </div><br>
-            <h4>External References</h4> 
+            <h4>External References</h4>
             <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
             <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>
 

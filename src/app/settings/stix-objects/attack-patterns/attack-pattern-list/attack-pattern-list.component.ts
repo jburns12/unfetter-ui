@@ -43,16 +43,11 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
 
     public ngOnInit() {
         const sortObj = { 'stix.name': '1' };
-        const projectObj = {
-            'stix.name': 1,
-            'stix.external_references': 1,
-            'stix.kill_chain_phases': 1,
-            'stix.id': 1
-        };
-        const filter = `sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`;
+        const filter = `sort=${JSON.stringify(sortObj)}`;
         const subscription = super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
+                console.log(this.attackPatterns);
                 let uri = Constance.CONFIG_URL;
                 let subscript =  super.getByUrl(uri).subscribe(
                 (res) => {
@@ -127,7 +122,13 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                     } else {
                         attackPattern.attributes['hasId'] = false;
                     }
-                    console.log(attackPattern.attributes['hasId']);
+                    console.log(attackPattern.attributes.x_mitre_deprecated);
+                    if (attackPattern.attributes.x_mitre_deprecated === undefined) {
+                        attackPattern.attributes['x_mitre_deprecated'] = false;
+                    }
+                    console.log(attackPattern.attributes.name);
+                    //console.log(attackPattern.attributes.x_mitre_deprecated);
+                    //console.log(attackPattern.attributes['hasId']);
                     this.attackPatternByPhaseMap[killChainPhase.phase_name].push(attackPattern);
                 });
             }

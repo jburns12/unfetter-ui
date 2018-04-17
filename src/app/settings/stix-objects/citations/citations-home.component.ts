@@ -229,11 +229,17 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                 let extRefs = [];
                 for (let currObj of data) {
                     if (currObj.attributes.external_references) {
-                        extRefs = extRefs.concat(currObj.attributes.external_references);
+                        let objExtRefs = currObj.attributes.external_references;
+                        for (let obj of objExtRefs) {
+                            if (obj.description !== undefined && !obj.description.includes('[[Citation: ')) {
+                                extRefs.push(obj);
+                            }
+                        }
                     }
                 }
                 extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                 extRefs = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                
                 for (let i in extRefs) {
                     extRefs[i].used = 'Used';
                 }

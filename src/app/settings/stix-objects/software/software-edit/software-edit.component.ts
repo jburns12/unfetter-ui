@@ -32,6 +32,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public tools: Tool[];
     public id: string;
     public idLink: string = "{{LinkById|";
+    public deprecated: boolean = false;
 
    constructor(
         public stixService: StixService,
@@ -62,6 +63,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                 this.assignCitations();
                 this.getMitreId();
                 this.getId();
+                this.getDeprecated();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -72,6 +74,12 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                 }
             }
         );
+    }
+
+    public getDeprecated(): void {
+        if (this.malware.attributes.x_mitre_deprecated) {
+            this.deprecated = this.malware.attributes.x_mitre_deprecated;
+        }
     }
 
     public typeChange(event: MatRadioChange) {
@@ -400,6 +408,14 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         this.addExtRefs();
         this.addAliasesToMalware();
         this.removeContributors();
+        if (this.deprecated === true) {
+            this.malware.attributes.x_mitre_deprecated = true;
+        }
+        else {
+            if (this.malware.attributes.x_mitre_deprecated !== undefined) {
+                delete this.malware.attributes['x_mitre_deprecated'];
+            }
+        }
         if (this.softwareType === 'Tool/Utility') {
             this.stixService.url = Constance.TOOL_URL;
         } else {

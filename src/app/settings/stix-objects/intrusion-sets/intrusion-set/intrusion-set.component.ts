@@ -35,6 +35,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public mitreId: any;
     public groups: IntrusionSet[];
     public id: string;
+    public deprecated: boolean = false;
 
      constructor(
         public stixService: StixService,
@@ -387,6 +388,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 this.assignCitations();
                 this.getMitreId();
                 this.getId();
+                this.getDeprecated();
                 this.intrusionSet.attributes.external_references.reverse();
                 this.aliasesToDisplay = this.intrusionSet.attributes.aliases.filter((h) => h !== this.intrusionSet.attributes.name);
             }, (error) => {
@@ -399,6 +401,12 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 }
             }
         );
+    }
+
+    public getDeprecated(): void {
+        if (this.intrusionSet.attributes.x_mitre_deprecated) {
+            this.deprecated = this.intrusionSet.attributes.x_mitre_deprecated;
+        }
     }
 
     public assignCitations(): void {

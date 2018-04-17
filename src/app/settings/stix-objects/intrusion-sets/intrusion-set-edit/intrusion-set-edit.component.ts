@@ -129,6 +129,14 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         this.intrusionSet.attributes.external_references = [];
         this.addExtRefs();
         this.addAliasesToIntrusionSet();
+        if (this.deprecated === true) {
+            this.intrusionSet.attributes.x_mitre_deprecated = true;
+        }
+        else {
+            if (this.intrusionSet.attributes.x_mitre_deprecated !== undefined) {
+                delete this.intrusionSet.attributes['x_mitre_deprecated'];
+            }
+        }
         const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

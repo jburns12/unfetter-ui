@@ -15,6 +15,9 @@
                                 <div *ngIf="!data.hasId" style="color:#FE6131"><small><b>*Draft</b></small><br>
                                     <a class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
                                 </div>
+                                <div *ngIf="data.attributes.x_mitre_deprecated == true">
+                                    <small style="color:#FE6131"><b>******DEPRECATED******</b></small><h3></h3>
+                                </div>
                                 <div *ngIf="data.hasId">
                                     <div *ngFor="let extRef of data.attributes.external_references">
                                         <a *ngIf="extRef.external_id != undefined && extRef.source_name == 'mitre-attack'" class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}} - {{extRef.external_id}}</a>

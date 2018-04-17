@@ -30,8 +30,9 @@
             <mat-card>
                 <mat-card-content>
                       <mat-card-header style="border-bottom: 1px solid lightgray;">
-                          <mat-card-title *ngIf="attackId != undefined"><h3>{{ attackPattern.attributes.name }} - {{ attackId }}</h3></mat-card-title>
-                          <mat-card-title *ngIf="attackId == undefined"><h3>{{ attackPattern.attributes.name }}</h3></mat-card-title>
+                          <mat-card-title *ngIf="attackId != undefined && deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small><h3>{{ attackPattern.attributes.name }} - {{ attackId }}</h3></mat-card-title>
+                          <mat-card-title *ngIf="attackId != undefined && deprecated == false"><h3>{{ attackPattern.attributes.name }} - {{ attackId }}</h3></mat-card-title>
+                          <mat-card-title *ngIf="attackId == undefined"><small style="color:#FE6131"><b>*Draft</b></small><h3>{{ attackPattern.attributes.name }}</h3></mat-card-title>
                       </mat-card-header>
                         <div class="row">
                            <div class="col-md-12">

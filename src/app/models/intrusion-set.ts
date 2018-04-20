@@ -24,6 +24,7 @@ export class IntrusionSet {
         object_marking_refs: string[];
         objective: string;
         timestamp_precision: string;
+        revoked: boolean;
         x_mitre_contributors: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];

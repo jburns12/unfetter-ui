@@ -15,6 +15,9 @@
                                 <div *ngIf="!data.hasId" style="color:#FE6131"><small><b>*Draft</b></small><br>
                                     <a class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
                                 </div>
+                                <div *ngIf="data.attributes.revoked == true">
+                                        <small style="color:#FE6131"><b>******REVOKED******</b></small><h3></h3>
+                                </div>
                                 <div *ngIf="data.attributes.x_mitre_deprecated == true">
                                     <small style="color:#FE6131"><b>******DEPRECATED******</b></small><h3></h3>
                                 </div>

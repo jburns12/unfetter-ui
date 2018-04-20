@@ -16,6 +16,7 @@ export class CourseOfAction {
         name: string;
         object_marking_refs: string[];
         external_references: ExternalReference[];
+        revoked: boolean;
         x_mitre_collections: string[];
         x_mitre_deprecated: boolean;
     };

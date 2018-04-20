@@ -28,6 +28,7 @@
         <mat-card>
             <mat-card-content>
               <mat-card-header style="border-bottom: 1px solid lightgray;">
+                  <mat-card-title *ngIf="intrusionSet.attributes.revoked == true"><small style="color:#FE6131"><b>******REVOKED******</b></small></mat-card-title>
                   <mat-card-title *ngIf="intrusionSet.attributes.x_mitre_deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small></mat-card-title>
                   <mat-card-title *ngIf="mitreId !== undefined"><h3>{{ intrusionSet.attributes.name }} - {{ mitreId.external_id }}</h3></mat-card-title>
                   <mat-card-title *ngIf="mitreId == undefined"><h4 style="color:#FE6131">*Draft</h4><h3>{{ intrusionSet.attributes.name }} </h3></mat-card-title>

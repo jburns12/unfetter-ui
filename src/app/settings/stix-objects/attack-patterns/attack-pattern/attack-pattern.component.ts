@@ -33,6 +33,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public deleteMitigation: boolean = false;
     public attackId: string;
     public deprecated: boolean = false;
+    public revoked: boolean = false;
 
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
@@ -134,6 +135,9 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 }
                 if (this.attackPattern.attributes.x_mitre_deprecated !== undefined) {
                     this.deprecated = this.attackPattern.attributes.x_mitre_deprecated;
+                }
+                if (this.attackPattern.attributes.revoked !== undefined) {
+                    this.revoked = this.attackPattern.attributes.revoked;
                 }
                 this.attackPattern.attributes.external_references.reverse();
                 this.findCoA();

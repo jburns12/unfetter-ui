@@ -20,6 +20,7 @@ export class AttackPattern {
         kill_chain_phases: KillChainPhase[];
         object_marking_refs: string[];
         previous_versions: any;
+        revoked: boolean;
         x_mitre_contributors: string[];
         x_mitre_data_sources: string[];
         x_mitre_platforms: string[];

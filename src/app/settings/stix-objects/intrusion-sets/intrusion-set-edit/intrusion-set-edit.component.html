@@ -56,11 +56,11 @@
                                               <input matInput placeholder="Alias" [(ngModel)]="aliases[i].name">
                                           </mat-input-container>
                                   </div>
-                                  <div class="col-md-4">
-                                          <mat-input-container class="full-width">
-                                              <input matInput placeholder="Description" [(ngModel)]="aliases[i].description">
-                                          </mat-input-container>
-                                  </div>
+                                  <div class="col-md-12">
+                                        <mat-input-container class="full-width">
+                                            <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="aliases[i].description"></textarea>
+                                        </mat-input-container>
+                                </div>
                                 </div>
                             </mat-card-content>
                             <mat-card-actions>

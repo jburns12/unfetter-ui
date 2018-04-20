@@ -375,6 +375,11 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
 
     public addExtRefs(): void {
         let citationArr = super.matchCitations(this.malware.attributes.description);
+        for (let ref of this.malware.attributes.external_references) {
+            if (ref.description !== undefined) {
+                citationArr = citationArr.concat(super.matchCitations(ref.description));
+            }
+        }
         if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.malware.attributes.external_references.push(this.mitreId);
         }
@@ -405,8 +410,8 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
             this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
         }
         this.malware.attributes.external_references = [];
-        this.addExtRefs();
         this.addAliasesToMalware();
+        this.addExtRefs();
         this.removeContributors();
         if (this.deprecated === true) {
             this.malware.attributes.x_mitre_deprecated = true;

@@ -36,6 +36,17 @@
                             <h5 [innerHTML]="formatText(malware.attributes.description)"></h5><br>
                         </div>
                     </div>
+                    <div *ngIf="malware.attributes.x_mitre_platforms && malware.attributes.x_mitre_platforms.length" class="row">
+                            <div class="col-md-12">
+                                <label>Platforms:</label>
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let platform of malware.attributes.x_mitre_platforms"
+                                        selected="true">
+                                        {{platform}}
+                                    </mat-chip>
+                                </mat-chip-list><br>
+                            </div>
+                        </div>
                     <div *ngIf="aliasesToDisplay.length > 0" class="row">
                         <div class="col-md-12">
                             <label>Aliases</label>

@@ -33,6 +33,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public id: string;
     public idLink: string = "{{LinkById|";
     public deprecated: boolean = false;
+    public platforms: any = [];
 
    constructor(
         public stixService: StixService,
@@ -118,6 +119,48 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         }
     }
 
+    public addRemovePlatform(platform: string) {
+        if (!('x_mitre_platforms' in this.malware.attributes)) {
+            this.malware.attributes.x_mitre_platforms = [];
+            this.malware.attributes.x_mitre_platforms.push(platform);
+        } else {
+            if ( this.foundPlatform(platform) ) {
+                this.malware.attributes.x_mitre_platforms = this.malware.attributes.x_mitre_platforms.filter((p) => p !== platform);
+                if (this.malware.attributes.x_mitre_platforms.length === 0) {
+                    this.malware.attributes['x_mitre_platforms'] = [];
+                    console.log(this.malware.attributes.x_mitre_platforms);
+                }
+            } else {
+                this.malware.attributes.x_mitre_platforms.push(platform);
+            }
+        }
+    }
+
+    public foundPlatform(platform: string): boolean {
+        let found = this.malware.attributes.x_mitre_platforms.find((p) => {
+            return p === platform;
+        });
+        return found ? true : false;
+    }
+
+    public selectAllPlatforms(): void {
+        this.malware.attributes.x_mitre_platforms = [];
+        for (let i in this.platforms) {
+            this.platforms[i]['val'] = true;
+            this.malware.attributes.x_mitre_platforms.push(this.platforms[i].name);
+        }
+        console.log(this.malware.attributes.x_mitre_platforms);
+    }
+
+    public removeAllPlatforms(): void {
+        for (let i in this.platforms) {
+            this.platforms[i]['val'] = false;
+        }
+        this.malware.attributes['x_mitre_platforms'] = [];
+        console.log(this.platforms);
+        console.log(this.malware.attributes.x_mitre_platforms);
+    }
+
     public getCitationsAndContributors(): void {
         let uri = Constance.MULTIPLES_URL;
         let subscription =  super.getByUrl(uri).subscribe(
@@ -130,6 +173,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                     this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
                 }
                 let configUri = Constance.CONFIG_URL;
+                let uniqPlatforms = [];
                 let subscript =  super.getByUrl(configUri).subscribe(
                     (res) => {
                         if (res && res.length) {
@@ -137,10 +181,21 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                                 if (currRes.attributes.configKey === 'references') {
                                   extRefs = extRefs.concat(currRes.attributes.configValue);
                                 }
+                                if (currRes.attributes.configKey === 'x_mitre_platforms') {
+                                    console.log(currRes.attributes.configValue);
+                                    uniqPlatforms = currRes.attributes.configValue;
+                                }
                             }
                         }
                         extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                         this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                        for (let currPlatform of uniqPlatforms) {
+                            if (('x_mitre_platforms' in this.malware.attributes) && this.malware.attributes.x_mitre_platforms.includes(currPlatform)) {
+                                this.platforms.push({'name': currPlatform, 'val': true});
+                            } else {
+                                this.platforms.push({'name': currPlatform, 'val': false});
+                            }
+                        }
                     }, (error) => {
                         // handle errors here
                          console.log('error ' + error);

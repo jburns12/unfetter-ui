@@ -52,6 +52,18 @@
         <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="malware.attributes.description">{{malware.attributes.description}}</textarea>
     </mat-input-container>
     <div class="row">
+            <div class="col-md-12">
+              <h4>Platforms</h4>
+              <a href="javascript:;" (click)="selectAllPlatforms()">[ Select All ]</a>
+              <a href="javascript:;" (click)="removeAllPlatforms()">[ Select None ]</a><br><br>
+                <div class="row">
+                    <div class="col-md-4" *ngFor="let platform of platforms">
+                            <mat-checkbox class="identity-margin" (change)="addRemovePlatform(platform.name)" [(ngModel)]="platform.val">{{platform.name}}</mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+    <div class="row">
         <div class="col-md-12">
             <h4>Aliases</h4>
                 <div class="button-row">

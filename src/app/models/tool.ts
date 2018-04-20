@@ -20,6 +20,7 @@ export class Tool {
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
         x_mitre_aliases: string[];
+        x_mitre_platforms: string[];
         x_mitre_contributors: string[];
         x_mitre_collections: string[];
         x_mitre_deprecated: boolean;

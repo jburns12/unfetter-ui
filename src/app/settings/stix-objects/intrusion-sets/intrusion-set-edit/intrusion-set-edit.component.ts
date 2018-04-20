@@ -95,6 +95,11 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public addExtRefs(): void {
         let citationArr = super.matchCitations(this.intrusionSet.attributes.description);
+        for (let ref of this.intrusionSet.attributes.external_references) {
+            if (ref.description !== undefined) {
+                citationArr = citationArr.concat(super.matchCitations(ref.description));
+            }
+        }
         if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.intrusionSet.attributes.external_references.push(this.mitreId);
         }
@@ -127,8 +132,8 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
             this.mitreId.url = 'https://attack.mitre.org/wiki/Group/' + this.id
         }
         this.intrusionSet.attributes.external_references = [];
-        this.addExtRefs();
         this.addAliasesToIntrusionSet();
+        this.addExtRefs();
         if (this.deprecated === true) {
             this.intrusionSet.attributes.x_mitre_deprecated = true;
         }

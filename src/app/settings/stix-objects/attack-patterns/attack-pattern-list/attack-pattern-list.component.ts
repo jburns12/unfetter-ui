@@ -122,9 +122,11 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                     } else {
                         attackPattern.attributes['hasId'] = false;
                     }
-                    console.log(attackPattern.attributes.x_mitre_deprecated);
                     if (attackPattern.attributes.x_mitre_deprecated === undefined) {
                         attackPattern.attributes['x_mitre_deprecated'] = false;
+                    }
+                    if (attackPattern.attributes.revoked === undefined) {
+                        attackPattern.attributes['revoked'] = false;
                     }
                     console.log(attackPattern.attributes.name);
                     //console.log(attackPattern.attributes.x_mitre_deprecated);

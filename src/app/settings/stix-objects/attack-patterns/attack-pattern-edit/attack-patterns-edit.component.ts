@@ -28,6 +28,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public mitreId: any;
     public addId: boolean = false;
     public deprecated: boolean = false;
+    public revoked: boolean = false;
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -73,6 +74,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getMitreId();
                this.getId();
                this.getDeprecated();
+               this.getRevoked();
            }, (error) => {
                // handle errors here
                console.log('error ' + error);
@@ -88,6 +90,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public getDeprecated(): void {
         if (this.attackPattern.attributes.x_mitre_deprecated) {
             this.deprecated = this.attackPattern.attributes.x_mitre_deprecated;
+        }
+    }
+
+    public getRevoked(): void {
+        if (this.attackPattern.attributes.revoked) {
+            this.revoked = this.attackPattern.attributes.revoked;
         }
     }
 
@@ -517,6 +525,14 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         else {
             if (this.attackPattern.attributes.x_mitre_deprecated !== undefined) {
                 delete this.attackPattern.attributes['x_mitre_deprecated'];
+            }
+        }
+        if (this.revoked === true) {
+            this.attackPattern.attributes.revoked = true;
+        }
+        else {
+            if (this.attackPattern.attributes.revoked !== undefined) {
+                this.attackPattern.attributes.revoked = false;
             }
         }
         let sub = super.saveButtonClicked().subscribe(

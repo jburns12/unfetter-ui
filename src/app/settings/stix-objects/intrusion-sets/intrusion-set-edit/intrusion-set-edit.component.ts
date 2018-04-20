@@ -142,6 +142,14 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
                 delete this.intrusionSet.attributes['x_mitre_deprecated'];
             }
         }
+        if (this.revoked === true) {
+            this.intrusionSet.attributes.revoked = true;
+        }
+        else {
+            if (this.intrusionSet.attributes.revoked !== undefined) {
+                this.intrusionSet.attributes.revoked = false;
+            }
+        }
         const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

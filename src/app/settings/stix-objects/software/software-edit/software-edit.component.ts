@@ -33,6 +33,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public id: string;
     public idLink: string = "{{LinkById|";
     public deprecated: boolean = false;
+    public revoked: boolean = false;
     public platforms: any = [];
 
    constructor(
@@ -65,6 +66,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                 this.getMitreId();
                 this.getId();
                 this.getDeprecated();
+                this.getRevoked();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -80,6 +82,12 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public getDeprecated(): void {
         if (this.malware.attributes.x_mitre_deprecated) {
             this.deprecated = this.malware.attributes.x_mitre_deprecated;
+        }
+    }
+
+    public getRevoked(): void {
+        if (this.malware.attributes.revoked) {
+            this.revoked = this.malware.attributes.revoked;
         }
     }
 
@@ -474,6 +482,14 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         else {
             if (this.malware.attributes.x_mitre_deprecated !== undefined) {
                 delete this.malware.attributes['x_mitre_deprecated'];
+            }
+        }
+        if (this.revoked === true) {
+            this.malware.attributes.revoked = true;
+        }
+        else {
+            if (this.malware.attributes.revoked !== undefined) {
+                this.malware.attributes.revoked = false;
             }
         }
         if (this.softwareType === 'Tool/Utility') {

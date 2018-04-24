@@ -277,6 +277,10 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
             relationship.id = id;
             console.log(relationship);
             this.stixService.url = Constance.RELATIONSHIPS_URL;
+            if (description == '') {
+                relationship.attributes.external_references = [];
+                relationship.attributes.description = description;
+            }
             let subscription = super.save(relationship).subscribe(
                 (data) => {
                     console.log(data);

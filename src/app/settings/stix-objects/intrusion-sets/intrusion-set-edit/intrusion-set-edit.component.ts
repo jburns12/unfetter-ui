@@ -221,6 +221,10 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         if (id !== '') {
             relationship.id = id;
             console.log(relationship);
+            if (description == '') {
+                relationship.attributes.external_references = [];
+                relationship.attributes.description = description;
+            }
             this.stixService.url = Constance.RELATIONSHIPS_URL;
             let subscription = super.save(relationship).subscribe(
                 (data) => {

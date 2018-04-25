@@ -28,6 +28,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div *ngIf="revoked" class="row">
+                            <div class="col-md-6">
+                                <mat-form-field style="width: auto;">
+                                    <mat-select name="attackPatterns" [(ngModel)]="revokedBy" placeholder="Revoked by:" class="full-width">
+                                      <mat-option *ngFor="let currTech of attackPatterns" [value]="currTech">
+                                        <span>{{ currTech.attributes.name }}</span>
+                                      </mat-option>
+                                    </mat-select>
+                                </mat-form-field><br>
+                            </div>
+                          </div>
                     <div class="row" *ngIf="addId || (mitreId !== undefined && mitreId !== '')">
                             <div class="col-md-12">
                                 <mat-input-container class="full-width">

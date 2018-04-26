@@ -33,6 +33,8 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public resourceLevelCtrl: FormControl;
     public editComponent: boolean = true;
     public idLink: string = "{{LinkById|";
+    public target: any;
+    public relationship: Relationship = new Relationship();
 
     public labels = [
         {label: 'activist'},
@@ -54,6 +56,10 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public allCitations: any = [];
     public createNewOnly: boolean = true;
     public addId: boolean = false;
+    public intrusionSets: IntrusionSet[];
+    public revokedBy: any = '';
+    public foundRevoked: string = '';
+    public origTarget: string = '';
 
    constructor(
         public stixService: StixService,
@@ -70,6 +76,119 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public ngOnInit() {
        super.loadIntrusionSet();
+       let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
+       let subscription = super.load(filter).subscribe(
+           (data) => {
+               this.intrusionSets = data as IntrusionSet[];
+               this.findRevokedBy();
+           }, (error) => {
+               // handle errors here
+               console.log('error ' + error);
+           }, () => {
+               // prevent memory links
+               if (subscription) {
+                   subscription.unsubscribe();
+               }
+           }
+       );
+    }
+
+    public findRevokedBy(): void  {
+        let filter = { 'stix.source_ref': this.intrusionSet.id };
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                this.target = data as Relationship[];
+                this.target.forEach((relationship: Relationship) => {
+                    if (relationship.attributes.relationship_type === 'revoked-by') {
+                        this.foundRevoked = relationship.id;
+                        this.origTarget = relationship.attributes.target_ref;
+                    }
+                });
+                if (this.foundRevoked !== '') {
+                    this.revokedBy = this.intrusionSets.find((p) => (p.id === this.origTarget));
+                }
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public saveRevokedDeleteOld(source_ref, target_ref): void {
+        this.relationship.attributes.source_ref = source_ref;
+        this.relationship.attributes.target_ref = target_ref;
+        this.relationship.attributes.relationship_type = 'revoked-by';
+        this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+        this.stixService.url = Constance.RELATIONSHIPS_URL;
+        let subscription = super.create(this.relationship).subscribe(
+            (data) => {
+                console.log(data);
+            }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+        let relationship = new Relationship();
+        relationship.id = this.foundRevoked;
+        relationship.url = Constance.RELATIONSHIPS_URL;
+        this.delete(relationship, false).subscribe(
+            () => {
+
+            }
+        );
+    }
+
+    public saveRevoked(source_ref, target_ref): void {
+        if (this.revokedBy !== '') {
+            this.relationship.attributes.source_ref = source_ref;
+            this.relationship.attributes.target_ref = target_ref;
+            this.relationship.attributes.relationship_type = 'revoked-by';
+            this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+            if (this.foundRevoked === '') {
+                this.stixService.url = Constance.RELATIONSHIPS_URL;
+                let subscription = super.create(this.relationship).subscribe(
+                    (data) => {
+                        console.log(data);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+            else {
+                this.relationship.id = this.foundRevoked;
+                this.stixService.url = Constance.RELATIONSHIPS_URL;
+                let subscription = super.save(this.relationship).subscribe(
+                    (data) => {
+                        console.log(data);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+        }
     }
 
     public isChecked(label: string): boolean {
@@ -155,6 +274,26 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
                 this.location.back();
                 this.createRelationships(data.id);
                 this.removeRelationships(data.id);
+                if (this.revoked) {
+                    if (this.origTarget === '' || this.origTarget === this.revokedBy.id) {
+                        this.saveRevoked(data.id, this.revokedBy.id);
+                    }
+                    else {
+                        this.saveRevokedDeleteOld(data.id, this.revokedBy.id);
+                    }
+                }
+                else {
+                    if (this.foundRevoked !== '') {
+                        let relationship = new Relationship();
+                        relationship.id = this.foundRevoked;
+                        relationship.url = Constance.RELATIONSHIPS_URL;
+                        this.delete(relationship, false).subscribe(
+                            () => {
+                
+                            }
+                        );
+                    }
+                }
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

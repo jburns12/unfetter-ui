@@ -35,6 +35,12 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public deprecated: boolean = false;
     public revoked: boolean = false;
     public platforms: any = [];
+    public softwares: Malware[] = [];
+    public revokedBy: any = '';
+    public foundRevoked: string = '';
+    public origTarget: string = '';
+    public relationship: Relationship = new Relationship();
+    public target: any;
 
    constructor(
         public stixService: StixService,
@@ -57,6 +63,37 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.malware = data;
+                let subscription =  super.getByUrl(Constance.MALWARE_URL).subscribe(
+                    (data) => {
+                        let target = data as Malware[];
+                        this.softwares = this.softwares.concat(target);
+                        let subscription =  super.getByUrl(Constance.TOOL_URL).subscribe(
+                            (data) => {
+                                let newTarget = data as Malware[];
+                                this.softwares = this.softwares.concat(newTarget);
+                                this.softwares= this.softwares.sort((a, b) => a.attributes.name.toLowerCase() < b.attributes.name.toLowerCase() ? -1 : a.attributes.name.toLowerCase() > b.attributes.name.toLowerCase() ? 1 : 0);
+                                this.findRevokedBy();
+                                }, (error) => {
+                                // handle errors here
+                                console.log('error ' + error);
+                            }, () => {
+                                // prevent memory links
+                                if (subscription) {
+                                    subscription.unsubscribe();
+                                }
+                            }
+                        );
+                        }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+
                 this.malware.attributes.external_references.reverse();
                 console.log(this.malware);
                 this.getGroups();
@@ -77,6 +114,104 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                 }
             }
         );
+    }
+
+    public saveRevokedDeleteOld(source_ref, target_ref): void {
+        this.relationship.attributes.source_ref = source_ref;
+        this.relationship.attributes.target_ref = target_ref;
+        this.relationship.attributes.relationship_type = 'revoked-by';
+        this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+        this.stixService.url = Constance.RELATIONSHIPS_URL;
+        let subscription = super.create(this.relationship).subscribe(
+            (data) => {
+                console.log(data);
+            }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+        let relationship = new Relationship();
+        relationship.id = this.foundRevoked;
+        relationship.url = Constance.RELATIONSHIPS_URL;
+        this.delete(relationship, false).subscribe(
+            () => {
+
+            }
+        );
+    }
+
+    public findRevokedBy(): void  {
+        let filter = { 'stix.source_ref': this.malware.id };
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                this.target = data as Relationship[];
+                this.target.forEach((relationship: Relationship) => {
+                    if (relationship.attributes.relationship_type === 'revoked-by') {
+                        this.foundRevoked = relationship.id;
+                        this.origTarget = relationship.attributes.target_ref;
+                    }
+                });
+                if (this.foundRevoked !== '') {
+                    this.revokedBy = this.softwares.find((p) => (p.id === this.origTarget));
+                }
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public saveRevoked(source_ref, target_ref, changedType=false): void {
+        if (this.revokedBy !== '') {
+            this.relationship.attributes.source_ref = source_ref;
+            this.relationship.attributes.target_ref = target_ref;
+            this.relationship.attributes.relationship_type = 'revoked-by';
+            this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+            if (this.foundRevoked === '' || changedType) {
+                this.stixService.url = Constance.RELATIONSHIPS_URL;
+                let subscription = super.create(this.relationship).subscribe(
+                    (data) => {
+                        console.log(data);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+            else {
+                this.relationship.id = this.foundRevoked;
+                this.stixService.url = Constance.RELATIONSHIPS_URL;
+                let subscription = super.save(this.relationship).subscribe(
+                    (data) => {
+                        console.log(data);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+        }
     }
 
     public getDeprecated(): void {
@@ -507,6 +642,26 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                     this.location.back();
                     this.createRelationships(data.id);
                     this.removeRelationships(data.id);
+                    if (this.revoked) {
+                        if (this.origTarget === '' || this.origTarget === this.revokedBy.id) {
+                            this.saveRevoked(data.id, this.revokedBy.id);
+                        }
+                        else {
+                            this.saveRevokedDeleteOld(data.id, this.revokedBy.id);
+                        }
+                    }
+                    else {
+                        if (this.foundRevoked !== '') {
+                            let relationship = new Relationship();
+                            relationship.id = this.foundRevoked;
+                            relationship.url = Constance.RELATIONSHIPS_URL;
+                            this.delete(relationship, false).subscribe(
+                                () => {
+                    
+                                }
+                            );
+                        }
+                    }
                     console.log(this.allRels);
                 }, (error) => {
                     // handle errors here
@@ -542,15 +697,37 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
             }
             let sub = super.create(newObj).subscribe(
                 (stixObject) => {
-                    console.log(stixObject);
-                    this.createRelationships(stixObject[0].id);
-                    this.removeRelationships(stixObject[0].id, false);
-                    this.createRelationshipsGroups(stixObject[0].id);
-                    this.delete(this.malware, false).subscribe(
-                        () => {
-                            this.router.navigate(['stix/softwares']);
-                        }
-                    );
+                    if (this.revoked) {
+                        this.saveRevoked(stixObject[0].id, this.revokedBy.id, true);
+                    }
+                    if (this.foundRevoked !== '') {
+                        let relationship = new Relationship();
+                        relationship.id = this.foundRevoked;
+                        relationship.url = Constance.RELATIONSHIPS_URL;
+                        this.delete(relationship, false).subscribe(
+                            () => {
+                                this.createRelationships(stixObject[0].id);
+                                this.removeRelationships(stixObject[0].id, false);
+                                this.createRelationshipsGroups(stixObject[0].id);
+                                this.delete(this.malware, false).subscribe(
+                                    () => {
+                                        this.router.navigate(['stix/softwares']);
+                                    }
+                                );
+                            }
+                        );
+                    }
+                    else {
+                        this.createRelationships(stixObject[0].id);
+                        this.removeRelationships(stixObject[0].id, false);
+                        this.createRelationshipsGroups(stixObject[0].id);
+                        this.delete(this.malware, false).subscribe(
+                            () => {
+                                this.router.navigate(['stix/softwares']);
+                            }
+                        );
+                    }
+
                 }, (error) => {
                     // handle errors here
                      console.log('error ' + error);

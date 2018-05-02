@@ -238,7 +238,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                     }
                 }
                 extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                extRefs = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                extRefs = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name && t.description === citation.description) === index);
                 
                 for (let i in extRefs) {
                     extRefs[i].used = 'Used';
@@ -257,7 +257,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
                             }
                         }
                         extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
-                        this.citations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                        this.citations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name && t.description === citation.description) === index);
                         for (let i in this.citations) {
                             if (this.citations[i].used === undefined) {
                                 this.citations[i].used = 'Unused';

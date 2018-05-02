@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { StixService } from '../../../stix.service';
-import { AttackPattern, CourseOfAction, ExternalReference, KillChainPhase } from '../../../../models';
+import { AttackPattern, CourseOfAction, ExternalReference, KillChainPhase, Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 
 @Component({
@@ -29,6 +29,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public addId: boolean = false;
     public deprecated: boolean = false;
     public revoked: boolean = false;
+    public revokedBy: any = '';
+    public foundRevoked: string = '';
+    public origTarget: string = '';
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -69,6 +72,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getContributors();
                this.assignPerms();
                this.findCoA();
+               this.findRevokedBy();
                this.getCitations();
                this.assignCitations();
                this.getMitreId();
@@ -121,6 +125,34 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 this.allCitations = this.allCitations.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                 this.allCitations = this.allCitations.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
             }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public findRevokedBy(): void  {
+        let filter = { 'stix.source_ref': this.attackPattern.id };
+        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                this.stixService.url = Constance.ATTACK_PATTERN_URL;
+                this.target = data as Relationship[];
+                this.target.forEach((relationship: Relationship) => {
+                    if (relationship.attributes.relationship_type === 'revoked-by') {
+                        this.foundRevoked = relationship.id;
+                        this.origTarget = relationship.attributes.target_ref;
+                    }
+                });
+                if (this.foundRevoked !== '') {
+                    this.revokedBy = this.attackPatterns.find((p) => (p.id === this.origTarget));
+                }
+               }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
             }, () => {
@@ -501,6 +533,77 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
+    public saveRevokedDeleteOld(source_ref, target_ref): void {
+        this.relationship.attributes.source_ref = source_ref;
+        this.relationship.attributes.target_ref = target_ref;
+        this.relationship.attributes.relationship_type = 'revoked-by';
+        this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+        this.stixService.url = Constance.RELATIONSHIPS_URL;
+        let subscription = super.create(this.relationship).subscribe(
+            (data) => {
+                console.log(data);
+            }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+        let relationship = new Relationship();
+        relationship.id = this.foundRevoked;
+        relationship.url = Constance.RELATIONSHIPS_URL;
+        this.delete(relationship, false).subscribe(
+            () => {
+
+            }
+        );
+    }
+
+    public saveRevoked(source_ref, target_ref): void {
+        if (this.revokedBy !== '') {
+            this.relationship.attributes.source_ref = source_ref;
+            this.relationship.attributes.target_ref = target_ref;
+            this.relationship.attributes.relationship_type = 'revoked-by';
+            this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+            if (this.foundRevoked === '') {
+                this.stixService.url = Constance.RELATIONSHIPS_URL;
+                let subscription = super.create(this.relationship).subscribe(
+                    (data) => {
+                        console.log(data);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+            else {
+                this.relationship.id = this.foundRevoked;
+                this.stixService.url = Constance.RELATIONSHIPS_URL;
+                let subscription = super.save(this.relationship).subscribe(
+                    (data) => {
+                        console.log(data);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+        }
+    }
+
     public saveAttackPattern(): void {
         this.removeEmpties();
         if (this.mitreId === '' || this.mitreId === undefined ) {
@@ -539,6 +642,26 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             (data) => {
                 console.log(data);
                 this.saveCourseOfAction(data.id, this.allCitations);
+                if (this.revoked) {
+                    if (this.origTarget === '' || this.origTarget === this.revokedBy.id) {
+                        this.saveRevoked(data.id, this.revokedBy.id);
+                    }
+                    else {
+                        this.saveRevokedDeleteOld(data.id, this.revokedBy.id);
+                    }
+                }
+                else {
+                    if (this.foundRevoked !== '') {
+                        let relationship = new Relationship();
+                        relationship.id = this.foundRevoked;
+                        relationship.url = Constance.RELATIONSHIPS_URL;
+                        this.delete(relationship, false).subscribe(
+                            () => {
+                
+                            }
+                        );
+                    }
+                }
                 this.location.back();
             }, (error) => {
                 // handle errors here

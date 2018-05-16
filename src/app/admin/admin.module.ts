@@ -10,6 +10,7 @@ import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { SiteUsageComponent } from './site-usage/site-usage.component';
 import { OrgLeaderApprovalComponent } from './org-leader-approval/org-leader-approval.component';
 import { ConfigEditComponent } from './config-edit/config-edit.component';
+import { PublishComponent} from './publish/publish.component';
 import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ChartsModule } from 'ng2-charts';
         AdminLayoutComponent,
         SiteUsageComponent,
         OrgLeaderApprovalComponent,
-        ConfigEditComponent
+        ConfigEditComponent,
+        PublishComponent
     ],
     providers: [
         AdminService

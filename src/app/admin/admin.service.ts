@@ -26,6 +26,10 @@ export class AdminService {
         return this.genericApi.get(`${this.adminUrl}/site-visits`);
     }
 
+    public publishAttack(): Observable<any> {
+        return this.genericApi.get(`${this.adminUrl}/publish`);
+    }
+    
     public getWebsiteVisitsGraph(numDays: number): Observable<any> {
         return this.genericApi.get(`${this.adminUrl}/site-visits-graph/${numDays}`);
     }

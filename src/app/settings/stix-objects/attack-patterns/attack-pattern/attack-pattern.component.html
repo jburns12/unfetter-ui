@@ -52,10 +52,13 @@
                                 <h5>{{attackPattern.attributes.x_mitre_system_requirements}}</h5>
                             </div>
                         </div><br>
-                        <div *ngIf="mitigation" class="row">
+                        <div *ngIf="mitigations.length" class="row">
                             <div class="col-md-12">
-                                <label>Mitigation</label>
-                                <h5 [innerHTML]="formatText(mitigation)"></h5><br>
+                                <label>Mitigations</label>
+                                <div *ngFor="let mitigation of mitigations">
+                                    <h4> {{mitigation.name}} </h4>
+                                    <h5 [innerHTML]="formatText(mitigation.description)"></h5><br>
+                                </div>
                             </div>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_platforms && attackPattern.attributes.x_mitre_platforms.length" class="row">

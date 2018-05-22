@@ -35,6 +35,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
               this.getId();
               this.assignCoaCitations();
               this.getCitations();
+              this.getAllCoAs();
           }, (error) => {
               // handle errors here
               console.log('error ' + error);
@@ -72,7 +73,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
         let sub = super.create(this.attackPattern).subscribe(
             (data) => {
                  this.location.back();
-                 this.saveCourseOfAction(data[0].id, this.allCitations);
+                 this.saveCoursesOfAction(data[0].id, this.allCitations);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

@@ -32,6 +32,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public revokedBy: any = '';
     public foundRevoked: string = '';
     public origTarget: string = '';
+    public newMitigations: any = [];
     public supportsRemoteReqNet: any = [
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
@@ -390,6 +391,22 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
+    public addMitigation(): void {
+        this.mitigations.unshift({'id': '', 'name': '', 'description': ''});
+    }
+
+    public createNewMitigation(): void {
+        this.newMitigations.unshift({'name': '', 'description': ''});
+    }
+
+    public removeMitigation(mitigation): void {
+        this.mitigations = this.mitigations.filter((h) => h.name !== mitigation);
+    }
+
+    public removeNewMitigation(mitigation): void {
+        this.newMitigations = this.newMitigations.filter((h) => h.name !== mitigation);
+    }
+
     public addDataSource(): void {
         if (!('x_mitre_data_sources' in this.attackPattern.attributes)) {
             this.attackPattern.attributes.x_mitre_data_sources = [];
@@ -453,11 +470,8 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
             this.attackPattern.attributes.external_references.push(this.mitreId);
         }
-        console.log(citationArr);
-        console.log(this.allCitations);
         for (let name of citationArr) {
             let citation = this.allCitations.find((p) => p.source_name === name);
-            console.log(citation);
             if (citation !== undefined) {
                 if (this.attackPattern.attributes.external_references.find((p) => p.source_name === name) === undefined) {
                     this.attackPattern.attributes.external_references.push(citation);
@@ -466,27 +480,24 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
-    public saveCourseOfAction(attackPatternId: string, citations: any): void {
-        if (this.coaId !== '') {
-            console.log(this.courseOfAction.attributes.external_references);
-            if (this.mitigation !== this.courseOfAction.attributes.description || (this.coaMitreId === undefined && this.mitreId !== undefined && this.mitreId.external_id !== "")) {
-                this.courseOfAction.attributes.description = this.mitigation;
-                this.courseOfAction.attributes.external_references = [];
-                if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
-                    this.courseOfAction.attributes.external_references.push(this.mitreId);
-                }
-                let citationArr = super.matchCitations(this.mitigation);
+    public saveCoursesOfAction(attackPatternId: string, citations: any): void {
+        for (let mitigation of this.mitigations) {
+            let foundMitigation = this.allMitStatic.find((p) => p.attributes.name === mitigation.name);
+            if (foundMitigation.attributes.description !== mitigation.description) {
+                foundMitigation.attributes.description = mitigation.description;
+                foundMitigation.attributes.external_references = [];
+                let citationArr = super.matchCitations(foundMitigation.attributes.description);
                 for (let name of citationArr) {
                     let citation = citations.find((p) => p.source_name === name);
-                    console.log(citation);
                     if (citation !== undefined) {
-                        this.courseOfAction.attributes.external_references.push(citation);
+                        if (foundMitigation.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                            foundMitigation.attributes.external_references.push(citation);;
+                        }        
                     }
                 }
                 this.stixService.url = Constance.COURSE_OF_ACTION_URL;
-                let subscription = super.save(this.courseOfAction).subscribe(
+                let subscription = super.save(foundMitigation).subscribe(
                     (data) => {
-
                     }, (error) => {
                         // handle errors here
                         console.log('error ' + error);
@@ -498,38 +509,54 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                     }
                 );
             }
-        } else {
-            if (this.mitigation !== '') {
-                this.courseOfAction.attributes.description = this.mitigation;
-                this.courseOfAction.attributes.name = this.attackPattern.attributes.name + ' Mitigation';
-                this.courseOfAction.attributes.external_references = [];
-                if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
-                    this.courseOfAction.attributes.external_references.push(this.mitreId);
-                }
-                let citationArr = super.matchCitations(this.mitigation);
-                for (let name of citationArr) {
-                    let citation = citations.find((p) => p.source_name === name);
-                    console.log(citation);
-                    if (citation !== undefined) {
-                        this.courseOfAction.attributes.external_references.push(citation);
-                    }
-                }
-                console.log(this.courseOfAction);
-                this.courseOfAction.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
-                let subscription = super.create(this.courseOfAction).subscribe(
-                    (stixObject) => {
-                        this.saveRelationship(attackPatternId, stixObject[0].id);
-                    }, (error) => {
-                        // handle errors here
-                         console.log('error ' + error);
-                    }, () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
+            let origMit = this.origMitigations.find((p) => p.id === foundMitigation.id);
+            this.origMitigations = this.origMitigations.filter((p) => p.id !== foundMitigation.id);
+            if (origMit === undefined) {
+                this.saveRelationship(attackPatternId, foundMitigation.id);
+            }
+        }
+
+        for (let mitigation of this.origMitigations) {
+            let relationship = this.allRels.find((p) => p.attributes.source_ref === mitigation.id);
+            if (relationship !== undefined) {
+                relationship.url = Constance.RELATIONSHIPS_URL;
+                this.delete(relationship, false).subscribe(
+                    () => {
+        
                     }
                 );
             }
+        }
+
+        for (let mitigation of this.newMitigations) {
+            let coa = new CourseOfAction;
+            coa.attributes.description = mitigation.description;
+            coa.attributes.name = mitigation.name;
+            coa.attributes.external_references = [];
+            let citationArr = super.matchCitations(coa.attributes.description);
+            for (let name of citationArr) {
+                let citation = citations.find((p) => p.source_name === name);
+                if (citation !== undefined) {
+                    if (coa.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                        coa.attributes.external_references.push(citation);;
+                    }   
+                }
+            }
+            this.stixService.url = Constance.COURSE_OF_ACTION_URL;
+            coa.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+            let subscription = super.create(coa).subscribe(
+                (stixObject) => {
+                    this.saveRelationship(attackPatternId, stixObject[0].id);
+                }, (error) => {
+                    // handle errors here
+                     console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (subscription) {
+                        subscription.unsubscribe();
+                    }
+                }
+            );
         }
     }
 
@@ -641,7 +668,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log(data);
-                this.saveCourseOfAction(data.id, this.allCitations);
+                this.saveCoursesOfAction(data.id, this.allCitations);
                 if (this.revoked) {
                     if (this.origTarget === '' || this.origTarget === this.revokedBy.id) {
                         this.saveRevoked(data.id, this.revokedBy.id);

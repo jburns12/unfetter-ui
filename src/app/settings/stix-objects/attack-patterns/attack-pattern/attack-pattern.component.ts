@@ -34,6 +34,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public attackId: string;
     public deprecated: boolean = false;
     public revoked: boolean = false;
+    public mitigations: any = [];
+    public origMitigations: any = [];
+    public allMitigations: any;
+    public allMitStatic: any = [];
 
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
@@ -65,6 +69,15 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public editButtonClicked(): void {
         let link = ['../edit', this.attackPattern.id];
         super.gotoView(link);
+    }
+
+    public checkAddedMitigations(i: any): void {
+        let foundMitigation = this.allMitStatic.find((p) => p.attributes.name === this.mitigations[i].name);
+        if (foundMitigation !== undefined) {
+            this.mitigations[i].description = foundMitigation.attributes.description;
+            this.mitigations[i].id = foundMitigation.id;
+
+        }
     }
 
     public historyButtonClicked(): void {
@@ -125,7 +138,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
          let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
-                console.log(this.attackPattern);
                 if (this.attackPattern.attributes.external_references !== undefined) {
                     for (let ref of this.attackPattern.attributes.external_references) {
                         if (ref.external_id !== undefined) {
@@ -140,8 +152,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     this.revoked = this.attackPattern.attributes.revoked;
                 }
                 this.attackPattern.attributes.external_references.reverse();
-                this.findCoA();
                 this.findSourceRels();
+                this.findCoA();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -215,50 +227,95 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
       return found ? true : false;
     }
 
-    public findCoA(): void {
-        let filter = { 'stix.target_ref': this.attackPattern.id };
-        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
-        let subscription =  super.getByUrl(uri).subscribe(
-            (data) => {
-                this.stixService.url = Constance.ATTACK_PATTERN_URL;
-                this.target = data as Relationship[];
-                this.target.forEach((relationship: Relationship) => {
-                    if (relationship.attributes.relationship_type === 'mitigates') {
-                        this.getMitigation(relationship.attributes.source_ref);
-                    }
-
-                    let relFilter = { 'stix.id': relationship.attributes.source_ref };
-                    let multiplesUri = Constance.MULTIPLES_URL + '?filter=' + JSON.stringify(relFilter);
-                    let subscript =  this.getByUrl(multiplesUri).subscribe(
-                        (multiplesData) => {
-                            console.log(multiplesData);
-                            relationship.attributes.name = multiplesData[0].attributes.name;
-                            if (multiplesData[0].attributes.external_references !== undefined) {
-                                for (let i in multiplesData[0].attributes.external_references) {
-                                    if (multiplesData[0].attributes.external_references[i].external_id !== undefined) {
-                                        relationship.attributes.name = multiplesData[0].attributes.external_references[i].external_id;
-                                    }
-                                }
-                            }
-                              this.allRels.push(relationship);
-                           }, (error) => {
-                            // handle errors here
-                             console.log('error ' + error);
-                        }, () => {
-                            // prevent memory links
-                            if (subscript) {
-                                subscript.unsubscribe();
-                            }
-                        }
-                    );
-                });
-               }, (error) => {
+    public getAllCoAs(): void {
+        let coaUri = Constance.COURSE_OF_ACTION_URL;
+        let coaSubscript = super.getByUrl(coaUri).subscribe(
+            (coaData) => {
+                this.allMitigations = coaData as CourseOfAction[];
+                this.allMitigations.forEach((coa: CourseOfAction) => {
+                    this.allMitStatic.push(coa);
+                })
+            }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                console.log('error ' + error);
             }, () => {
                 // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
+                if (coaSubscript) {
+                    coaSubscript.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public findCoA(): void {
+        let coaUri = Constance.COURSE_OF_ACTION_URL;
+        let coaSubscript = super.getByUrl(coaUri).subscribe(
+            (coaData) => {
+                let mitigations = [];
+                this.allMitigations = coaData as CourseOfAction[];
+                this.allMitigations.forEach((coa: CourseOfAction) => {
+                    this.allMitStatic.push(coa);
+                })
+                let filter = { 'stix.target_ref': this.attackPattern.id };
+                let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
+                let subscription =  super.getByUrl(uri).subscribe(
+                    (data) => {
+                        this.stixService.url = Constance.ATTACK_PATTERN_URL;
+                        this.target = data as Relationship[];
+                        this.target.forEach((relationship: Relationship) => {
+                            if (relationship.attributes.relationship_type === 'mitigates') {
+                                mitigations.push(relationship.attributes.source_ref);
+                            }
+
+                            let relFilter = { 'stix.id': relationship.attributes.source_ref };
+                            let multiplesUri = Constance.MULTIPLES_URL + '?filter=' + JSON.stringify(relFilter);
+                            let subscript =  this.getByUrl(multiplesUri).subscribe(
+                                (multiplesData) => {
+                                    console.log(multiplesData);
+                                    relationship.attributes.name = multiplesData[0].attributes.name;
+                                    if (multiplesData[0].attributes.external_references !== undefined) {
+                                        for (let i in multiplesData[0].attributes.external_references) {
+                                            if (multiplesData[0].attributes.external_references[i].external_id !== undefined) {
+                                                relationship.attributes.name = multiplesData[0].attributes.external_references[i].external_id;
+                                            }
+                                        }
+                                    }
+                                    this.allRels.push(relationship);
+                                }, (error) => {
+                                    // handle errors here
+                                    console.log('error ' + error);
+                                }, () => {
+                                    // prevent memory links
+                                    if (subscript) {
+                                        subscript.unsubscribe();
+                                    }
+                                }
+                            );
+                        });
+                        mitigations.forEach((mitigation: string) => {
+                            let currMitigation = this.allMitigations.find((p) => (p.id === mitigation));
+                            if (currMitigation !== undefined) {
+                                this.origMitigations.push({'id': currMitigation.id})
+                                this.mitigations.push({'id': currMitigation.id, 'name': currMitigation.attributes.name, 'description': currMitigation.attributes.description});
+                            }
+                        });
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (coaSubscript) {
+                    coaSubscript.unsubscribe();
                 }
             }
         );
@@ -288,33 +345,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                       }
                   );
                 });
-               }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
-    }
-
-    public getMitigation(coaId: string) {
-        let uri = Constance.COURSE_OF_ACTION_URL + '/' + coaId;
-        let subscription =  super.getByUrl(uri).subscribe(
-            (data) => {
-                this.coaId = coaId;
-                this.courseOfAction = data as CourseOfAction;
-                for (let i in this.courseOfAction.attributes.external_references) {
-                    if (this.courseOfAction.attributes.external_references[i].source_name === 'mitre-attack') {
-                        this.coaMitreId = this.courseOfAction.attributes.external_references[i].external_id;
-                    }
-                    this.courseOfAction.attributes.external_references[i].citeButton = 'Generate Citation Text';
-                    this.courseOfAction.attributes.external_references[i].citation = '[[Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
-                    this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
-                }
-                this.mitigation = this.courseOfAction.attributes.description;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

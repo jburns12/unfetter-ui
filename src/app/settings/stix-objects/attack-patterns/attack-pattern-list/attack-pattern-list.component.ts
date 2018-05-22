@@ -128,9 +128,6 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                     if (attackPattern.attributes.revoked === undefined) {
                         attackPattern.attributes['revoked'] = false;
                     }
-                    console.log(attackPattern.attributes.name);
-                    //console.log(attackPattern.attributes.x_mitre_deprecated);
-                    //console.log(attackPattern.attributes['hasId']);
                     this.attackPatternByPhaseMap[killChainPhase.phase_name].push(attackPattern);
                 });
             }

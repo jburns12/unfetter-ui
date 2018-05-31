@@ -1,0 +1,84 @@
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-4">
+                            <mat-checkbox class="identity-margin" (change)="addRemoveId()">Assign ID?</mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf=addId>
+            <div class="col-md-12">
+                <mat-input-container class="full-width">
+                    <input matInput placeholder="ID" [(ngModel)]="id">
+                </mat-input-container>
+            </div>
+            <div class="button-row">
+                <a class="" mat-raised-button [ngxClipboard]="copyId"> Copy</a>
+                <input class="" size="100" #copyId value="{{idLink}}{{id}}}}">
+            </div>
+            <br>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <mat-input-container class="full-width">
+                    <input matInput placeholder="Name" required [(ngModel)]="attackPattern.attributes.name">
+                </mat-input-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <mat-input-container class="full-width">
+                    <textarea matInput required [(ngModel)]="attackPattern.attributes.description"  placeholder="Description"></textarea>
+                </mat-input-container>
+            </div>
+        </div>
+        <kill-chain-phases [(model)]="attackPattern" [(tactics)]="tactics" (onTacticAdd)="tacticChange($event)" [(tacticBools)]="tacticBools"></kill-chain-phases>
+          <h4>Easy for the Adversary?</h4>
+          <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4" *ngFor="let answer of easyForAdversary">
+                            <mat-checkbox class="identity-margin" (change)="addRemoveEasy(answer.name)" [(ngModel)]="answer.val">{{answer.name}}</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+          </div>
+        <div class="row">
+            <div class="col-md-12">
+                <mat-input-container class="full-width">
+                    <textarea matInput required [(ngModel)]="attackPattern.attributes.x_mitre_difficulty_for_adversary_explanation"  placeholder="Explanation"></textarea>
+                </mat-input-container>
+            </div>
+        </div>
+          <h4>Detectable by Common Defenses?</h4>
+          <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4" *ngFor="let answer of detectable">
+                            <mat-checkbox class="identity-margin" (change)="addRemoveDetectable(answer.name)" [(ngModel)]="answer.val">{{answer.name}}</mat-checkbox>
+                    </div>
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+                <mat-input-container class="full-width">
+                    <textarea matInput required [(ngModel)]="attackPattern.attributes.x_mitre_detectable_by_common_defenses_explanation"  placeholder="Explanation"></textarea>
+                </mat-input-container>
+            </div>
+        </div>
+        <h4>External References</h4>
+        <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
+        <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>
+
+          <div class="row">
+            <div class="col-md-12">
+                <div class="button-row pull-right">
+                     <button  class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
+                         <button type="submit"  class=" " mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name || !attackPattern.attributes.description || !attackPattern.attributes.kill_chain_phases || attackPattern.attributes.kill_chain_phases.length < 1 || !attackPattern.attributes.x_mitre_detectable_by_common_defenses_explanation || !attackPattern.attributes.x_mitre_difficulty_for_adversary_explanation"><i class="material-icons">save</i> SAVE & CLOSE</button>
+
+                </div>
+            </div>
+          </div>

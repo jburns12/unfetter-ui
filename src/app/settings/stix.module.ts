@@ -18,6 +18,7 @@ import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
 import {
   AttackPatternListComponent, AttackPatternsHomeComponent,
   AttackPatternComponent, AttackPatternNewComponent,
+  AttackPatternPreNewComponent, AttackPatternMobileNewComponent,
   AttackPatternEditComponent } from './stix-objects/attack-patterns';
 import {
   CampaignsHomeComponent,
@@ -92,6 +93,8 @@ import { ClipboardModule } from 'ngx-clipboard';
     AttackPatternListComponent,
     AttackPatternComponent,
     AttackPatternNewComponent,
+    AttackPatternPreNewComponent,
+    AttackPatternMobileNewComponent,
     AttackPatternEditComponent,
 
     CampaignsHomeComponent,

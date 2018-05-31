@@ -37,6 +37,17 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         {'label': 'Yes        ', 'value': true},
         {'label': 'No', 'value': false}
     ];
+    public easyForAdversary = [
+        {'name': 'Yes', 'val': true},
+        {'name': 'No', 'val': false}
+    ]
+
+    public detectable = [
+        {'name': 'Yes', 'val': true},
+        {'name': 'Partial', 'val': false},
+        {'name': 'No', 'val': false}
+    ]
+
     public permissions_req = [
       {'name': 'Administrator', 'val': false},
       {'name': 'root', 'val': false},
@@ -178,7 +189,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
-    public getConfigs(): void {
+    public getConfigs(phase = 'act'): void {
         let uniqPlatforms = [];
         let uri = Constance.CONFIG_URL;
         let subscription =  super.getByUrl(uri).subscribe(
@@ -196,7 +207,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                       }
                       if (currRes.attributes.configKey === 'tactics') {
                           for  (let currTactic of currRes.attributes.configValue) {
-                              if (currTactic.phase === 'act') {
+                              if (currTactic.phase === phase) {
                                   let found = this.attackPattern.attributes.kill_chain_phases.find((h) => {
                                       return h.phase_name === currTactic.tactic;
                                   });
@@ -353,6 +364,30 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 }
             } else {
                 this.attackPattern.attributes.x_mitre_permissions_required.push(permission);
+            }
+        }
+    }
+
+    public addRemoveEasy(answer: string) {
+        this.attackPattern.attributes.x_mitre_difficulty_for_adversary = answer;
+        for (let i in this.easyForAdversary) {
+            if (this.easyForAdversary[i].name === answer) {
+                this.easyForAdversary[i].val = true;
+            }
+            else {
+                this.easyForAdversary[i].val = false;
+            }
+        }
+    }
+
+    public addRemoveDetectable(answer: string) {
+        this.attackPattern.attributes.x_mitre_detectable_by_common_defenses = answer;
+        for (let i in this.detectable) {
+            if (this.detectable[i].name === answer) {
+                this.detectable[i].val = true;
+            }
+            else {
+                this.detectable[i].val = false;
             }
         }
     }

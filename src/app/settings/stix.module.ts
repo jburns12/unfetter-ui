@@ -19,7 +19,7 @@ import {
   AttackPatternListComponent, AttackPatternsHomeComponent,
   AttackPatternComponent, AttackPatternNewComponent,
   AttackPatternPreNewComponent, AttackPatternMobileNewComponent,
-  AttackPatternEditComponent } from './stix-objects/attack-patterns';
+  AttackPatternEditComponent, AttackPatternPreEditComponent, AttackPatternMobileEditComponent } from './stix-objects/attack-patterns';
 import {
   CampaignsHomeComponent,
   CampaignsListComponent,
@@ -96,6 +96,8 @@ import { ClipboardModule } from 'ngx-clipboard';
     AttackPatternPreNewComponent,
     AttackPatternMobileNewComponent,
     AttackPatternEditComponent,
+    AttackPatternPreEditComponent,
+    AttackPatternMobileEditComponent,
 
     CampaignsHomeComponent,
     CampaignsListComponent,

@@ -18,15 +18,28 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public selectedPhaseNameGroup: string;
     public phaseNameGroups = {};
     public phaseNameGroupKeys: string[];
+    public phaseNameGroupKeysEnterprise: string[];
+    public phaseNameGroupKeysPre: string[];
+    public phaseNameGroupKeysMobile: string[];
     public filterAttackPattern = {};
-    public attackPatternByPhaseMap: any = {};
+    public attackPatternByPhaseMap: any = {'enterprise': {}, 'pre': {}, 'mobile': {}};
     public numOfRows = 10;
+    public attack: any = {'enterprise': [], 'pre': [], 'mobile': []};
+    public enterpriseLen = 0;
+    public preLen = 0;
+    public mobileLen = 0;
     public displayedColumns: string[] = ['name', 'action'];
     public target: any;
     public foundCoA: CourseOfAction;
-    public draftsOnly: boolean = false;
-    public tempModel: any;
+    public draftsOnly: any = {'enterprise': false, 'pre': false, 'mobile': false};
+    public tempModel: any = {'enterprise': [], 'pre': [], 'mobile': []};
     public tempPhaseMap: any = {};
+    public domainToShow: string = 'Enterprise';
+    public whichDomain = [
+        {'name': 'Enterprise', 'val': true},
+        {'name': 'PRE-ATT&CK', 'val': false},
+        {'name': 'Mobile', 'val': false}
+    ]
 
     constructor(
         public stixService: StixService,
@@ -54,16 +67,28 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                     if (res && res.length) {
                         for (let currRes of res) {
                             if (currRes.attributes.configKey === 'tactics') {
-                                for  (let currTactic of currRes.attributes.configValue) {
-                                    if (currTactic.phase === 'act') {
-                                        this.phaseNameGroups[currTactic.tactic] = [];
-                                    }
+                                let phaseNameGroupsEnterprise = {};
+                                let phaseNameGroupsPre = {};
+                                let phaseNameGroupsMobile= {};
+                                for (let currTactic of currRes.attributes.configValue.enterprise_tactics.tactics) {
+                                    this.phaseNameGroups[currTactic.tactic] = [];
+                                    phaseNameGroupsEnterprise[currTactic.tactic] = [];
                                 }
+                                this.phaseNameGroupKeysEnterprise = Object.keys(phaseNameGroupsEnterprise);
+                                for (let currTactic of currRes.attributes.configValue.pre_attack_tactics.tactics) {
+                                    this.phaseNameGroups[currTactic.tactic] = [];
+                                    phaseNameGroupsPre[currTactic.tactic] = [];
+                                }
+                                this.phaseNameGroupKeysPre = Object.keys(phaseNameGroupsPre);
+                                for (let currTactic of currRes.attributes.configValue.mobile_tactics.tactics) {
+                                    this.phaseNameGroups[currTactic.tactic] = [];
+                                    phaseNameGroupsMobile[currTactic.tactic] = [];
+                                }
+                                this.phaseNameGroupKeysMobile = Object.keys(phaseNameGroupsMobile);
                             }
                         }
                     }
                     this.populateAttackPatternByPhaseMap();
-                    this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups);
                 }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -86,19 +111,31 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         );
     }
 
-    public draftsOnlyToggle() {
-        this.draftsOnly = !this.draftsOnly;
-        if (this.draftsOnly) {
-            this.tempModel = this.attackPatterns;
-            this.attackPatterns = this.attackPatterns.filter((h) => h.attributes['hasId'] === false);
-            for (let key in this.attackPatternByPhaseMap) {
-                this.tempPhaseMap[key] = this.attackPatternByPhaseMap[key];
-                this.attackPatternByPhaseMap[key] = this.attackPatternByPhaseMap[key].filter((h) => h.attributes['hasId'] === false);
+    public addRemoveWhichDomain(answer: string) {
+        this.domainToShow = answer;
+        for (let i in this.whichDomain) {
+            if (this.whichDomain[i].name === answer) {
+                this.whichDomain[i].val = true;
+            }
+            else {
+                this.whichDomain[i].val = false;
+            }
+        }
+    }
+    
+    public draftsOnlyToggle(domain: string) {
+        this.draftsOnly[domain] = !this.draftsOnly[domain];
+        if (this.draftsOnly[domain]) {
+            this.tempModel[domain] = this.attack[domain];
+            this.attack[domain] = this.attack[domain].filter((h) => h.attributes['hasId'] === false);
+            for (let key in this.attackPatternByPhaseMap[domain]) {
+                this.tempPhaseMap[key] = this.attackPatternByPhaseMap[domain][key];
+                this.attackPatternByPhaseMap[domain][key] = this.attackPatternByPhaseMap[domain][key].filter((h) => h.attributes['hasId'] === false);
             }
         } else {
-            this.attackPatterns = this.tempModel;
-            for (let key in this.attackPatternByPhaseMap) {
-                this.attackPatternByPhaseMap[key] = this.tempPhaseMap[key];
+            this.attack[domain] = this.tempModel[domain];
+            for (let key in this.attackPatternByPhaseMap[domain]) {
+                this.attackPatternByPhaseMap[domain][key] = this.tempPhaseMap[key];
             }
         }
 
@@ -108,15 +145,13 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let killChainPhases = attackPattern.attributes.kill_chain_phases;
             if (!killChainPhases || killChainPhases.length === 0) {
-                if (this.attackPatternByPhaseMap.unspecified === undefined) {
-                    this.attackPatternByPhaseMap.unspecified = [];
+                if (this.attackPatternByPhaseMap.enterprise.unspecified === undefined) {
+                    this.attackPatternByPhaseMap.enterprise.unspecified = [];
                 }
-                this.attackPatternByPhaseMap.unspecified.push(attackPattern);
+                this.attackPatternByPhaseMap.enterprise.unspecified.push(attackPattern);
             } else {
+                let found = false;
                 killChainPhases.forEach((killChainPhase: KillChainPhase) => {
-                    if (this.attackPatternByPhaseMap[killChainPhase.phase_name] === undefined) {
-                        this.attackPatternByPhaseMap[killChainPhase.phase_name] = [];
-                    }
                     if (this.hasAttackId(attackPattern)) {
                         attackPattern.attributes['hasId'] = true;
                     } else {
@@ -128,7 +163,36 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                     if (attackPattern.attributes.revoked === undefined) {
                         attackPattern.attributes['revoked'] = false;
                     }
-                    this.attackPatternByPhaseMap[killChainPhase.phase_name].push(attackPattern);
+                    if (killChainPhase.kill_chain_name === 'mitre-attack') {
+                        if (this.attackPatternByPhaseMap.enterprise[killChainPhase.phase_name] === undefined) {
+                            this.attackPatternByPhaseMap.enterprise[killChainPhase.phase_name] = [];
+                        }
+                        if (!found) {
+                            this.attack['enterprise'].push(attackPattern);
+                        }
+                        found = true;
+                        this.attackPatternByPhaseMap.enterprise[killChainPhase.phase_name].push(attackPattern);
+                    }
+                    else if (killChainPhase.kill_chain_name === 'mitre-pre-attack') {
+                        if (this.attackPatternByPhaseMap.pre[killChainPhase.phase_name] === undefined) {
+                            this.attackPatternByPhaseMap.pre[killChainPhase.phase_name] = [];
+                        }
+                        if (!found) {
+                            this.attack['pre'].push(attackPattern);
+                        }
+                        found = true;
+                        this.attackPatternByPhaseMap.pre[killChainPhase.phase_name].push(attackPattern);
+                    }
+                    else {
+                        if (this.attackPatternByPhaseMap.mobile[killChainPhase.phase_name] === undefined) {
+                            this.attackPatternByPhaseMap.mobile[killChainPhase.phase_name] = [];
+                        }
+                        if (!found) {
+                            this.attack['mobile'].push(attackPattern);
+                        }
+                        found = true;
+                        this.attackPatternByPhaseMap.mobile[killChainPhase.phase_name].push(attackPattern);
+                    }
                 });
             }
         });
@@ -163,7 +227,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         super.gotoView(link);
     }
 
-    public deletButtonClicked(attackPattern: AttackPattern, key: string): void {
+    public deletButtonClicked(attackPattern: AttackPattern, key: string, domain: string): void {
         let coaRelationships = [];
         let filter = { 'stix.target_ref': attackPattern.id };
         let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
@@ -204,11 +268,29 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                         }
                         this.deleteRels(this.attackPattern.id, false);
                         // TODO determine if there is a better wya to do this
-                        let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
-                        delete this.attackPatternByPhaseMap[key];
-                        this.ref.detectChanges();
-                        this.attackPatternByPhaseMap[key] = temp;
+                        if (domain === 'enterprise') {
+                            let temp = this.attackPatternByPhaseMap.enterprise[key].filter((h) => h.id !== attackPattern.id);
+                            delete this.attackPatternByPhaseMap.enterprise[key];
+                            this.ref.detectChanges();
+                            this.attackPatternByPhaseMap.enterprise[key] = temp;
+                            this.enterpriseLen -= 1;
+                        }
 
+                        else if (domain === 'pre') {
+                            let preTemp = this.attackPatternByPhaseMap.pre[key].filter((h) => h.id !== attackPattern.id);
+                            delete this.attackPatternByPhaseMap.pre[key];
+                            this.ref.detectChanges();
+                            this.attackPatternByPhaseMap.pre[key] = preTemp;
+                            this.preLen -= 1;
+                        }
+
+                        else {
+                            let mobileTemp = this.attackPatternByPhaseMap.mobile[key].filter((h) => h.id !== attackPattern.id);
+                            delete this.attackPatternByPhaseMap.mobile[key];
+                            this.ref.detectChanges();
+                            this.attackPatternByPhaseMap.mobile[key] = mobileTemp;
+                            this.mobileLen -= 1;
+                        }
                     }
                 );
             }, (error) => {

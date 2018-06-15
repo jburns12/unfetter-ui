@@ -13,7 +13,9 @@ import {
   AttackPatternNewComponent,
   AttackPatternPreNewComponent,
   AttackPatternMobileNewComponent,
-  AttackPatternEditComponent
+  AttackPatternEditComponent,
+  AttackPatternPreEditComponent,
+  AttackPatternMobileEditComponent
 } from './stix-objects/attack-patterns';
 
 import {
@@ -166,8 +168,16 @@ const stixRoutes: Routes = [{
           {
             path: 'edit/:id',
             component: AttackPatternEditComponent
+          },
+          {
+            path: 'edit-pre/:id',
+            component: AttackPatternPreEditComponent
+          },
+          {
+            path: 'edit-mobile/:id',
+            component: AttackPatternMobileEditComponent
           }
-        ]
+        ],
       },
       {
         path: 'campaigns',

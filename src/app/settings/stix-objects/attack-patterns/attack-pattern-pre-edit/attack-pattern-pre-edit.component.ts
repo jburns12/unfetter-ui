@@ -8,10 +8,10 @@ import { AttackPattern, CourseOfAction, ExternalReference, Relationship } from '
 import { Constance } from '../../../../utils/constance';
 
 @Component({
-    selector: 'attack-pattern-pre-new',
-    templateUrl: './attack-pattern-pre-new.component.html'
+    selector: 'attack-pattern-pre-edit',
+    templateUrl: './attack-pattern-pre-edit.component.html'
 })
-export class AttackPatternPreNewComponent extends AttackPatternEditComponent implements OnInit {
+export class AttackPatternPreEditComponent extends AttackPatternEditComponent implements OnInit {
     public attackPatterns: any;
 
     constructor(
@@ -26,18 +26,22 @@ export class AttackPatternPreNewComponent extends AttackPatternEditComponent imp
     }
 
     public ngOnInit() {
+      super.loadAttackPattern();
       let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
       let subscription = super.load(filter).subscribe(
           (data) => {
+              console.log(this.attackPattern);
               this.attackPatterns = data as AttackPattern[];
-              this.attackPattern.attributes.x_mitre_difficulty_for_adversary = "Yes";
-              this.attackPattern.attributes.x_mitre_detectable_by_common_defenses = "Yes";
               this.getConfigs('pre_attack_tactics');
               this.getContributors();
-              this.getId();
-              this.assignCoaCitations();
+              this.findCoA();
+              this.findRevokedBy();
               this.getCitations();
-              this.getAllCoAs();
+              this.assignCitations();
+              this.getMitreId();
+              this.getId();
+              this.getDeprecated();
+              this.getRevoked();
           }, (error) => {
               // handle errors here
               console.log('error ' + error);
@@ -57,31 +61,71 @@ export class AttackPatternPreNewComponent extends AttackPatternEditComponent imp
             this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
         }
     }
-
-     public saveAttackPattern(): void {
+    
+    public saveAttackPattern(): void {
         this.removeEmpties();
-        if (this.addId) {
-            this.mitreId = new ExternalReference();
-            this.mitreId.external_id = this.id;
-            this.mitreId.source_name = 'mitre-pre-attack';
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+        if (this.mitreId === '' || this.mitreId === undefined ) {
+            if (this.addId) {
+                this.mitreId = new ExternalReference();
+                this.mitreId.external_id = this.id;
+                this.mitreId.source_name = 'mitre-pre-attack';
+                this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+            } else {
+                this.mitreId = new ExternalReference();
+                this.mitreId.source_name = 'mitre-pre-attack';
+            }
         } else {
-            this.mitreId = new ExternalReference();
-            this.mitreId.source_name = 'mitre-pre-attack';
+            this.mitreId.external_id = this.id;
+            this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
         }
         this.addExtRefs();
-        delete this.attackPattern.attributes['x_mitre_platforms'];
-        this.attackPattern.attributes.x_mitre_collections = ['062767bd-02d2-4b72-84ba-56caef0f8658'];
+        if (this.deprecated === true) {
+            this.attackPattern.attributes.x_mitre_deprecated = true;
+        }
+        else {
+            if (this.attackPattern.attributes.x_mitre_deprecated !== undefined) {
+                delete this.attackPattern.attributes['x_mitre_deprecated'];
+            }
+        }
+        if (this.revoked === true) {
+            this.attackPattern.attributes.revoked = true;
+        }
+        else {
+            if (this.attackPattern.attributes.revoked !== undefined) {
+                this.attackPattern.attributes.revoked = false;
+            }
+        }
         for (let i in this.attackPattern.attributes.kill_chain_phases) {
             this.attackPattern.attributes.kill_chain_phases[i].kill_chain_name = 'mitre-pre-attack';
         }
-        let sub = super.create(this.attackPattern).subscribe(
+        let sub = super.saveButtonClicked().subscribe(
             (data) => {
-                 this.location.back();
-                 this.saveCoursesOfAction(data[0].id, this.allCitations);
+                console.log(data);
+                this.saveCoursesOfAction(data.id, this.allCitations);
+                if (this.revoked) {
+                    if (this.origTarget === '' || this.origTarget === this.revokedBy.id) {
+                        this.saveRevoked(data.id, this.revokedBy.id);
+                    }
+                    else {
+                        this.saveRevokedDeleteOld(data.id, this.revokedBy.id);
+                    }
+                }
+                else {
+                    if (this.foundRevoked !== '') {
+                        let relationship = new Relationship();
+                        relationship.id = this.foundRevoked;
+                        relationship.url = Constance.RELATIONSHIPS_URL;
+                        this.delete(relationship, false).subscribe(
+                            () => {
+                
+                            }
+                        );
+                    }
+                }
+                this.location.back();
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                console.log('error ' + error);
             }, () => {
                 // prevent memory links
                 if (sub) {

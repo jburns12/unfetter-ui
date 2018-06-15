@@ -6,6 +6,7 @@ import { AttackPatternEditComponent } from '../attack-pattern-edit/attack-patter
 import { StixService } from '../../../stix.service';
 import { AttackPattern, CourseOfAction, ExternalReference, Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'attack-pattern-mobile-new',
@@ -13,6 +14,7 @@ import { Constance } from '../../../../utils/constance';
 })
 export class AttackPatternMobileNewComponent extends AttackPatternEditComponent implements OnInit {
     public attackPatterns: any;
+    public rateControl: any;
 
     constructor(
         public stixService: StixService,
@@ -26,11 +28,12 @@ export class AttackPatternMobileNewComponent extends AttackPatternEditComponent 
     }
 
     public ngOnInit() {
+      this.rateControl = new FormControl('', [Validators.min(0)]);
       let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
       let subscription = super.load(filter).subscribe(
           (data) => {
               this.attackPatterns = data as AttackPattern[];
-              this.getConfigs();
+              this.getConfigs('mobile_tactics');
               this.getContributors();
               this.getId();
               this.assignCoaCitations();
@@ -56,20 +59,32 @@ export class AttackPatternMobileNewComponent extends AttackPatternEditComponent 
         }
     }
 
+    public addMtcId(): void {
+        let id = {'category': '', 'val': ''};
+        this.mtc_ids.unshift(id);
+    }
+
+    public removeMtcId(id): void {
+        console.log(this.mtc_ids);
+        this.mtc_ids = this.mtc_ids.filter((h) => (JSON.stringify(h) !== JSON.stringify(id)));
+    }
+
      public saveAttackPattern(): void {
         this.removeEmpties();
         if (this.addId) {
             this.mitreId = new ExternalReference();
             this.mitreId.external_id = this.id;
-            this.mitreId.source_name = 'mitre-attack';
+            this.mitreId.source_name = 'mitre-mobile-attack';
             this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
         } else {
             this.mitreId = new ExternalReference();
-            this.mitreId.source_name = 'mitre-attack';
+            this.mitreId.source_name = 'mitre-mobile-attack';
         }
         this.addExtRefs();
-        this.attackPattern.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
-
+        this.attackPattern.attributes.x_mitre_collections = ['2f669986-b40b-4423-b720-4396ca6a462b'];
+        for (let i in this.attackPattern.attributes.kill_chain_phases) {
+            this.attackPattern.attributes.kill_chain_phases[i].kill_chain_name = 'mitre-mobile-attack';
+        }
         let sub = super.create(this.attackPattern).subscribe(
             (data) => {
                  this.location.back();

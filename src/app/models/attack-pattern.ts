@@ -37,6 +37,7 @@ export class AttackPattern {
         x_mitre_detectable_by_common_defenses_explanation: string;
         x_mitre_difficulty_for_adversary: string;
         x_mitre_difficulty_for_adversary_explanation: string;
+        x_mitre_tactic_type: string[];
     };
 
     constructor(data?: AttackPattern) {

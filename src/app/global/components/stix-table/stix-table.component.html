@@ -24,7 +24,13 @@
                         </small>
                     </span>
                     <span class="buttonGrp text-right">
-                        <button class="mat-primary" mat-button routerLink="edit/{{element.id}}">
+                        <button *ngIf="element.x_mitre_collections[0] === '062767bd-02d2-4b72-84ba-56caef0f8658'" class="mat-primary" mat-button routerLink="edit-pre/{{element.id}}">
+                            <i class="material-icons">create</i>
+                        </button>
+                        <button *ngIf="element.x_mitre_collections[0] === '2f669986-b40b-4423-b720-4396ca6a462b'" class="mat-primary" mat-button routerLink="edit-mobile/{{element.id}}">
+                            <i class="material-icons">create</i>
+                        </button>
+                        <button *ngIf="element.x_mitre_collections[0] === '95ecc380-afe9-11e4-9b6c-751b66dd541e'" class="mat-primary" mat-button routerLink="edit/{{element.id}}">
                             <i class="material-icons">create</i>
                         </button>
                             <button class="mat-warn" mat-button (click)="deletButtonClicked(element)">

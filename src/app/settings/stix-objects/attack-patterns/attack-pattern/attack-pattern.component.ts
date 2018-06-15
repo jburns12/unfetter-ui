@@ -67,7 +67,16 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public editButtonClicked(): void {
-        let link = ['../edit', this.attackPattern.id];
+        let link = [];
+        if (this.attackPattern.attributes.x_mitre_collections[0] === '062767bd-02d2-4b72-84ba-56caef0f8658') {
+            link = ['../edit-pre', this.attackPattern.id];
+        }
+        else if (this.attackPattern.attributes.x_mitre_collections[0] === '2f669986-b40b-4423-b720-4396ca6a462b') {
+            link = ['../edit-mobile', this.attackPattern.id];
+        }
+        else {
+            link = ['../edit', this.attackPattern.id];
+        }
         super.gotoView(link);
     }
 
@@ -197,6 +206,13 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public foundPlatform(platform: string): boolean {
         let found = this.attackPattern.attributes.x_mitre_platforms.find((p) => {
             return p === platform;
+        });
+        return found ? true : false;
+    }
+
+    public foundTacticType(tacticType: string): boolean {
+        let found = this.attackPattern.attributes.x_mitre_tactic_type.find((p) => {
+            return p === tacticType;
         });
         return found ? true : false;
     }

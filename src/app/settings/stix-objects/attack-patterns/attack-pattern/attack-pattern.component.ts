@@ -149,7 +149,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                 this.attackPattern = data as AttackPattern;
                 if (this.attackPattern.attributes.external_references !== undefined) {
                     for (let ref of this.attackPattern.attributes.external_references) {
-                        if (ref.external_id !== undefined) {
+                        if (ref.source_name == 'mitre-attack' || ref.source_name == 'mitre-pre-attack' || ref.source_name == 'mitre-mobile-attack') {
                             this.attackId = ref.external_id;
                         }
                     }

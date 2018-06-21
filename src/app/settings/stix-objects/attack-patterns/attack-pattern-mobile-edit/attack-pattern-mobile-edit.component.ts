@@ -45,6 +45,7 @@ export class AttackPatternMobileEditComponent extends AttackPatternEditComponent
                 this.getId();
                 this.getDeprecated();
                 this.getRevoked();
+                this.getMtcIds();
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -62,6 +63,16 @@ export class AttackPatternMobileEditComponent extends AttackPatternEditComponent
             this.courseOfAction.attributes.external_references[i].citeButton = 'Generate Citation Text';
             this.courseOfAction.attributes.external_references[i].citation = '[[Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
             this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
+        }
+    }
+
+    public getMtcIds(): void {
+        for (let ref of this.attackPattern.attributes.external_references) {
+            if (ref.source_name === 'NIST Mobile Threat Catalogue') {
+                let splitMtc = ref.external_id.split('-');
+                console.log(splitMtc);
+                this.mtc_ids.unshift({'category': {'category': splitMtc[0]}, 'val': splitMtc[1]});
+            }
         }
     }
 

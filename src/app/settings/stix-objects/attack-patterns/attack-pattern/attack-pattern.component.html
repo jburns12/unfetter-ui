@@ -61,6 +61,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div *ngIf="attackPattern.attributes.x_mitre_tactic_type" class="row">
+                            <div class="col-md-12">
+                                <label>Tactic Type</label>
+                                <h5>{{attackPattern.attributes.x_mitre_tactic_type}}</h5>
+                            </div>
+                        </div><br>
                         <div *ngIf="attackPattern.attributes.x_mitre_platforms && attackPattern.attributes.x_mitre_platforms.length" class="row">
                             <div class="col-md-12">
                                 <label>Platforms:</label>
@@ -82,6 +88,44 @@
                                     </mat-chip>
                                 </mat-chip-list><br>
                             </div>
+                        </div>
+                        <div *ngIf="attackPattern.attributes.x_mitre_difficulty_for_adversary">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>Difficulty for the Adversary</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Easy for the Adversary (Yes/No/Partial)</label>
+                                    <h5>{{attackPattern.attributes.x_mitre_difficulty_for_adversary}}</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Explanation</label>
+                                    <h5>{{attackPattern.attributes.x_mitre_difficulty_for_adversary_explanation}}</h5>
+                                </div>
+                            </div><br>
+                        </div>
+                        <div *ngIf="attackPattern.attributes.x_mitre_detectable_by_common_defenses">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>Detection</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Detectable by Common Defenses (Yes/No/Partial)</label>
+                                    <h5>{{attackPattern.attributes.x_mitre_detectable_by_common_defenses}}</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Explanation</label>
+                                    <h5>{{attackPattern.attributes.x_mitre_detectable_by_common_defenses_explanation}}</h5>
+                                </div>
+                            </div><br>
                         </div>
                         <div *ngIf="attackPattern.attributes.x_mitre_effective_permissions && attackPattern.attributes.x_mitre_effective_permissions.length" class="row">
                             <div class="col-md-12">

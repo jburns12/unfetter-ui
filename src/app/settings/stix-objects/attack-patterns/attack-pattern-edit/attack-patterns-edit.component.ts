@@ -565,19 +565,25 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public getMitreId(): void {
         for (let i in this.attackPattern.attributes.external_references) {
-            if (this.attackPattern.attributes.external_references[i].external_id !== undefined) {
-                this.mitreId = Object.assign({}, this.attackPattern.attributes.external_references[i]);
+            if (this.attackPattern.attributes.external_references[i].source_name === 'mitre-attack' || this.attackPattern.attributes.external_references[i].source_name === 'mitre-pre-attack' || this.attackPattern.attributes.external_references[i].source_name === 'mitre-mobile-attack') {
+                if (this.attackPattern.attributes.external_references[i].external_id !== undefined && this.attackPattern.attributes.external_references[i].external_id !== '') {
+                    this.mitreId = Object.assign({}, this.attackPattern.attributes.external_references[i]);
+                }
             }
         }
     }
 
     public addExtRefs(): void {
         for (let id of this.mtc_ids) {
-            if (id.val !== undefined && id.val !== null && id.category.category !== '') {
+            if (id.val !== undefined && id.val !== null && id.category !== '') {
                 let extRef = new ExternalReference();
+                console.log(id);
+                console.log(this.mtc_categories[0]);
+                let category = this.mtc_categories.find((h) => h.category === id.category.category);
+                console.log(category);
                 extRef.external_id = id.category.category + '-' + id.val;
                 extRef.source_name = 'NIST Mobile Threat Catalogue';
-                extRef.url = 'https://pages.nist.gov/mobile-threat-catalogue/' + id.category.path + '/' + extRef.external_id + '.html';
+                extRef.url = 'https://pages.nist.gov/mobile-threat-catalogue/' + category.path + '/' + extRef.external_id + '.html';
                 this.attackPattern.attributes.external_references.push(extRef);
             }
         }

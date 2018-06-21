@@ -165,6 +165,39 @@
                 </mat-input-container>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Related Techniques</h4>
+                    <div class="button-row">
+                            <a class=" " mat-raised-button (click)="addTechnique()"><i class="material-icons">add</i> ADD</a>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-md-12">
+                    <mat-card *ngFor="let addedTechnique of addedTechniques; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                            <mat-card-content>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                    <mat-form-field style="width: auto;">
+                                        <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
+                                            <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
+                                                <span>{{ technique.name }}</span>
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field><br>
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <div class="button-row">
+                                    <a class="" mat-raised-button (click)="removeTechnique(addedTechniques[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
+                                </div>
+                            </mat-card-actions>
+                    </mat-card>
+                </div>
+            </div>
+            
         <h4>External References</h4>
         <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
         <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>

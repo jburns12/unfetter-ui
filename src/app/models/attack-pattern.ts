@@ -33,6 +33,11 @@ export class AttackPattern {
         x_mitre_network_requirements: boolean;
         x_mitre_collections: string[];
         x_mitre_deprecated: boolean;
+        x_mitre_detectable_by_common_defenses: string;
+        x_mitre_detectable_by_common_defenses_explanation: string;
+        x_mitre_difficulty_for_adversary: string;
+        x_mitre_difficulty_for_adversary_explanation: string;
+        x_mitre_tactic_type: string[];
     };
 
     constructor(data?: AttackPattern) {

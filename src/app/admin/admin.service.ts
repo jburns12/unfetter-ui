@@ -9,6 +9,7 @@ import { Constance } from '../utils/constance';
 export class AdminService {
 
     private adminUrl = Constance.ADMIN_URL;
+    private authUrl = '/api/auth';
     private identitiesUrl = Constance.IDENTITIES_URL;
     private configUrl = Constance.CONFIG_URL;
 
@@ -27,7 +28,11 @@ export class AdminService {
     }
 
     public publishAttack(): Observable<any> {
-        return this.genericApi.get(`${this.adminUrl}/publish`);
+        return this.genericApi.get(`${this.authUrl}/publish`);
+    }
+
+    public pushAttack(): Observable<any> {
+        return this.genericApi.get(`${this.authUrl}/push`);
     }
     
     public getWebsiteVisitsGraph(numDays: number): Observable<any> {

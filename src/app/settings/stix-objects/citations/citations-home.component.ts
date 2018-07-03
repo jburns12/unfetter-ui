@@ -50,7 +50,7 @@ export class CitationsHomeComponent extends BaseStixComponent implements OnInit 
     public ngOnInit() {
         this.loadCitations();
         this.rateControl = new FormControl('', [Validators.max(31), Validators.min(1)]);
-        this.yearControl = new FormControl('', [Validators.max(2100), Validators.min(1970)])
+        this.yearControl = new FormControl('', [Validators.max(2100), Validators.min(1970)]);
     }
 
     public getRefDescription(): any {

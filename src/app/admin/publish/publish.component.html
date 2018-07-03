@@ -1,8 +1,15 @@
 <div id="publish" class="row">
     <div *ngIf="message == ''" class="col-xs-12">
-        <button type="submit"  class="mat-primary" mat-raised-button (click)="publishButton()"><i class="material-icons">save</i> PUBLISH ATT&CK</button>
+        <h3>Generate the latest version of the ATT&CK content:</h3>
+        <button type="submit"  class="mat-primary" mat-raised-button (click)="publishButton()"><i class="material-icons">save</i> GENERATE ATT&CK CONTENT</button>
     </div>
     <div *ngIf="message != ''" class="col-xs-12">
         <h1>{{ message }}</h1>
+    </div>
+</div><br>
+<div id="push" class="row">
+    <div *ngIf="message == 'Successfully generated!'" class="col-xs-12">
+        <h3>Publish the latest version of the ATT&CK content to GitHub:</h3>
+        <button type="submit"  class="mat-primary" mat-raised-button (click)="pushButton()"><i class="material-icons">save</i> PUBLISH TO MITRE/CTI</button>
     </div>
 </div>

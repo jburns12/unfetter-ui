@@ -2,4 +2,8 @@ export { AttackPatternListComponent } from './attack-pattern-list/attack-pattern
 export { AttackPatternsHomeComponent } from './attack-patterns-home.component';
 export { AttackPatternComponent } from './attack-pattern/attack-pattern.component';
 export { AttackPatternNewComponent } from './attack-pattern-new/attack-patterns-new.component';
+export { AttackPatternPreNewComponent } from './attack-pattern-pre-new/attack-pattern-pre-new.component';
+export { AttackPatternMobileNewComponent } from './attack-pattern-mobile-new/attack-pattern-mobile-new.component';
 export { AttackPatternEditComponent } from './attack-pattern-edit/attack-patterns-edit.component';
+export { AttackPatternPreEditComponent } from './attack-pattern-pre-edit/attack-pattern-pre-edit.component';
+export { AttackPatternMobileEditComponent } from './attack-pattern-mobile-edit/attack-pattern-mobile-edit.component';

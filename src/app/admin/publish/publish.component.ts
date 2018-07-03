@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../admin.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'publish',
@@ -15,7 +16,7 @@ export class PublishComponent implements OnInit {
     }
 
     public publishButton() {
-        this.message = "Publishing ATT&CK content...this may take a few minutes.";
+        this.message = "Generating ATT&CK content...this may take a few minutes. Please do not refresh page.";
         let publishAttack$ = this.adminService
             .publishAttack()
             .subscribe(
@@ -24,11 +25,30 @@ export class PublishComponent implements OnInit {
                 this.message = res.attributes;
             },
             (err) => {
-                console.log(err.toString());
-                this.message = "Unable to publish content."
+                console.log(err);
+                this.message = 'Token has timed out. Please sign out of and into the Editor to validate your GitHub credentials before publishing.';
             },
             () => {
                 publishAttack$.unsubscribe();
+            }
+            );
+    }
+
+    public pushButton() {
+        this.message = "Pushing ATT&CK content...this may take a few minutes. Please do not refresh page.";
+        let pushAttack$ = this.adminService
+            .pushAttack()
+            .subscribe(
+            (res) => {
+                console.log(res);
+                this.message = res.attributes;
+            },
+            (err) => {
+                console.log(err);
+                this.message = 'Please sign into the Editor to validate your GitHub credentials before publishing.';
+            },
+            () => {
+                pushAttack$.unsubscribe();
             }
             );
     }

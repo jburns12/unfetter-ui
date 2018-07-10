@@ -326,7 +326,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                                 }
                                 if (currRes.attributes.configKey === 'x_mitre_platforms') {
                                     console.log(currRes.attributes.configValue);
-                                    uniqPlatforms = currRes.attributes.configValue;
+                                    uniqPlatforms = currRes.attributes.configValue.enterprise.concat(currRes.attributes.configValue.mobile);
                                 }
                             }
                         }

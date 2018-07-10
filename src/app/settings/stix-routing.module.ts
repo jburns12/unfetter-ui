@@ -205,12 +205,12 @@ const stixRoutes: Routes = [{
         component: CitationsHomeComponent
       },
       {
-        path: 'tactics',
+        path: 'tactics/:domain',
         component: TacticsHomeComponent,
 
       },
       {
-        path: 'tactics/:tactic',
+        path: 'tactics/:domain/:tactic',
         component: TacticsHomeComponent,
       },
       {

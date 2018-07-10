@@ -31,7 +31,9 @@ export class HeaderNavigationComponent implements OnInit {
     // { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
 
-  public tacticNavigations: Navigation[] = [{url: 'stix/tactics', label: 'All Techniques'}];
+  public enterpriseTacticNavigations: Navigation[] = [{url: 'stix/tactics/enterprise', label: 'All Techniques'}];
+  public preTacticNavigations: Navigation[] = [{url: 'stix/tactics/pre', label: 'All Techniques'}];
+  public mobileTacticNavigations: Navigation[] = [{url: 'stix/tactics/mobile', label: 'All Techniques'}];
 
   public collapsed: boolean = true;
   public demoMode: boolean = false;
@@ -47,13 +49,15 @@ export class HeaderNavigationComponent implements OnInit {
     const uri = 'api/config?filter= {"configKey": "tactics"}';
     let sub = this.baseComponentService.get(uri).subscribe(
         (data) => {
-            for (let tactic of data[0].attributes.configValue) {
-                if (tactic.phase === 'act') {
-                  this.tacticNavigations.push({ url: 'stix/tactics/' + tactic.tactic, label: tactic.tactic});
-
-                }
+            for (let tactic of data[0].attributes.configValue.enterprise_tactics.tactics) {
+                this.enterpriseTacticNavigations.push({ url: 'stix/tactics/enterprise/' + tactic.tactic, label: tactic.tactic});
             }
-            console.log(this.tacticNavigations);
+            for (let tactic of data[0].attributes.configValue.pre_attack_tactics.tactics) {
+              this.preTacticNavigations.push({ url: 'stix/tactics/pre/' + tactic.tactic, label: tactic.tactic});
+            }
+            for (let tactic of data[0].attributes.configValue.mobile_tactics.tactics) {
+              this.mobileTacticNavigations.push({ url: 'stix/tactics/mobile/' + tactic.tactic, label: tactic.tactic});
+            }
         }, (error) => {
             console.log(error);
         }, () => {

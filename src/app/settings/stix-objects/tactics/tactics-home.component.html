@@ -2,7 +2,7 @@
     <h2>All Techniques by Tactic</h2>
 </div>
 <div *ngIf="tactic">
-    <h2>Tactic: {{ tactic.tactic | capitalize }}</h2>
+    <h2>{{ tactic.tactic | capitalize }}</h2>
     <p>{{ tactic.description }}</p>
 </div>
 <br><table class="table table-hover">
@@ -18,11 +18,13 @@
         <tr *ngFor="let attackPattern of attackPatterns; let i = index">
             <td><a routerLink="/stix/attack-patterns/{{attackPatterns[i].id}}">{{attackPatterns[i].attributes.name}}</a></td>
             <td><span *ngFor="let phase of attackPatterns[i].attributes.kill_chain_phases">
-                    <a routerLink="/stix/tactics/{{phase.phase_name}}">{{phase.phase_name | capitalize}}<br><br></a>
+                    <a *ngIf="phase.kill_chain_name == 'mitre-attack'" routerLink="/stix/tactics/enterprise/{{phase.phase_name}}">{{phase.phase_name | capitalize}}<br><br></a>
+                    <a *ngIf="phase.kill_chain_name == 'mitre-mobile-attack'" routerLink="/stix/tactics/mobile/{{phase.phase_name}}">{{phase.phase_name | capitalize}}<br><br></a>
+                    <a *ngIf="phase.kill_chain_name == 'mitre-pre-attack'" routerLink="/stix/tactics/pre/{{phase.phase_name}}">{{phase.phase_name | capitalize}}<br><br></a>
                 </span>
             </td>
             <td><span *ngFor="let extRef of attackPatterns[i].attributes.external_references">
-                <div *ngIf="extRef.external_id != undefined && extRef.source_name == 'mitre-attack'">
+                <div *ngIf="extRef.external_id != undefined && (extRef.source_name == 'mitre-attack' || extRef.source_name == 'mitre-pre-attack' || extRef.source_name == 'mitre-mobile-attack')">
                     {{extRef.external_id}}
                 </div>
                 </span>

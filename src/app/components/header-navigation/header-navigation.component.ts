@@ -15,7 +15,7 @@ export class HeaderNavigationComponent implements OnInit {
   public navigations: Navigation[] = [
     { url: 'stix/attack-patterns', label: 'Techniques' },
     // { url: 'stix/campaigns', label: 'Campaigns' },
-    { url: 'stix/course-of-actions', label: 'Courses of Action' },
+    { url: 'stix/course-of-actions', label: 'Mitigations' },
     // { url: 'stix/indicators', label: 'Indicators' },
     // { url: 'stix/identities', label: 'Identities' },
     // { url: 'stix/malwares', label: 'Malware' },

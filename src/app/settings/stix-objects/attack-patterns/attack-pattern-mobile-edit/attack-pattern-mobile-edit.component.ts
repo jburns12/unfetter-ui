@@ -77,7 +77,7 @@ export class AttackPatternMobileEditComponent extends AttackPatternEditComponent
     }
 
     public addMtcId(): void {
-        let id = {'category': '', 'val': ''};
+        let id = {'category': {'category': '', 'val': ''}};
         this.mtc_ids.unshift(id);
     }
 

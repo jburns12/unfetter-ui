@@ -136,7 +136,7 @@
               <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-4" *ngFor="let answer of easyForAdversary">
-                            <mat-checkbox class="identity-margin" (change)="addRemoveEasy(answer.name)" [(ngModel)]="answer.val">{{answer.name}}</mat-checkbox>
+                            <mat-checkbox class="identity-margin" (change)="addRemoveEasy(answer.name)" [ngModel]="answer.val">{{answer.name}}</mat-checkbox>
                     </div>
                 </div>
               </div>
@@ -153,7 +153,7 @@
               <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-4" *ngFor="let answer of detectable">
-                            <mat-checkbox class="identity-margin" (change)="addRemoveDetectable(answer.name)" [(ngModel)]="answer.val">{{answer.name}}</mat-checkbox>
+                            <mat-checkbox class="identity-margin" (change)="addRemoveDetectable(answer.name)" [ngModel]="answer.val">{{answer.name}}</mat-checkbox>
                     </div>
                 </div>
               </div>
@@ -197,7 +197,39 @@
                     </mat-card>
                 </div>
             </div>
-            
+            <div class="row">
+                    <div class="col-md-12">
+                        <h4>Contributors</h4>
+                              <div class="button-row">
+                                    <a class=" " mat-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
+                              </div>
+                          </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-12">
+                                     <mat-card *ngFor="let contributor of attackPattern.attributes.x_mitre_contributors; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                            <mat-card-content>
+                                                <div class="row">
+                                                  <div class="col-md-6">
+                                                          <mat-input-container class="full-width">
+                                                              <input matInput placeholder="Contributor Name" [(ngModel)]="attackPattern.attributes.x_mitre_contributors[i]" [matAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(attackPattern.attributes.x_mitre_contributors[i], contributors)">
+                                                          </mat-input-container>
+                                                          <mat-autocomplete name="auto" #auto="matAutocomplete" >
+                                                          <mat-option *ngFor="let contributor of currContributors" [value]="contributor">
+                                                              <span>{{ contributor }}</span>
+                                                          </mat-option>
+                                                      </mat-autocomplete>
+                                                  </div>
+                                                </div>
+                                            </mat-card-content>
+                                            <mat-card-actions>
+                                                <div class="button-row">
+                                                    <a class="" mat-raised-button (click)="removeContributor(contributor)"><i class="material-icons">delete</i> REMOVE</a>
+                                                </div>
+                                            </mat-card-actions>
+                                    </mat-card>
+                            </div>
+                </div><br>   
         <h4>External References</h4>
         <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
         <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>
@@ -206,7 +238,7 @@
             <div class="col-md-12">
                 <div class="button-row pull-right">
                      <button  class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
-                         <button type="submit"  class=" " mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name || !attackPattern.attributes.description || !attackPattern.attributes.kill_chain_phases || attackPattern.attributes.kill_chain_phases.length < 1 || !attackPattern.attributes.x_mitre_detectable_by_common_defenses_explanation || !attackPattern.attributes.x_mitre_difficulty_for_adversary_explanation"><i class="material-icons">save</i> SAVE & CLOSE</button>
+                         <button type="submit"  class=" " mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name || !attackPattern.attributes.description || !attackPattern.attributes.kill_chain_phases || attackPattern.attributes.kill_chain_phases.length < 1 || !attackPattern.attributes.x_mitre_detectable_by_common_defenses_explanation || !attackPattern.attributes.x_mitre_difficulty_for_adversary_explanation || !attackPattern.attributes.x_mitre_difficulty_for_adversary || !attackPattern.attributes.x_mitre_detectable_by_common_defenses"><i class="material-icons">save</i> SAVE & CLOSE</button>
 
                 </div>
             </div>

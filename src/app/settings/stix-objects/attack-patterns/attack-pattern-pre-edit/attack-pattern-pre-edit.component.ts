@@ -47,6 +47,7 @@ export class AttackPatternPreEditComponent extends AttackPatternEditComponent im
               this.getId();
               this.getDeprecated();
               this.getRevoked();
+              this.setAttributes();
           }, (error) => {
               // handle errors here
               console.log('error ' + error);
@@ -57,6 +58,24 @@ export class AttackPatternPreEditComponent extends AttackPatternEditComponent im
               }
           }
       );
+    }
+
+    public setAttributes(): void {
+        for (let i in this.easyForAdversary) {
+            if (this.easyForAdversary[i].name === this.attackPattern.attributes.x_mitre_difficulty_for_adversary) {
+                this.easyForAdversary[i].val = true;
+            } else {
+                this.easyForAdversary[i].val = false;
+            }
+        }
+
+        for (let i in this.detectable) {
+            if (this.detectable[i].name === this.attackPattern.attributes.x_mitre_detectable_by_common_defenses) {
+                this.detectable[i].val = true;
+            } else {
+                this.detectable[i].val = false;
+            }
+        }
     }
 
     public getTechniques(create: boolean): void {

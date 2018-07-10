@@ -67,6 +67,8 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
 
     public mtc_categories: any = [];
     public mtc_ids: any = [];
+    public capec_categories: any = [{'category': 'CAPEC'}]
+    public capec_ids: any = [];
 
     constructor(
         public stixService: StixService,
@@ -96,6 +98,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getId();
                this.getDeprecated();
                this.getRevoked();
+               this.getCapecIds();
            }, (error) => {
                // handle errors here
                console.log('error ' + error);
@@ -106,6 +109,24 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                }
            }
        );
+    }
+
+    public getCapecIds(): void {
+        for (let ref of this.attackPattern.attributes.external_references) {
+            if (ref.source_name === 'capec') {
+                let splitCapec = ref.external_id.split('-');
+                this.capec_ids.unshift({'category': {'category': splitCapec[0]}, 'val': splitCapec[1]});
+            }
+        }
+    }
+
+    public addCapecId(): void {
+        let id = {'category': {'category': 'CAPEC', 'val': ''}};
+        this.capec_ids.unshift(id);
+    }
+
+    public removeCapecId(id): void {
+        this.capec_ids = this.capec_ids.filter((h) => (JSON.stringify(h) !== JSON.stringify(id)));
     }
 
     public getDeprecated(): void {
@@ -440,27 +461,41 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addRemoveEasy(answer: string) {
-        this.attackPattern.attributes.x_mitre_difficulty_for_adversary = answer;
         for (let i in this.easyForAdversary) {
             if (this.easyForAdversary[i].name === answer) {
-                this.easyForAdversary[i].val = true;
+                this.easyForAdversary[i].val = !this.easyForAdversary[i].val;
+                if (this.easyForAdversary[i].val === true) {
+                    this.attackPattern.attributes.x_mitre_difficulty_for_adversary = answer;
+                }
+                else {
+                    this.attackPattern.attributes.x_mitre_difficulty_for_adversary = '';
+                }
             }
             else {
                 this.easyForAdversary[i].val = false;
             }
         }
+        console.log(this.attackPattern.attributes.x_mitre_difficulty_for_adversary);
+        console.log(this.easyForAdversary);
     }
 
     public addRemoveDetectable(answer: string) {
-        this.attackPattern.attributes.x_mitre_detectable_by_common_defenses = answer;
         for (let i in this.detectable) {
             if (this.detectable[i].name === answer) {
-                this.detectable[i].val = true;
+                this.detectable[i].val = !this.detectable[i].val;
+                if (this.detectable[i].val === true) {
+                    this.attackPattern.attributes.x_mitre_detectable_by_common_defenses = answer;
+                }
+                else {
+                    this.attackPattern.attributes.x_mitre_detectable_by_common_defenses = '';
+                }
             }
             else {
                 this.detectable[i].val = false;
             }
         }
+        console.log(this.attackPattern.attributes.x_mitre_detectable_by_common_defenses);
+        console.log(this.detectable);
     }
 
     public selectAllPlatforms(): void {
@@ -584,6 +619,17 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 extRef.external_id = id.category.category + '-' + id.val;
                 extRef.source_name = 'NIST Mobile Threat Catalogue';
                 extRef.url = 'https://pages.nist.gov/mobile-threat-catalogue/' + category.path + '/' + extRef.external_id + '.html';
+                this.attackPattern.attributes.external_references.push(extRef);
+            }
+        }
+        for (let id of this.capec_ids) {
+            if (id.val !== undefined && id.val !== null && id.category !== '') {
+                let extRef = new ExternalReference();
+                let category = this.capec_categories.find((h) => h.category === id.category.category);
+                console.log(category);
+                extRef.external_id = id.category.category + '-' + id.val;
+                extRef.source_name = 'capec';
+                extRef.url = 'https://capec.mitre.org/data/definitions/' + id.val + '.html';
                 this.attackPattern.attributes.external_references.push(extRef);
             }
         }

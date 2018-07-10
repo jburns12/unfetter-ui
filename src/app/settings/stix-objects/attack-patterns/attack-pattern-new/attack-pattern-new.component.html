@@ -236,6 +236,45 @@
                             </mat-card>
                     </div>
         </div><br>
+        <div class="row">
+                <div class="col-md-12">
+                    <h4>CAPEC</h4>
+                          <div class="button-row">
+                                <a class=" " mat-raised-button (click)="addCapecId()"><i class="material-icons">add</i> ADD</a>
+                          </div>
+                      </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-md-12">
+                                 <mat-card *ngFor="let category of capec_ids; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                   <mat-card-content>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                             <mat-form-field style="width: auto;">
+                                                 <mat-select name="capec_categories" [(ngModel)]="capec_ids[i].category.category" placeholder="Category" class="full-width">
+                                                   <mat-option *ngFor="let category of capec_categories" [value]="category.category">
+                                                     <span>{{ category.category }}</span>
+                                                   </mat-option>
+                                                 </mat-select>
+                                             </mat-form-field><br>
+                                           </div>
+                                       </div>
+                                       <div class="row">
+                                       <div class="col-md-4">
+                                        <mat-input-container class="full-width">
+                                            <input matInput type="number" placeholder="Number" [(ngModel)]="capec_ids[i].val" value={{capec_ids[i].val}}>
+                                        </mat-input-container>
+                                        </div>
+                                    </div>
+                                   </mat-card-content>
+                                        <mat-card-actions>
+                                            <div class="button-row">
+                                                <a class="" mat-raised-button (click)="removeCapecId(capec_ids[i])"><i class="material-icons">delete</i> REMOVE</a>
+                                            </div>
+                                        </mat-card-actions>
+                                </mat-card>
+                        </div>
+            </div><br>
         <h4>External References</h4>
         <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
         <external-reference [(model)]="attackPattern" [(citations)]="allCitations"></external-reference>

@@ -20,6 +20,7 @@ export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
     public attackPatterns: AttackPattern[] = [];
     public tactics: any = [];
     public tactic: any;
+    public domainMap: any = {'pre': 'mitre-pre-attack', 'enterprise': 'mitre-attack', 'mobile': 'mitre-mobile-attack'};
 
     constructor(
         public stixService: StixService,
@@ -48,35 +49,46 @@ export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
               if (res && res.length) {
                   for (let currRes of res) {
                       if (currRes.attributes.configKey === 'tactics') {
-                          for  (let currTactic of currRes.attributes.configValue) {
+                          for (let currTactic of currRes.attributes.configValue.enterprise_tactics.tactics) {
+                              this.tactics.push({"tactic": currTactic.tactic, "description": currTactic.description});
+                          }
+                          for (let currTactic of currRes.attributes.configValue.pre_attack_tactics.tactics) {
+                              this.tactics.push({"tactic": currTactic.tactic, "description": currTactic.description});
+                          }
+                          for (let currTactic of currRes.attributes.configValue.mobile_tactics.tactics) {
                               this.tactics.push({"tactic": currTactic.tactic, "description": currTactic.description});
                           }
                       }
                   }
               }
+              console.log(this.route.params);
               this.route.params.map(params => params['tactic']).
               subscribe((tactic) => {
-                  this.tactic = this.tactics.find((h) => (h.tactic === tactic));
-                  console.log(tactic);
-                  console.log(this.tactic);
-                  const filterObj = { 'stix.kill_chain_phases.phase_name': tactic };
-                  const filter = `filter=${JSON.stringify(filterObj)}`;
-                  console.log(filter);
-                  const subscription = super.load(filter).subscribe(
-                      (data) => {
-                          this.attackPatterns = data as AttackPattern[];
-                          console.log(this.attackPatterns);
-                          
-                      }, (error) => {
-                          // handle errors here
-                          console.log('error ' + error);
-                      }, () => {
-                          // prevent memory links
-                          if (subscription) {
-                              subscription.unsubscribe();
-                          }
-                      }
-                  );
+                this.route.params.map(params => params['domain']).
+                subscribe((domain) => {
+                    this.tactic = this.tactics.find((h) => (h.tactic === tactic));
+                    console.log(tactic);
+                    console.log(this.tactic);
+                    const filterObj = { 'stix.kill_chain_phases.phase_name': tactic, 'stix.kill_chain_phases.kill_chain_name': this.domainMap[domain] };
+                    const filter = `filter=${JSON.stringify(filterObj)}`;
+                    console.log(filter);
+                    const subscription = super.load(filter).subscribe(
+                        (data) => {
+                            this.attackPatterns = data as AttackPattern[];
+                            console.log(this.attackPatterns);
+                            
+                        }, (error) => {
+                            // handle errors here
+                            console.log('error ' + error);
+                        }, () => {
+                            // prevent memory links
+                            if (subscription) {
+                                subscription.unsubscribe();
+                            }
+                        }
+                    );
+                }
+            )
               }
           )
            }, (error) => {

@@ -62,10 +62,9 @@ export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
                   }
               }
               console.log(this.route.params);
-              this.route.params.map(params => params['tactic']).
-              subscribe((tactic) => {
-                this.route.params.map(params => params['domain']).
-                subscribe((domain) => {
+              this.route.params.subscribe((params) => {
+                    let tactic = params['tactic'];
+                    let domain = params['domain'];
                     this.tactic = this.tactics.find((h) => (h.tactic === tactic));
                     console.log(tactic);
                     console.log(this.tactic);
@@ -88,9 +87,7 @@ export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
                         }
                     );
                 }
-            )
-              }
-          )
+            );
            }, (error) => {
             // handle errors here
              console.log('error ' + error);

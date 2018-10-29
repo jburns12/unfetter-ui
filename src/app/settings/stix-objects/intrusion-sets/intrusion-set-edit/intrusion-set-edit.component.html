@@ -27,7 +27,7 @@
         </div>
         <div *ngIf="revoked" class="row">
             <div class="col-md-6">
-                <mat-form-field style="width: auto;">
+                <mat-form-field class="full-width">
                     <mat-select name="intrusionSets" [(ngModel)]="revokedBy" placeholder="Revoked by:" class="full-width">
                       <mat-option *ngFor="let currGroup of intrusionSets" [value]="currGroup">
                         <span>{{ currGroup.attributes.name }}</span>
@@ -105,7 +105,7 @@
                             <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-6">
-                                      <mat-form-field style="width: auto;">
+                                      <mat-form-field class="full-width">
                                           <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
                                             <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
                                                   <span>{{ technique.name }}</span>
@@ -142,7 +142,7 @@
                             <mat-card-content>
                                <div class="row">
                                    <div class="col-md-6">
-                                       <mat-form-field style="width: auto;">
+                                       <mat-form-field class="full-width">
                                            <mat-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
                                              <mat-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
                                                    <span>{{ software.name }}</span>

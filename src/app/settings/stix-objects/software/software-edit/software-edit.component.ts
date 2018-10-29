@@ -602,14 +602,14 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
                 this.mitreId = new ExternalReference();
                 this.mitreId.external_id = this.id;
                 this.mitreId.source_name = 'mitre-attack';
-                this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
+                this.mitreId.url = 'https://attack.mitre.org/software/' + this.id
             } else {
                 this.mitreId = new ExternalReference();
                 this.mitreId.source_name = 'mitre-attack';
             }
         } else {
             this.mitreId.external_id = this.id;
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
+            this.mitreId.url = 'https://attack.mitre.org/software/' + this.id
         }
         this.malware.attributes.external_references = [];
         this.addAliasesToMalware();

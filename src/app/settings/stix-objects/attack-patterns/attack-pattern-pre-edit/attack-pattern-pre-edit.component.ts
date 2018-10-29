@@ -39,7 +39,6 @@ export class AttackPatternPreEditComponent extends AttackPatternEditComponent im
               this.getConfigs('pre_attack_tactics');
               this.getTechniques(false);
               this.getContributors();
-              this.findCoA();
               this.findRevokedBy();
               this.getCitations();
               this.assignCitations();
@@ -267,14 +266,14 @@ export class AttackPatternPreEditComponent extends AttackPatternEditComponent im
                 this.mitreId = new ExternalReference();
                 this.mitreId.external_id = this.id;
                 this.mitreId.source_name = 'mitre-pre-attack';
-                this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+                this.mitreId.url = 'https://attack.mitre.org/techniques/' + this.id
             } else {
                 this.mitreId = new ExternalReference();
                 this.mitreId.source_name = 'mitre-pre-attack';
             }
         } else {
             this.mitreId.external_id = this.id;
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+            this.mitreId.url = 'https://attack.mitre.org/techniques/' + this.id
         }
         this.addExtRefs();
         if (this.deprecated === true) {

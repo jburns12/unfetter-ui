@@ -213,14 +213,15 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
     public addExtRefs(): void {
+        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
+            this.intrusionSet.attributes.external_references.push(this.mitreId);
+        }
+        this.addAliasesToIntrusionSet();
         let citationArr = super.matchCitations(this.intrusionSet.attributes.description);
         for (let ref of this.intrusionSet.attributes.external_references) {
             if (ref.description !== undefined) {
                 citationArr = citationArr.concat(super.matchCitations(ref.description));
             }
-        }
-        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
-            this.intrusionSet.attributes.external_references.push(this.mitreId);
         }
         console.log(citationArr);
         console.log(this.allCitations);
@@ -241,17 +242,16 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
                 this.mitreId = new ExternalReference();
                 this.mitreId.external_id = this.id;
                 this.mitreId.source_name = 'mitre-attack';
-                this.mitreId.url = 'https://attack.mitre.org/wiki/Group/' + this.id
+                this.mitreId.url = 'https://attack.mitre.org/groups/' + this.id
             } else {
                 this.mitreId = new ExternalReference();
                 this.mitreId.source_name = 'mitre-attack';
             }
         } else {
             this.mitreId.external_id = this.id;
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Group/' + this.id
+            this.mitreId.url = 'https://attack.mitre.org/groups/' + this.id
         }
         this.intrusionSet.attributes.external_references = [];
-        this.addAliasesToIntrusionSet();
         this.addExtRefs();
         if (this.deprecated === true) {
             this.intrusionSet.attributes.x_mitre_deprecated = true;

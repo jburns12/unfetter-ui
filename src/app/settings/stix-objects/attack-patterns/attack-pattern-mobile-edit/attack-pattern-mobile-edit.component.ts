@@ -37,7 +37,6 @@ export class AttackPatternMobileEditComponent extends AttackPatternEditComponent
                 this.attackPatterns = data as AttackPattern[];
                 this.getConfigs('mobile_tactics');
                 this.getContributors();
-                this.findCoA();
                 this.findRevokedBy();
                 this.getCitations();
                 this.assignCitations();
@@ -93,14 +92,14 @@ export class AttackPatternMobileEditComponent extends AttackPatternEditComponent
                 this.mitreId = new ExternalReference();
                 this.mitreId.external_id = this.id;
                 this.mitreId.source_name = 'mitre-mobile-attack';
-                this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+                this.mitreId.url = 'https://attack.mitre.org/techniques/' + this.id
             } else {
                 this.mitreId = new ExternalReference();
                 this.mitreId.source_name = 'mitre-mobile-attack';
             }
         } else {
             this.mitreId.external_id = this.id;
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+            this.mitreId.url = 'https://attack.mitre.org/techniques/' + this.id
         }
         this.addExtRefs();
         for (let i in this.attackPattern.attributes.kill_chain_phases) {

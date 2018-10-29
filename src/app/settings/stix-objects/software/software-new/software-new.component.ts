@@ -37,7 +37,7 @@ export class SoftwareNewComponent extends SoftwareEditComponent implements OnIni
             this.mitreId = new ExternalReference();
             this.mitreId.external_id = this.id;
             this.mitreId.source_name = 'mitre-attack';
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Software/' + this.id
+            this.mitreId.url = 'https://attack.mitre.org/software/' + this.id
         } else {
             this.mitreId = new ExternalReference();
             this.mitreId.source_name = 'mitre-attack';

@@ -308,6 +308,12 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public addAliasesToIntrusionSet(): void {
         this.intrusionSet.attributes.aliases.push(this.intrusionSet.attributes.name);
+        if (this.origAliasDescription !== ""){
+            let extRef = new ExternalReference();
+            extRef.source_name = this.intrusionSet.attributes.name;
+            extRef.description = this.origAliasDescription;
+            this.intrusionSet.attributes.external_references.push(extRef);
+        }
         for (let alias of this.aliases){
             this.intrusionSet.attributes.aliases.push(alias.name);
         }

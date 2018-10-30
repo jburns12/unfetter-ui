@@ -48,19 +48,26 @@
             </div>
             <br>
         </div>
-<div class="row">
-    <div class="col-md-12">
-        <mat-input-container class="full-width">
-        <input matInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="{{intrusionSet.attributes.name}}">
-        </mat-input-container>
-    </div>
-</div>
 <mat-input-container class="full-width">
     <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="intrusionSet.attributes.description">{{intrusionSet.attributes.description}}</textarea>
 </mat-input-container>
 <div class="row">
     <div class="col-md-12">
-        <h4>Aliases</h4>
+        <mat-input-container class="full-width">
+            <input matInput placeholder="Alias" required [(ngModel)]="intrusionSet.attributes.name" value="">
+        </mat-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <mat-input-container class="full-width">
+            <textarea matInput matTextareaAutosize placeholder="Alias Description" [(ngModel)]="origAliasDescription"></textarea>
+        </mat-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Other Aliases</h4>
               <div class="button-row">
                     <a class=" " mat-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
               </div>

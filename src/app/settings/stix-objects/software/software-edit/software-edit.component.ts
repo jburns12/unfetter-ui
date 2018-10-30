@@ -365,6 +365,12 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public addAliasesToMalware(): void {
         this.malware.attributes.x_mitre_aliases = [];
         this.malware.attributes.x_mitre_aliases.push(this.malware.attributes.name);
+        if (this.origAliasDescription !== ""){
+            let extRef = new ExternalReference();
+            extRef.source_name = this.malware.attributes.name;
+            extRef.description = this.origAliasDescription;
+            this.malware.attributes.external_references.push(extRef);
+        }
         if (this.aliases.length > 0) {
             for (let alias of this.aliases){
                 if (alias.name !== '') {
@@ -576,14 +582,15 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     }
 
     public addExtRefs(): void {
+        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
+            this.malware.attributes.external_references.push(this.mitreId);
+        }
+        this.addAliasesToMalware();
         let citationArr = super.matchCitations(this.malware.attributes.description);
         for (let ref of this.malware.attributes.external_references) {
             if (ref.description !== undefined) {
                 citationArr = citationArr.concat(super.matchCitations(ref.description));
             }
-        }
-        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
-            this.malware.attributes.external_references.push(this.mitreId);
         }
         for (let name of citationArr) {
             let citation = this.allCitations.find((p) => p.source_name === name);
@@ -612,7 +619,6 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
             this.mitreId.url = 'https://attack.mitre.org/software/' + this.id
         }
         this.malware.attributes.external_references = [];
-        this.addAliasesToMalware();
         this.addExtRefs();
         this.removeContributors();
         if (this.deprecated === true) {

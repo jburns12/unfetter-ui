@@ -29,30 +29,27 @@
 <div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
-            <input matInput placeholder="Name" required [(ngModel)]="malware.attributes.name" value="{{malware.attributes.name}}">
+            <input matInput placeholder="Description" required [(ngModel)]="malware.attributes.description" value="{{malware.attributes.description}}">
         </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
-            <input matInput placeholder="Description" required [(ngModel)]="malware.attributes.description" value="{{malware.attributes.description}}">
+            <input matInput placeholder="Alias" required [(ngModel)]="malware.attributes.name" value="">
         </mat-input-container>
     </div>
 </div>
-<div class="col-md-12">
-        <h4>Platforms</h4>
-        <a href="javascript:;" (click)="selectAllPlatforms()">[ Select All ]</a>
-        <a href="javascript:;" (click)="removeAllPlatforms()">[ Select None ]</a><br><br>
-          <div class="row">
-              <div class="col-md-4" *ngFor="let platform of platforms">
-                      <mat-checkbox class="identity-margin" (change)="addRemovePlatform(platform.name)" [(ngModel)]="platform.val">{{platform.name}}</mat-checkbox>
-              </div>
-          </div>
-      </div>
 <div class="row">
     <div class="col-md-12">
-        <h4>Aliases</h4>
+        <mat-input-container class="full-width">
+            <textarea matInput matTextareaAutosize placeholder="Alias Description" [(ngModel)]="origAliasDescription"></textarea>
+        </mat-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Other Aliases</h4>
               <div class="button-row">
                     <a class=" " mat-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
               </div>
@@ -83,6 +80,18 @@
                     </mat-card>
             </div>
 </div><br>
+<div class="row">
+<div class="col-md-12">
+    <h4>Platforms</h4>
+    <a href="javascript:;" (click)="selectAllPlatforms()">[ Select All ]</a>
+    <a href="javascript:;" (click)="removeAllPlatforms()">[ Select None ]</a><br><br>
+      <div class="row">
+          <div class="col-md-4" *ngFor="let platform of platforms">
+                  <mat-checkbox class="identity-margin" (change)="addRemovePlatform(platform.name)" [(ngModel)]="platform.val">{{platform.name}}</mat-checkbox>
+          </div>
+      </div>
+  </div>
+</div>
 <div class="row">
     <div class="col-md-12">
         <h4>Techniques</h4>

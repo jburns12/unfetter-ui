@@ -37,6 +37,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public id: string;
     public deprecated: boolean = false;
     public revoked: boolean = false;
+    public origAliasDescription: string = "";
 
      constructor(
         public stixService: StixService,
@@ -124,16 +125,22 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     }
 
     public getAllAliases(): void {
-        this.intrusionSet.attributes.aliases.shift();
+        let extRef = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name === this.intrusionSet.attributes.name));
+        if (extRef.length > 0) {
+            this.origAliasDescription = extRef[0].description;
+        }
+        this.intrusionSet.attributes.external_references = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name !== this.intrusionSet.attributes.name));
         for (let alias of this.intrusionSet.attributes.aliases) {
-            let description = '';
-            let extRef = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name === alias));
-            if (extRef.length > 0) {
-                this.intrusionSet.attributes.external_references = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name !== alias));
-                description = extRef[0].description;
+            if (alias !== this.intrusionSet.attributes.name){
+                let description = '';
+                let extRef = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name === alias));
+                if (extRef.length > 0) {
+                    this.intrusionSet.attributes.external_references = this.intrusionSet.attributes.external_references.filter(((h) => h.source_name !== alias));
+                    description = extRef[0].description;
+                }
+                this.aliases.push({'name': alias, 'description': description});
+                this.intrusionSet.attributes.aliases = [];
             }
-            this.aliases.push({'name': alias, 'description': description});
-            this.intrusionSet.attributes.aliases = [];
         }
     }
 
@@ -392,7 +399,6 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 this.getDeprecated();
                 this.getRevoked();
                 this.intrusionSet.attributes.external_references.reverse();
-                this.aliasesToDisplay = this.intrusionSet.attributes.aliases.filter((h) => h !== this.intrusionSet.attributes.name);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

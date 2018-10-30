@@ -32,6 +32,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
    public historyFound: boolean = false;
    public aliasesToDisplay: any = [];
    public attackId: string;
+   public origAliasDescription: string = "";
 
    constructor(
         public stixService: StixService,
@@ -223,16 +224,22 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
 
     public getAllAliases(): void {
         if ('x_mitre_aliases' in this.malware.attributes) {
-            this.malware.attributes.x_mitre_aliases.shift();
+            let extRef = this.malware.attributes.external_references.filter(((h) => h.source_name === this.malware.attributes.name));
+            if (extRef.length > 0) {
+                this.origAliasDescription = extRef[0].description;
+            }
+            this.malware.attributes.external_references = this.malware.attributes.external_references.filter(((h) => h.source_name !== this.malware.attributes.name));
             for (let alias of this.malware.attributes.x_mitre_aliases) {
-                let description = '';
-                let extRef = this.malware.attributes.external_references.filter(((h) => h.source_name === alias));
-                if (extRef.length > 0) {
-                    this.malware.attributes.external_references = this.malware.attributes.external_references.filter(((h) => h.source_name !== alias));
-                    description = extRef[0].description;
+                if (alias !== this.malware.attributes.name){
+                    let description = '';
+                    let extRef = this.malware.attributes.external_references.filter(((h) => h.source_name === alias));
+                    if (extRef.length > 0) {
+                        this.malware.attributes.external_references = this.malware.attributes.external_references.filter(((h) => h.source_name !== alias));
+                        description = extRef[0].description;
+                    }
+                    this.aliases.push({'name': alias, 'description': description});
+                    this.malware.attributes.x_mitre_aliases = [];
                 }
-                this.aliases.push({'name': alias, 'description': description});
-                this.malware.attributes.x_mitre_aliases = [];
             }
         }
     }

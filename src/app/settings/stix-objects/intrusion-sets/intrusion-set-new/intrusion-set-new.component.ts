@@ -35,7 +35,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
             this.mitreId = new ExternalReference();
             this.mitreId.external_id = this.id;
             this.mitreId.source_name = 'mitre-attack';
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Group/' + this.id
+            this.mitreId.url = 'https://attack.mitre.org/groups/' + this.id
         } else {
             this.mitreId = new ExternalReference();
             this.mitreId.source_name = 'mitre-attack';
@@ -43,7 +43,6 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
 
         this.intrusionSet.attributes.external_references = [];
         this.addExtRefs();
-        this.addAliasesToIntrusionSet();
         this.intrusionSet.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
         const observable = super.create(this.intrusionSet);
         const sub = observable

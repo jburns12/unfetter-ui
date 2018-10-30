@@ -22,20 +22,27 @@
 <div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
-        <input matInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="">
-        </mat-input-container>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <mat-input-container class="full-width">
             <input matInput placeholder="Description" required [(ngModel)]="intrusionSet.attributes.description" value="">
         </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <h4>Aliases</h4>
+        <mat-input-container class="full-width">
+            <input matInput placeholder="Alias" required [(ngModel)]="intrusionSet.attributes.name" value="">
+        </mat-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <mat-input-container class="full-width">
+            <textarea matInput matTextareaAutosize placeholder="Alias Description" [(ngModel)]="origAliasDescription"></textarea>
+        </mat-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Other Aliases</h4>
               <div class="button-row">
                     <a class=" " mat-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
               </div>
@@ -80,7 +87,7 @@
                             <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-6">
-                                      <mat-form-field style="width: auto;">
+                                      <mat-form-field class="full-width">
                                           <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
                                             <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
                                                   <span>{{ technique.name }}</span>
@@ -117,7 +124,7 @@
                             <mat-card-content>
                                <div class="row">
                                    <div class="col-md-6">
-                                       <mat-form-field style="width: auto;">
+                                       <mat-form-field class="full-width">
                                            <mat-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
                                              <mat-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
                                                    <span>{{ software.name }}</span>

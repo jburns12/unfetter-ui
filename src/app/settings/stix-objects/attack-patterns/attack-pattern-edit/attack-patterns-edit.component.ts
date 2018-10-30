@@ -90,7 +90,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getConfigs();
                this.getContributors();
                this.assignPerms();
-               this.findCoA();
                this.findRevokedBy();
                this.getCitations();
                this.assignCitations();
@@ -609,6 +608,9 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public addExtRefs(): void {
+        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
+            this.attackPattern.attributes.external_references.push(this.mitreId);
+        }
         for (let id of this.mtc_ids) {
             if (id.val !== undefined && id.val !== null && id.category !== '') {
                 let extRef = new ExternalReference();
@@ -634,9 +636,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             }
         }
         let citationArr = super.matchCitations(this.attackPattern.attributes.description).concat(super.matchCitations(this.attackPattern.attributes.x_mitre_detection));
-        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
-            this.attackPattern.attributes.external_references.push(this.mitreId);
-        }
         for (let name of citationArr) {
             let citation = this.allCitations.find((p) => p.source_name === name);
             if (citation !== undefined) {
@@ -805,14 +804,14 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 this.mitreId = new ExternalReference();
                 this.mitreId.external_id = this.id;
                 this.mitreId.source_name = 'mitre-attack';
-                this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+                this.mitreId.url = 'https://attack.mitre.org/techniques/' + this.id
             } else {
                 this.mitreId = new ExternalReference();
                 this.mitreId.source_name = 'mitre-attack';
             }
         } else {
             this.mitreId.external_id = this.id;
-            this.mitreId.url = 'https://attack.mitre.org/wiki/Technique/' + this.id
+            this.mitreId.url = 'https://attack.mitre.org/techniques/' + this.id
         }
         this.addExtRefs();
         console.log(this.deprecated);

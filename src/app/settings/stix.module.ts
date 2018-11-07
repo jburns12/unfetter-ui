@@ -33,6 +33,13 @@ import {
     CourseOfActionComponent } from './stix-objects/course-of-actions';
 
 import {
+    XMitreTacticHomeComponent,
+    XMitreTacticListComponent,
+    XMitreTacticComponent,
+    XMitreTacticNewComponent,
+    XMitreTacticEditComponent } from './stix-objects/x-mitre-tactics';
+
+import {
     SightingHomeComponent,
     SightingListComponent,
     SightingNewComponent,
@@ -110,6 +117,12 @@ import { ClipboardModule } from 'ngx-clipboard';
     CourseOfActionEditComponent,
     CourseOfActionNewComponent,
     CourseOfActionComponent,
+
+    XMitreTacticHomeComponent,
+    XMitreTacticListComponent,
+    XMitreTacticComponent,
+    XMitreTacticNewComponent,
+    XMitreTacticEditComponent,
 
     CitationsHomeComponent,
 

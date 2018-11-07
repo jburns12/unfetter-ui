@@ -17,3 +17,4 @@ export { Filter } from './filter';
 export  { Malware } from './malware';
 export  { Tool } from './tool';
 export { ObservedData } from './observed-data';
+export { XMitreTactic } from './x-mitre-tactic';

@@ -119,6 +119,14 @@ import {
 } from './stix-objects/sensors';
 
 import {
+  XMitreTacticHomeComponent,
+  XMitreTacticListComponent,
+  XMitreTacticComponent,
+  XMitreTacticNewComponent,
+  XMitreTacticEditComponent
+} from './stix-objects/x-mitre-tactics';
+
+import {
   CitationsHomeComponent
 } from './stix-objects/citations';
 
@@ -433,6 +441,27 @@ const stixRoutes: Routes = [{
           {
             path: 'edit/:id',
             component: SoftwareEditComponent
+          }
+        ]
+      },
+      {
+        path: 'x-mitre-tactics',
+        component: XMitreTacticHomeComponent,
+        children: [{
+            path: '',
+            component: XMitreTacticListComponent
+          },
+          {
+            path: 'new',
+            component: XMitreTacticNewComponent
+          },
+          {
+            path: ':id',
+            component: XMitreTacticComponent
+          },
+          {
+            path: 'edit/:id',
+            component: XMitreTacticEditComponent
           }
         ]
       },

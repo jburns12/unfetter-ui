@@ -1,0 +1,57 @@
+<div class="row" *ngIf="xMitreTactic">
+ <div class="col-md-12">
+
+                <a class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
+                <a class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
+                <button *ngIf="!history" class="mat-primary" mat-raised-button (click)="historyButtonClicked()">SHOW HISTORY</button>
+                <button *ngIf="history" class="mat-primary" mat-raised-button (click)="historyButtonClicked()">HIDE HISTORY</button>
+                <!-- <button md-raised-button routerLink="/relationships/intrusion-uses-attack/{{intrusionSet.id}}">Intrusion Set</button> -->
+
+       </div>
+</div>
+ <div class="row" style="margin-top: 15px;">
+    <div class="col-md-12">
+            <div *ngIf="history">
+                    <mat-card>
+                      <mat-card-header style="border-bottom: 1px solid lightgray;">
+                        <mat-card-title><h3>History</h3></mat-card-title>
+                      </mat-card-header>
+                      <br>
+                      <mat-card-content *ngFor="let historyStr of historyArr">
+                            <span *ngIf="historyStr.type != 'relationship'"><b>{{historyStr.date}}:</b> {{historyStr.objName}} - {{historyStr.path2}}{{historyStr.path}} {{historyStr.type}}{{historyStr.name}}</span>
+                            <div *ngIf="historyStr.left !== undefined" semanticDiff [left]="historyStr.left" [right]="historyStr.right"></div>
+                            <span *ngIf="historyStr.type == 'relationship'"><b>{{historyStr.date}}:</b> {{historyStr.source_ref}}{{historyStr.target_ref}}{{historyStr.action}}{{historyStr.id}}</span>
+                      </mat-card-content>
+                    </mat-card><br>
+                    <br>
+                  </div>
+        <mat-card>
+            <mat-card-content>
+              <mat-card-header style="border-bottom: 1px solid lightgray;">
+                  <mat-card-title *ngIf="xMitreTactic.attributes.revoked == true"><small style="color:#FE6131"><b>******REVOKED******</b></small></mat-card-title>
+                  <mat-card-title *ngIf="xMitreTactic.attributes.x_mitre_deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small></mat-card-title>
+                  <mat-card-title *ngIf="mitreId !== undefined"><h3>{{ xMitreTactic.attributes.name }} - {{ mitreId.external_id }}</h3></mat-card-title>
+                  <mat-card-title *ngIf="mitreId === undefined"><h4 style="color:#FE6131">*Draft</h4><h3>{{ xMitreTactic.attributes.name }} </h3></mat-card-title>
+              </mat-card-header>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 [innerHTML]="formatText(xMitreTactic.attributes.description)"></h5><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>External References</label>
+                            <mat-chip-list>
+                              <mat-chip *ngFor="let external_reference of xMitreTactic.attributes.external_references"
+                                  selected="true">
+                                  <a style="color: white" target="_blank" [attr.href]="external_reference.url" *ngIf="external_reference.url" (click)="visitExtRef(external_reference.url)"> {{external_reference.source_name}}</a>
+                                  <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                              </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                    </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+ </div>
+<div class="pull-right grey-text">{{xMitreTactic.id}}</div>

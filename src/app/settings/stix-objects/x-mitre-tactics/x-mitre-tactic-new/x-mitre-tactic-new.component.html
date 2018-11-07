@@ -1,0 +1,54 @@
+<div class="row" *ngIf="mitreId == undefined || mitreId == ''">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                    <mat-checkbox class="identity-margin" (change)="addRemoveId()">Assign ID?</mat-checkbox>
+            </div>
+        </div>
+    </div>
+</div>
+    <div *ngIf="revoked" class="row">
+        <div class="col-md-6">
+            <mat-form-field class="full-width">
+                <mat-select name="xMitreTactics" [(ngModel)]="revokedBy" placeholder="Revoked by:" class="full-width">
+                  <mat-option *ngFor="let currTactic of xMitreTactics" [value]="currTactic">
+                    <span>{{ currTactic.attributes.name }} - {{ currTactic.attributes.external_references[0].external_id }}</span>
+                  </mat-option>
+                </mat-select>
+            </mat-form-field><br>
+        </div>
+      </div>
+<div class="row" *ngIf="addId || (mitreId !== undefined && mitreId !== '')">
+        <div class="col-md-12">
+            <mat-input-container class="full-width">
+                <input matInput placeholder="ID" [(ngModel)]="id">
+            </mat-input-container>
+        </div>
+        <div class="button-row">
+            <a class="" mat-raised-button [ngxClipboard]="copyId"> Copy</a>
+            <input class="" size="100" #copyId value="{{idLink}}{{id}}}}">
+        </div>
+        <br>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+             <div class="form-group">
+                <mat-input-container class="full-width">
+                    <input matInput class="form-control" required placeholder="Name" value="{{xMitreTactic.attributes.name}}"
+                        [(ngModel)]="xMitreTactic.attributes.name">
+                </mat-input-container>
+            </div>
+        </div>
+    </div>
+<mat-input-container class="full-width">
+<textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="xMitreTactic.attributes.description">{{xMitreTactic.attributes.description}}</textarea>
+</mat-input-container>
+
+<div class="row">
+<div class="col-md-12">
+    <div class="button-row pull-right">
+            <button class="" mat-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</button>
+            <button type="submit" class=" " mat-raised-button (click)="saveButtonClicked()" [disabled]="!xMitreTactic.attributes.name || !xMitreTactic.attributes.description"><i class="material-icons">save</i> SAVE & CLOSE</button>
+    </div>
+</div>
+</div>

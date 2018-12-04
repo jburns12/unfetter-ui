@@ -12,7 +12,7 @@ export class HomeComponent {
   public navigations: any[] = [
     { url: 'stix/attack-patterns', label: 'Techniques' },
     // { url: 'campaigns', label: 'Campaigns' },
-    { url: 'stix/course-of-actions', label: 'Courses of Action' },
+    { url: 'stix/course-of-actions', label: 'Mitigations' },
     // { url: 'indicators', label: 'Indicators' },
     // { url: 'identities', label: 'Identities' },
     // { url: 'stix/malwares', label: 'Malware' },
@@ -22,6 +22,8 @@ export class HomeComponent {
     { url: 'stix/softwares', label: 'Software' },
     // { url: 'threat-actors', label: 'Threat Actors' },
     { url: 'stix/intrusion-sets', label: 'Groups' },
+    { url: 'stix/x-mitre-tactics', label: 'Tactics' },
+    { url: 'stix/x-mitre-matrices', label: 'Matrices' },
     { url: 'stix/citations', label: 'References'},
     { url: 'stix/history', label: 'History'}
     // { url: 'reports', label: 'Reports' },

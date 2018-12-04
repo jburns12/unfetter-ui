@@ -56,6 +56,9 @@ export const Constance = {
   INTRUSION_SET_TYPE: 'intrusion-set',
   INTRUSION_SET_ICON: 'assets/icon/stix-icons/svg/threat-actor-b.svg',
 
+  X_MITRE_MATRIX_URL: 'api/x-mitre-matrices',
+  X_MITRE_MATRIX_TYPE: 'x-mitre-matrix',
+
   X_MITRE_TACTIC_URL: 'api/x-mitre-tactics',
   X_MITRE_TACTIC_TYPE: 'x-mitre-tactic',
 

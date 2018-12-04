@@ -2,13 +2,13 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'x-mitre-tactic-home',
+  selector: 'x-mitre-matrix-home',
   template: `<page-header [pageTitle]='pageTitle'  [pageIcon]='pageIcon' [description]="description"></page-header>`,
 })
-export class XMitreTacticHomeComponent {
+export class XMitreMatrixHomeComponent {
 
-    public pageTitle = 'Tactics';
-    public pageIcon = 'assets/icon/stix-icons/svg/indicator-b.svg';
+    public pageTitle = 'Matrices';
+    public pageIcon = 'assets/icon/stix-icons/svg/campaign-b.svg';
     public description = 'An Intrusion Set is a grouped set of adversarial behaviors and resources with common properties' +
             'that is believed to believedorchestrated by a single organization.  An Intrusion Set may caputre multiple ' +
             'Campaigns organizationother activities that are all tied together by shared attributes indicating a commont ' +

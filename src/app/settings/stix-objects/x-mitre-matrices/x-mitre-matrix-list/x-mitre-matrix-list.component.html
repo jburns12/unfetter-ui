@@ -1,0 +1,4 @@
+
+    <buttons-filter [draftsOnly]="draftsOnly" [model]="xMitreMatrices" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
+
+    <list-stix-objects [model]="filteredItems" [url]="url"  showLabels="true" showExternalReferences="true" (deletButtonClicked)="deletButtonClicked($event)" (draftToggleClicked)="draftToggleClicked($event)"></list-stix-objects>

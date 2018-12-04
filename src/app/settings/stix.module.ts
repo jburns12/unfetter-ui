@@ -40,6 +40,14 @@ import {
     XMitreTacticEditComponent } from './stix-objects/x-mitre-tactics';
 
 import {
+    XMitreMatrixHomeComponent,
+    XMitreMatrixListComponent,
+    XMitreMatrixComponent,
+    XMitreMatrixNewComponent,
+    XMitreMatrixEditComponent 
+}from './stix-objects/x-mitre-matrices';
+
+import {
     SightingHomeComponent,
     SightingListComponent,
     SightingNewComponent,
@@ -123,6 +131,12 @@ import { ClipboardModule } from 'ngx-clipboard';
     XMitreTacticComponent,
     XMitreTacticNewComponent,
     XMitreTacticEditComponent,
+
+    XMitreMatrixHomeComponent,
+    XMitreMatrixListComponent,
+    XMitreMatrixComponent,
+    XMitreMatrixNewComponent,
+    XMitreMatrixEditComponent,
 
     CitationsHomeComponent,
 

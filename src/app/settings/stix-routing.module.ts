@@ -127,6 +127,14 @@ import {
 } from './stix-objects/x-mitre-tactics';
 
 import {
+  XMitreMatrixHomeComponent,
+  XMitreMatrixListComponent,
+  XMitreMatrixComponent,
+  XMitreMatrixNewComponent,
+  XMitreMatrixEditComponent
+} from './stix-objects/x-mitre-matrices';
+
+import {
   CitationsHomeComponent
 } from './stix-objects/citations';
 
@@ -462,6 +470,27 @@ const stixRoutes: Routes = [{
           {
             path: 'edit/:id',
             component: XMitreTacticEditComponent
+          }
+        ]
+      },
+      {
+        path: 'x-mitre-matrices',
+        component: XMitreMatrixHomeComponent,
+        children: [{
+            path: '',
+            component: XMitreMatrixListComponent
+          },
+          {
+            path: 'new',
+            component: XMitreMatrixNewComponent
+          },
+          {
+            path: ':id',
+            component: XMitreMatrixComponent
+          },
+          {
+            path: 'edit/:id',
+            component: XMitreMatrixEditComponent
           }
         ]
       },

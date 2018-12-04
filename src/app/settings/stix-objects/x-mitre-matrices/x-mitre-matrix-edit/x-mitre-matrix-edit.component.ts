@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/material';
-import { XMitreTacticComponent } from '../x-mitre-tactic/x-mitre-tactic.component';
+import { XMitreMatrixComponent } from '../x-mitre-matrix/x-mitre-matrix.component';
 import { StixService } from '../../../stix.service';
 import { ExternalReference } from '../../../../models';
 import { Motivation } from '../../../../models/motivation.enum';
@@ -14,6 +14,7 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
 import {
+  XMitreMatrix,
   XMitreTactic,
   AttackPattern,
   Identity,
@@ -23,10 +24,10 @@ import {
 import { Constance } from '../../../../utils/constance';
 
 @Component({
-  selector: 'x-mitre-tactic-edit',
-  templateUrl: './x-mitre-tactic-edit.component.html',
+  selector: 'x-mitre-matrix-edit',
+  templateUrl: './x-mitre-matrix-edit.component.html',
 })
-export class XMitreTacticEditComponent extends XMitreTacticComponent implements OnInit {
+export class XMitreMatrixEditComponent extends XMitreMatrixComponent implements OnInit {
     public motivations = new Set(Motivation.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
     public resourceLevels = new Set(ResourceLevel.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
     public motivationCtrl: FormControl;
@@ -42,7 +43,7 @@ export class XMitreTacticEditComponent extends XMitreTacticComponent implements 
     public allCitations: any = [];
     public createNewOnly: boolean = true;
     public addId: boolean = false;
-    public xMitreTactics: XMitreTactic[];
+    public xMitreMatrices: XMitreMatrix[];
     public revokedBy: any = '';
     public foundRevoked: string = '';
     public origTarget: string = '';
@@ -62,11 +63,11 @@ export class XMitreTacticEditComponent extends XMitreTacticComponent implements 
     }
 
     public ngOnInit() {
-       super.loadxMitreTactic();
+       super.loadxMitreMatrix();
        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
        let subscription = super.load(filter).subscribe(
            (data) => {
-               this.xMitreTactics = data as XMitreTactic[];
+               this.xMitreMatrices = data as XMitreMatrix[];
                this.findRevokedBy();
            }, (error) => {
                // handle errors here
@@ -80,8 +81,10 @@ export class XMitreTacticEditComponent extends XMitreTacticComponent implements 
        );
     }
 
+
+
     public findRevokedBy(): void  {
-        let filter = { 'stix.source_ref': this.xMitreTactic.id };
+        let filter = { 'stix.source_ref': this.xMitreMatrix.id };
         let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
@@ -93,7 +96,7 @@ export class XMitreTacticEditComponent extends XMitreTacticComponent implements 
                     }
                 });
                 if (this.foundRevoked !== '') {
-                    this.revokedBy = this.xMitreTactics.find((p) => (p.id === this.origTarget));
+                    this.revokedBy = this.xMitreMatrices.find((p) => (p.id === this.origTarget));
                 }
                }, (error) => {
                 // handle errors here
@@ -134,17 +137,6 @@ export class XMitreTacticEditComponent extends XMitreTacticComponent implements 
 
             }
         );
-    }
-
-    public addExtRefs(): void {
-        if (this.mitreId !== undefined && this.mitreId.external_id !== '') {
-            this.xMitreTactic.attributes.external_references.push(this.mitreId);
-        }
-        else {
-            let mitreId = new ExternalReference;
-            mitreId.source_name = 'mitre-attack';
-            this.xMitreTactic.attributes.external_references.push(mitreId);
-        }
     }
 
     public saveRevoked(source_ref, target_ref): void {
@@ -189,44 +181,36 @@ export class XMitreTacticEditComponent extends XMitreTacticComponent implements 
         }
     }
 
+    public addTacticsToMatrix(): void {
+        this.xMitreMatrix.attributes.tactic_refs = [];
+        this.tactic_refs.forEach((tactic: XMitreTactic) => {
+            this.xMitreMatrix.attributes.tactic_refs.push(tactic.id);
+        });
+    }
+
     public addRemoveId() {
         this.addId = !this.addId;
     }
 
     public saveIdentity(): void {
-        if (this.mitreId === '' || this.mitreId === undefined ) {
-            if (this.addId) {
-                this.mitreId = new ExternalReference();
-                this.mitreId.external_id = this.id;
-                this.mitreId.source_name = 'mitre-attack';
-                this.mitreId.url = 'https://attack.mitre.org/tactics/' + this.id
-            } else {
-                this.mitreId = new ExternalReference();
-                this.mitreId.source_name = 'mitre-attack';
-            }
-        } else {
-            this.mitreId.external_id = this.id;
-            this.mitreId.url = 'https://attack.mitre.org/tactics/' + this.id
-        }
-        this.xMitreTactic.attributes.external_references = [];
-        this.addExtRefs();
+        console.log(this.deprecated);
         if (this.deprecated === true) {
-            this.xMitreTactic.attributes.x_mitre_deprecated = true;
+            this.xMitreMatrix.attributes.x_mitre_deprecated = true;
         }
         else {
-            if (this.xMitreTactic.attributes.x_mitre_deprecated !== undefined) {
-                this.xMitreTactic.attributes.x_mitre_deprecated = false;
+            if (this.xMitreMatrix.attributes.x_mitre_deprecated !== undefined) {
+                this.xMitreMatrix.attributes.x_mitre_deprecated = false;
             }
         }
         if (this.revoked === true) {
-            this.xMitreTactic.attributes.revoked = true;
+            this.xMitreMatrix.attributes.revoked = true;
         }
         else {
-            if (this.xMitreTactic.attributes.revoked !== undefined) {
-                this.xMitreTactic.attributes.revoked = false;
+            if (this.xMitreMatrix.attributes.revoked !== undefined) {
+                this.xMitreMatrix.attributes.revoked = false;
             }
         }
-        this.xMitreTactic.attributes.x_mitre_shortname = this.xMitreTactic.attributes.name.toLowerCase().split(' ').join('-');
+        this.addTacticsToMatrix();
         const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();

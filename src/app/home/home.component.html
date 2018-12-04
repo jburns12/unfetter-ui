@@ -8,7 +8,7 @@
     </div>
   </div>
   <div id="stixHome" class="container" *ngIf="authService.loggedIn()">
-      <h2>Choose Type of Object to Edit:</h2>
+      <h2>Choose Type of ATT&CK Object to Edit:</h2>
 
       <ul class="nav nav-pills">
           <h3 *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">

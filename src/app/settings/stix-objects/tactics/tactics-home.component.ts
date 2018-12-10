@@ -43,24 +43,15 @@ export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
     }
 
     public getTactics(): void {
-        let uri = Constance.CONFIG_URL;
+        let uri = Constance.X_MITRE_TACTIC_URL;
         let subscription =  super.getByUrl(uri).subscribe(
             (res) => {
-              if (res && res.length) {
-                  for (let currRes of res) {
-                      if (currRes.attributes.configKey === 'tactics') {
-                          for (let currTactic of currRes.attributes.configValue.enterprise_tactics.tactics) {
-                              this.tactics.push({"tactic": currTactic.tactic, "description": currTactic.description});
-                          }
-                          for (let currTactic of currRes.attributes.configValue.pre_attack_tactics.tactics) {
-                              this.tactics.push({"tactic": currTactic.tactic, "description": currTactic.description});
-                          }
-                          for (let currTactic of currRes.attributes.configValue.mobile_tactics.tactics) {
-                              this.tactics.push({"tactic": currTactic.tactic, "description": currTactic.description});
-                          }
-                      }
+                if (res && res.length) {
+                    for (let currTactic of res) {
+                        this.tactics.push({"tactic": currTactic.attributes.x_mitre_shortname, "description": currTactic.attributes.description});
+                    
                   }
-              }
+                }
               console.log(this.route.params);
               this.route.params.subscribe((params) => {
                     let tactic = params['tactic'];

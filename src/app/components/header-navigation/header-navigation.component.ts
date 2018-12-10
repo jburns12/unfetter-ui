@@ -3,6 +3,7 @@ import { BaseComponentService } from '../base-service.component';
 import { Router } from '@angular/router';
 import { Navigation } from '../../models/navigation';
 import { AuthService } from '../../global/services/auth.service';
+import { Constance } from '../../utils/constance';
 
 @Component({
   selector: 'header-navigation',
@@ -25,8 +26,8 @@ export class HeaderNavigationComponent implements OnInit {
     // { url: 'stix/threat-actors', label: 'Threat Actors' },
     { url: 'stix/softwares', label: 'Software' },
     { url: 'stix/intrusion-sets', label: 'Groups' },
-    { url: 'x-mitre-tactics', label: 'Tactics' },
-    { url: 'x-mitre-matrices', label: 'Matrices' },
+    { url: 'stix/x-mitre-tactics', label: 'Tactics' },
+    { url: 'stix/x-mitre-matrices', label: 'Matrices' },
     { url: 'stix/citations', label: 'References'},
     { url: 'stix/history', label: 'History'}
     // { url: 'stix/reports', label: 'Reports' },
@@ -48,18 +49,40 @@ export class HeaderNavigationComponent implements OnInit {
   }
 
   public ngOnInit() {
-    const uri = 'api/config?filter= {"configKey": "tactics"}';
-    let sub = this.baseComponentService.get(uri).subscribe(
+    let tactics_uri = Constance. X_MITRE_TACTIC_URL;
+    let matrices_uri = Constance. X_MITRE_MATRIX_URL;
+    let sub =  this.baseComponentService.get(tactics_uri).subscribe(
         (data) => {
-            for (let tactic of data[0].attributes.configValue.enterprise_tactics.tactics) {
-                this.enterpriseTacticNavigations.push({ url: 'stix/tactics/enterprise/' + tactic.tactic, label: tactic.tactic});
+          let subscription =  this.baseComponentService.get(matrices_uri).subscribe(
+            (matrices_data) => {
+                for (let matrix of matrices_data) {
+                    if (matrix.attributes.external_references[0].external_id == 'enterprise-attack') {
+                        for (let ref of matrix.attributes.tactic_refs) {
+                            let tactic = data.find((p) => (p.id === ref));
+                            this.enterpriseTacticNavigations.push({ url: 'stix/tactics/enterprise/' + tactic.attributes.x_mitre_shortname, label: tactic.attributes.name});
+                        }
+                    }
+                    else if (matrix.attributes.external_references[0].external_id == 'mobile-attack') {
+                        for (let ref of matrix.attributes.tactic_refs) {
+                            let tactic = data.find((p) => (p.id === ref));
+                            this.mobileTacticNavigations.push({ url: 'stix/tactics/mobile/' + tactic.attributes.x_mitre_shortname, label: tactic.attributes.name});
+                        }   
+                    }
+                    else {
+                        for (let ref of matrix.attributes.tactic_refs) {
+                            let tactic = data.find((p) => (p.id === ref));
+                            this.preTacticNavigations.push({ url: 'stix/tactics/pre/' + tactic.attributes.x_mitre_shortname, label: tactic.attributes.name});
+                        }                                               
+                    }
+                }
+            }, (error) => {
+                console.log(error);
+            }, () => {
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
             }
-            for (let tactic of data[0].attributes.configValue.pre_attack_tactics.tactics) {
-              this.preTacticNavigations.push({ url: 'stix/tactics/pre/' + tactic.tactic, label: tactic.tactic});
-            }
-            for (let tactic of data[0].attributes.configValue.mobile_tactics.tactics) {
-              this.mobileTacticNavigations.push({ url: 'stix/tactics/mobile/' + tactic.tactic, label: tactic.tactic});
-            }
+        );
         }, (error) => {
             console.log(error);
         }, () => {

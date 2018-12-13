@@ -157,7 +157,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                     if (currObj.attributes.external_references) {
                         let objExtRefs = currObj.attributes.external_references;
                         for (let obj of objExtRefs) {
-                            if (obj.description !== undefined && !obj.description.includes('[[Citation: ')) {
+                            if (obj.description !== undefined && !obj.description.includes('(Citation: ')) {
                                 extRefs.push(obj);
                             }
                         }

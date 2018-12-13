@@ -292,7 +292,12 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 let extRefs = [];
                 for (let currObj of data) {
                     if (currObj.attributes.external_references && currObj.attributes.external_references.source_name !== 'mitre-attack') {
-                        extRefs = extRefs.concat(currObj.attributes.external_references);
+                        let objExtRefs = currObj.attributes.external_references;
+                        for (let obj of objExtRefs) {
+                            if (obj.description !== undefined && !obj.description.includes('(Citation: ')) {
+                                extRefs.push(obj);
+                            }
+                        }
                     }
                     this.contributors = this.contributors.concat(currObj.attributes.x_mitre_contributors);
                 }

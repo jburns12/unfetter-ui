@@ -257,7 +257,7 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public assignCitations(): void {
         for (let i in this.malware.attributes.external_references) {
             this.malware.attributes.external_references[i].citeButton = 'Generate Citation Text';
-            this.malware.attributes.external_references[i].citation = '[[Citation: ' + this.malware.attributes.external_references[i].source_name + ']]';
+            this.malware.attributes.external_references[i].citation = '(Citation: ' + this.malware.attributes.external_references[i].source_name + ')';
             this.malware.attributes.external_references[i].citeref = '[[CiteRef::' + this.malware.attributes.external_references[i].source_name + ']]';
         }
     }

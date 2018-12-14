@@ -431,7 +431,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public assignCitations(): void {
         for (let i in this.intrusionSet.attributes.external_references) {
             this.intrusionSet.attributes.external_references[i].citeButton = 'Generate Citation Text';
-            this.intrusionSet.attributes.external_references[i].citation = '[[Citation: ' + this.intrusionSet.attributes.external_references[i].source_name + ']]';
+            this.intrusionSet.attributes.external_references[i].citation = '(Citation: ' + this.intrusionSet.attributes.external_references[i].source_name + ')';
             this.intrusionSet.attributes.external_references[i].citeref = '[[CiteRef::' + this.intrusionSet.attributes.external_references[i].source_name + ']]';
         }
     }

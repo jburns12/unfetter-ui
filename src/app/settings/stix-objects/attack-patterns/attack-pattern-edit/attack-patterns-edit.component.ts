@@ -209,12 +209,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public assignCitations(): void {
         for (let i in this.attackPattern.attributes.external_references) {
             this.attackPattern.attributes.external_references[i].citeButton = 'Generate Citation Text';
-            this.attackPattern.attributes.external_references[i].citation = '[[Citation: ' + this.attackPattern.attributes.external_references[i].source_name + ']]';
+            this.attackPattern.attributes.external_references[i].citation = '(Citation: ' + this.attackPattern.attributes.external_references[i].source_name + ')';
             this.attackPattern.attributes.external_references[i].citeref = '[[CiteRef::' + this.attackPattern.attributes.external_references[i].source_name + ']]';
         }
         for (let i in this.courseOfAction.attributes.external_references) {
             this.courseOfAction.attributes.external_references[i].citeButton = 'Generate Citation Text';
-            this.courseOfAction.attributes.external_references[i].citation = '[[Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
+            this.courseOfAction.attributes.external_references[i].citation = '(Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ')';
             this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
         }
     }

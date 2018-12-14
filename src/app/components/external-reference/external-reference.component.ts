@@ -49,7 +49,7 @@ export class ExternalReferenceComponent {
             this.model.attributes.external_references[index].description = '';
             this.model.attributes.external_references[index].url = '';
         }
-        this.model.attributes.external_references[index].citation = '[[Citation: ' + citationStr + ']]';
+        this.model.attributes.external_references[index].citation = '(Citation: ' + citationStr + ')';
         this.model.attributes.external_references[index].citeref = '[[CiteRef::' + citationStr + ']]';
         if (citationStr) {
             let filterVal = citationStr.toLowerCase();
@@ -69,7 +69,7 @@ export class ExternalReferenceComponent {
             this.extToFind.description = '';
             this.extToFind.url = '';
         }
-        this.extToFind.citation = '[[Citation: ' + citationStr + ']]';
+        this.extToFind.citation = '(Citation: ' + citationStr + ')';
         this.extToFind.citeref = '[[CiteRef::' + citationStr + ']]';
         if (citationStr) {
             let filterVal = citationStr.toLowerCase();

@@ -35,7 +35,7 @@ export class AttackPatternMobileEditComponent extends AttackPatternEditComponent
             (data) => {
                 console.log(this.attackPattern);
                 this.attackPatterns = data as AttackPattern[];
-                this.getConfigs('mobile_tactics');
+                this.getConfigs('mobile-attack');
                 this.getContributors();
                 this.findRevokedBy();
                 this.getCitations();

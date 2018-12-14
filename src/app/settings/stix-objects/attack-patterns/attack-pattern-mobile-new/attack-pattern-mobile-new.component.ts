@@ -33,7 +33,7 @@ export class AttackPatternMobileNewComponent extends AttackPatternEditComponent 
       let subscription = super.load(filter).subscribe(
           (data) => {
               this.attackPatterns = data as AttackPattern[];
-              this.getConfigs('mobile_tactics');
+              this.getConfigs('mobile-attack');
               this.getContributors();
               this.getId();
               this.assignCoaCitations();

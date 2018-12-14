@@ -57,38 +57,61 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public ngOnInit() {
         const sortObj = { 'stix.name': '1' };
         const filter = `sort=${JSON.stringify(sortObj)}`;
-        const subscription = super.load(filter).subscribe(
+        const subscript = super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 console.log(this.attackPatterns);
-                let uri = Constance.CONFIG_URL;
-                let subscript =  super.getByUrl(uri).subscribe(
-                (res) => {
-                    if (res && res.length) {
-                        for (let currRes of res) {
-                            if (currRes.attributes.configKey === 'tactics') {
-                                let phaseNameGroupsEnterprise = {};
-                                let phaseNameGroupsPre = {};
-                                let phaseNameGroupsMobile= {};
-                                for (let currTactic of currRes.attributes.configValue.enterprise_tactics.tactics) {
-                                    this.phaseNameGroups[currTactic.tactic] = [];
-                                    phaseNameGroupsEnterprise[currTactic.tactic] = [];
+                let tactics_uri = Constance. X_MITRE_TACTIC_URL;
+                let matrices_uri = Constance. X_MITRE_MATRIX_URL;
+                let sub =  super.getByUrl(tactics_uri).subscribe(
+                    (data) => {
+                      let subscription =  super.getByUrl(matrices_uri).subscribe(
+                        (matrices_data) => {
+                            let phaseNameGroupsEnterprise = {};
+                            let phaseNameGroupsPre = {};
+                            let phaseNameGroupsMobile= {};
+                            for (let matrix of matrices_data) {
+                                if (matrix.attributes.external_references[0].external_id == 'enterprise-attack') {
+                                    for (let ref of matrix.attributes.tactic_refs) {
+                                        let tactic = data.find((p) => (p.id === ref));
+                                        this.phaseNameGroups[tactic.attributes.x_mitre_shortname] = [];
+                                        phaseNameGroupsEnterprise[tactic.attributes.x_mitre_shortname] = [];
+                                    }
                                 }
-                                this.phaseNameGroupKeysEnterprise = Object.keys(phaseNameGroupsEnterprise);
-                                for (let currTactic of currRes.attributes.configValue.pre_attack_tactics.tactics) {
-                                    this.phaseNameGroups[currTactic.tactic] = [];
-                                    phaseNameGroupsPre[currTactic.tactic] = [];
+                                else if (matrix.attributes.external_references[0].external_id == 'mobile-attack') {
+                                    for (let ref of matrix.attributes.tactic_refs) {
+                                        let tactic = data.find((p) => (p.id === ref));
+                                        this.phaseNameGroups[tactic.attributes.x_mitre_shortname] = [];
+                                        phaseNameGroupsMobile[tactic.attributes.x_mitre_shortname] = [];
+                                    }   
                                 }
-                                this.phaseNameGroupKeysPre = Object.keys(phaseNameGroupsPre);
-                                for (let currTactic of currRes.attributes.configValue.mobile_tactics.tactics) {
-                                    this.phaseNameGroups[currTactic.tactic] = [];
-                                    phaseNameGroupsMobile[currTactic.tactic] = [];
+                                else {
+                                    for (let ref of matrix.attributes.tactic_refs) {
+                                        let tactic = data.find((p) => (p.id === ref));
+                                        this.phaseNameGroups[tactic.attributes.x_mitre_shortname] = [];
+                                        phaseNameGroupsPre[tactic.attributes.x_mitre_shortname] = [];                                    }                                               
                                 }
-                                this.phaseNameGroupKeysMobile = Object.keys(phaseNameGroupsMobile);
+                            }
+                            this.phaseNameGroupKeysEnterprise = Object.keys(phaseNameGroupsEnterprise);
+                            this.phaseNameGroupKeysMobile = Object.keys(phaseNameGroupsMobile);
+                            this.phaseNameGroupKeysPre = Object.keys(phaseNameGroupsPre);
+                            this.populateAttackPatternByPhaseMap();
+                        }, (error) => {
+                            console.log(error);
+                        }, () => {
+                            if (subscription) {
+                                subscription.unsubscribe();
                             }
                         }
+                    );
+                    }, (error) => {
+                        console.log(error);
+                    }, () => {
+                        if (sub) {
+                            sub.unsubscribe();
+                        }
                     }
-                    this.populateAttackPatternByPhaseMap();
+                );                   
                 }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -96,19 +119,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 // prevent memory links
                 if (subscript) {
                     subscript.unsubscribe();
-                }
-                });
-
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
             }
-        );
+        });
     }
 
     public addRemoveWhichDomain(answer: string) {

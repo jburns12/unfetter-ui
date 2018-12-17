@@ -252,7 +252,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     }
 
     public mitreCitationsClean(inputString: string): string {
-        return inputString ? inputString.replace(/\[\[Citation: ([^\]\]]*)\]\]/g, '(Citation: $1)') : '';
+        return inputString ? inputString.replace(/\(Citation: ([^\]\]]*)\)/g, '(Citation: $1)') : '';
     }
 
     public mitreCiteRefClean(inputString: string): string {

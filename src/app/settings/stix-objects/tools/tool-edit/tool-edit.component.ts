@@ -78,7 +78,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     public assignCitations(): void {
         for (let i in this.tool.attributes.external_references) {
             this.tool.attributes.external_references[i].citeButton = 'Generate Citation Text';
-            this.tool.attributes.external_references[i].citation = '[[Citation: ' + this.tool.attributes.external_references[i].source_name + ']]';
+            this.tool.attributes.external_references[i].citation = '(Citation: ' + this.tool.attributes.external_references[i].source_name + ')';
             this.tool.attributes.external_references[i].citeref = '[[CiteRef::' + this.tool.attributes.external_references[i].source_name + ']]';
         }
     }

@@ -296,7 +296,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
               if (res && res.length) {
                   for (let currRes of res) {
                       if (currRes.attributes.configKey === 'x_mitre_platforms') {
-                          if (domain === 'enterprise_tactics') {
+                          if (domain === 'enterprise-attack') {
                             uniqPlatforms = currRes.attributes.configValue.enterprise;
                           }
                           else {
@@ -304,7 +304,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                           }
                       }
                       if (currRes.attributes.configKey === 'x_mitre_tactic_type') {
-                        if (domain === 'mobile_tactics') {
+                        if (domain === 'mobile-attack') {
                           uniqTacticTypes = currRes.attributes.configValue;
                         }
                       }
@@ -330,7 +330,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                       this.platforms.push({'name': currPlatform, 'val': false});
                   }
               }
-              if (domain === 'mobile_tactics') {
+              if (domain === 'mobile-attack') {
                 for (let currTacticType of uniqTacticTypes) {
                     if (('x_mitre_tactic_type' in this.attackPattern.attributes) && this.attackPattern.attributes.x_mitre_tactic_type.includes(currTacticType)) {
                             this.tacticTypes.push({'name': currTacticType, 'val': true});

@@ -54,7 +54,7 @@ export class AttackPatternMobileNewComponent extends AttackPatternEditComponent 
     public assignCoaCitations(): void {
         for (let i in this.courseOfAction.attributes.external_references) {
             this.courseOfAction.attributes.external_references[i].citeButton = 'Generate Citation Text';
-            this.courseOfAction.attributes.external_references[i].citation = '[[Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
+            this.courseOfAction.attributes.external_references[i].citation = '(Citation: ' + this.courseOfAction.attributes.external_references[i].source_name + ')';
             this.courseOfAction.attributes.external_references[i].citeref = '[[CiteRef::' + this.courseOfAction.attributes.external_references[i].source_name + ']]';
         }
     }

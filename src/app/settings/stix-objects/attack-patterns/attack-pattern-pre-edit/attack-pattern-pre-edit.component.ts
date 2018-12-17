@@ -36,7 +36,7 @@ export class AttackPatternPreEditComponent extends AttackPatternEditComponent im
           (data) => {
               console.log(this.attackPattern);
               this.attackPatterns = data as AttackPattern[];
-              this.getConfigs('pre_attack_tactics');
+              this.getConfigs('pre-attack');
               this.getTechniques(false);
               this.getContributors();
               this.findRevokedBy();

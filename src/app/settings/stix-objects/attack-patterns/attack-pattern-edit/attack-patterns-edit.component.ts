@@ -219,10 +219,78 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
-    public getConfigs(domain = 'enterprise_tactics'): void {
+    public getTactics(domain): void {
+        let tactics_uri = Constance. X_MITRE_TACTIC_URL;
+        let matrices_uri = Constance. X_MITRE_MATRIX_URL;
+        let sub =  super.getByUrl(tactics_uri).subscribe(
+            (data) => {
+                let subscription =  super.getByUrl(matrices_uri).subscribe(
+                (matrices_data) => {
+                    let matrices = matrices_data.filter((p) => p.attributes.external_references[0].external_id === domain)
+                    for (let matrix of matrices) {
+                        if (domain === 'enterprise-attack') {
+                            for (let ref of matrix.attributes.tactic_refs) {
+                                let tactic = data.find((p) => (p.id === ref));
+                                let found = this.attackPattern.attributes.kill_chain_phases.find((h) => {
+                                    return h.phase_name === tactic.attributes.x_mitre_shortname;
+                                });
+                                if (found) {
+                                    if (tactic.attributes.x_mitre_shortname === 'privilege-escalation') {
+                                        this.tacticBools['privEsc'] = true;
+                                    }
+                                    if (tactic.attributes.x_mitre_shortname === 'execution') {
+                                        this.tacticBools['execution'] = true;
+                                    }
+                                    if (tactic.attributes.x_mitre_shortname === 'defense-evasion') {
+                                        this.tacticBools['defEvas'] = true;
+                                    }
+                                    if (tactic.attributes.x_mitre_shortname === 'exfiltration') {
+                                        this.tacticBools['exfil'] = true;
+                                    }
+                                    this.tactics.push({'name': tactic.attributes.x_mitre_shortname, 'val': true});
+                                } else {
+                                    this.tactics.push({'name': tactic.attributes.x_mitre_shortname, 'val': false});
+                                }
+                            }
+                        }
+                        else {
+                            for (let ref of matrix.attributes.tactic_refs) {
+                                let tactic = data.find((p) => (p.id === ref));
+                                let found = this.attackPattern.attributes.kill_chain_phases.find((h) => {
+                                    return h.phase_name === tactic.attributes.x_mitre_shortname;
+                                });
+                                if (found) {
+                                    this.tactics.push({'name': tactic.attributes.x_mitre_shortname, 'val': true});
+                                } else {
+                                    this.tactics.push({'name': tactic.attributes.x_mitre_shortname, 'val': false});
+                                }
+                            }   
+                        }
+                    }
+                    this.tactics.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                }, (error) => {
+                    console.log(error);
+                }, () => {
+                    if (subscription) {
+                        subscription.unsubscribe();
+                    }
+                }
+            );
+            }, (error) => {
+                console.log(error);
+            }, () => {
+                if (sub) {
+                    sub.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public getConfigs(domain = 'enterprise-attack'): void {
         let uniqPlatforms = [];
         let uniqTacticTypes = [];
         let uri = Constance.CONFIG_URL;
+        this.getTactics(domain);
         let subscription =  super.getByUrl(uri).subscribe(
             (res) => {
               if (res && res.length) {
@@ -246,57 +314,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                       }
                       if (currRes.attributes.configKey === 'mtc_categories') {
                           this.mtc_categories = currRes.attributes.configValue;
-                      }
-                      if (currRes.attributes.configKey === 'tactics') {
-                          if (domain === 'enterprise_tactics') {
-                            for (let currTactic of currRes.attributes.configValue.enterprise_tactics.tactics) {
-                               let found = this.attackPattern.attributes.kill_chain_phases.find((h) => {
-                                    return h.phase_name === currTactic.tactic;
-                                });
-                                if (found) {
-                                    if (currTactic.tactic === 'privilege-escalation') {
-                                        this.tacticBools['privEsc'] = true;
-                                    }
-                                    if (currTactic.tactic === 'execution') {
-                                        this.tacticBools['execution'] = true;
-                                    }
-                                    if (currTactic.tactic === 'defense-evasion') {
-                                        this.tacticBools['defEvas'] = true;
-                                    }
-                                    if (currTactic.tactic === 'exfiltration') {
-                                        this.tacticBools['exfil'] = true;
-                                    }
-                                    this.tactics.push({'name': currTactic.tactic, 'val': true});
-                                } else {
-                                    this.tactics.push({'name': currTactic.tactic, 'val': false});
-                                }
-                            }
-                          }
-                          else if (domain === 'pre_attack_tactics') {
-                            for  (let currTactic of currRes.attributes.configValue.pre_attack_tactics.tactics) {
-                               let found = this.attackPattern.attributes.kill_chain_phases.find((h) => {
-                                    return h.phase_name === currTactic.tactic;
-                                });
-                                if (found) {
-                                    this.tactics.push({'name': currTactic.tactic, 'val': true});
-                                } else {
-                                    this.tactics.push({'name': currTactic.tactic, 'val': false});
-                                }
-                            }
-                          }
-                          else {
-                            for  (let currTactic of currRes.attributes.configValue.mobile_tactics.tactics) {
-                               let found = this.attackPattern.attributes.kill_chain_phases.find((h) => {
-                                    return h.phase_name === currTactic.tactic;
-                                });
-                                if (found) {
-                                    this.tactics.push({'name': currTactic.tactic, 'val': true});
-                                } else {
-                                    this.tactics.push({'name': currTactic.tactic, 'val': false});
-                                }
-                            }
-                          }
-                          this.tactics.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                       }
                       if (currRes.attributes.configKey === 'references') {
                           this.allCitations = this.allCitations.concat(currRes.attributes.configValue);

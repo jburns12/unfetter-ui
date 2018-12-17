@@ -32,7 +32,7 @@ export class AttackPatternPreNewComponent extends AttackPatternEditComponent imp
               this.attackPatterns = data as AttackPattern[];
               this.attackPattern.attributes.x_mitre_difficulty_for_adversary = "Yes";
               this.attackPattern.attributes.x_mitre_detectable_by_common_defenses = "Yes";
-              this.getConfigs('pre_attack_tactics');
+              this.getConfigs('pre-attack');
               this.getContributors();
               this.getId();
               this.assignCoaCitations();

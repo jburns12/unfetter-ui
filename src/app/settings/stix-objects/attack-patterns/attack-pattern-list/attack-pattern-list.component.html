@@ -25,20 +25,23 @@
             </div>
         </div>
     </div>
+    <!-- attack pattern list -->
     <div class="row height-100-percent">
-
         <div class="col-md-12 scroll-area">
             <mat-accordion class="unfetterAngularMaterialAccordion">
-                <mat-expansion-panel *ngFor="let key of phaseNameGroupKeysEnterprise">
+                <mat-expansion-panel 
+                        *ngFor="let key of phaseNameGroupKeysEnterprise"
+                        (opened)="openPanels.add(key)" 
+                        (closed)="openPanels.delete(key)">
+
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             {{key | capitalize }}&nbsp;
                             <span *ngIf="attackPatternByPhaseMap.enterprise[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap.enterprise[key].length}}</span>
-                            <!--<span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>-->
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <div class="example-container" *ngIf="attackPatternByPhaseMap.enterprise !== undefined && attackPatternByPhaseMap.enterprise[key] !== undefined">
+                    <div class="example-container" *ngIf="attackPatternByPhaseMap.enterprise !== undefined && attackPatternByPhaseMap.enterprise[key] !== undefined && openPanels.has(key)">
                         <stix-table [stixData]="attackPatternByPhaseMap.enterprise[key]" (delete)="deletButtonClicked($event, key, 'enterprise')"></stix-table>
                     </div>
 
@@ -48,106 +51,113 @@
     </div>
 </div>
 <div *ngIf="domainToShow === 'PRE-ATT&CK'">
-        <div class="row">
-                <div class="col-md-12">
-            
-                    <div class="button-row">
-                        <a mat-raised-button routerLink="./new-pre" class="mat-primary">NEW - PRE-ATT&CK</a>
-                        <!--<a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>-->
-                    </div>
-                    <br>
-                    <div class="col-md-4">
-                            <mat-checkbox class="identity-margin" (change)="draftsOnlyToggle('pre')">Show drafts only?</mat-checkbox><br>
-                    </div>
-                    <div class="pull-right">
-                            <span *ngIf="attackPatterns" class="right-align"><b>Items: {{ attack['pre'].length }}</b></span>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-12">
+    
+            <div class="button-row">
+                <a mat-raised-button routerLink="./new-pre" class="mat-primary">NEW - PRE-ATT&CK</a>
+                <!--<a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>-->
             </div>
-        <mat-accordion class="unfetterAngularMaterialAccordion">
-                <mat-expansion-panel *ngFor="let key of phaseNameGroupKeysPre">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            {{key | capitalize }}&nbsp;
-                            <span *ngIf="attackPatternByPhaseMap.pre[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap.pre[key].length}}</span>
-                            <!--<span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>-->
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-    
-                    <div class="example-container" *ngIf="attackPatternByPhaseMap.pre !== undefined && attackPatternByPhaseMap.pre[key] !== undefined">
-                        <stix-table [stixData]="attackPatternByPhaseMap.pre[key]" (delete)="deletButtonClicked($event, key, 'pre')"></stix-table>
-                    </div>
-    
-                </mat-expansion-panel>
-            </mat-accordion>
+            <br>
+            <div class="col-md-4">
+                    <mat-checkbox class="identity-margin" (change)="draftsOnlyToggle('pre')">Show drafts only?</mat-checkbox><br>
+            </div>
+            <div class="pull-right">
+                    <span *ngIf="attackPatterns" class="right-align"><b>Items: {{ attack['pre'].length }}</b></span>
+            </div>
+        </div>
+    </div>
+    <!-- attack pattern list -->
+    <mat-accordion class="unfetterAngularMaterialAccordion">
+        <mat-expansion-panel 
+                *ngFor="let key of phaseNameGroupKeysPre"
+                (opened)="openPanels.add(key)" 
+                (closed)="openPanels.delete(key)">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{key | capitalize }}&nbsp;
+                    <span *ngIf="attackPatternByPhaseMap.pre[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap.pre[key].length}}</span>
+                    <!--<span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>-->
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="example-container" *ngIf="attackPatternByPhaseMap.pre !== undefined && attackPatternByPhaseMap.pre[key] !== undefined && openPanels.has(key)">
+                <stix-table [stixData]="attackPatternByPhaseMap.pre[key]" (delete)="deletButtonClicked($event, key, 'pre')"></stix-table>
+            </div>
+
+        </mat-expansion-panel>
+    </mat-accordion>
 </div>
 <div *ngIf="domainToShow === 'Mobile'">
-            <div class="row">
-                    <div class="col-md-12">
-                
-                        <div class="button-row">
-                            <a mat-raised-button routerLink="./new-mobile" class="mat-primary">NEW - Mobile ATT&CK</a>
-                            <!--<a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>-->
-                        </div>
-                        <br>
-                        <div class="col-md-4">
-                                <mat-checkbox class="identity-margin" (change)="draftsOnlyToggle('mobile')">Show drafts only?</mat-checkbox><br>
-                        </div>
-                        <div class="pull-right">
-                                <span *ngIf="attackPatterns" class="right-align"><b>Items: {{ attack['mobile'].length }}</b></span>
-                        </div>
-                    </div>
-                </div>
-            <mat-accordion class="unfetterAngularMaterialAccordion">
-                    <mat-expansion-panel *ngFor="let key of phaseNameGroupKeysMobile">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{key | capitalize }}&nbsp;
-                                <span *ngIf="attackPatternByPhaseMap.mobile[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap.mobile[key].length}}</span>
-                                <!--<span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>-->
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-        
-                        <div class="example-container" *ngIf="attackPatternByPhaseMap.mobile !== undefined && attackPatternByPhaseMap.mobile[key] !== undefined">
-                            <stix-table [stixData]="attackPatternByPhaseMap.mobile[key]" (delete)="deletButtonClicked($event, key, 'mobile')"></stix-table>
-                        </div>
-        
-                    </mat-expansion-panel>
-                </mat-accordion>
-        <br>
-        <!-- <p-accordion (onOpen)="onTabShow($event)">
-            <p-accordionTab header="{{key | capitalize }}" *ngFor="let key of phaseNameGroupKeys">
-                <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true"
-                    (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
-                    <ng-template let-attackPattern pTemplate="item">
-                        <div class="row  collection-item grey.lighten-5">
-                            <div class="col-md-9">
-                                <a class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
-
-                                <md-chip-list *ngIf="attackPattern.attributes.external_references">
-                                    <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
-                                        <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
-                                        <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
-                                    </md-chip>
-                                </md-chip-list>
-
-
-                            </div>
-                            <div class="col-md-3">
-
-                                <button class="pull-right" md-raised-button (click)="deletButtonClicked(attackPattern, key)"><i class="material-icons">delete</i></button>
-
-                                <button class="pull-right" md-raised-button (click)="edit(attackPattern)"><i class="material-icons">create</i></button>
-
-                            </div>
-
-
-                        </div>
-                    </ng-template>
-                </p-dataList>
-
-            </p-accordionTab>
-
-        </p-accordion> -->
-
+    <div class="row">
+        <div class="col-md-12">
+            <div class="button-row">
+                <a mat-raised-button routerLink="./new-mobile" class="mat-primary">NEW - Mobile ATT&CK</a>
+                <!--<a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>-->
+            </div>
+            <br>
+            <div class="col-md-4">
+                    <mat-checkbox class="identity-margin" (change)="draftsOnlyToggle('mobile')">Show drafts only?</mat-checkbox><br>
+            </div>
+            <div class="pull-right">
+                    <span *ngIf="attackPatterns" class="right-align"><b>Items: {{ attack['mobile'].length }}</b></span>
+            </div>
+        </div>
     </div>
+    <!-- attack pattern list -->
+    <mat-accordion class="unfetterAngularMaterialAccordion">
+        <mat-expansion-panel 
+                *ngFor="let key of phaseNameGroupKeysMobile"
+                (opened)="openPanels.add(key)" 
+                (closed)="openPanels.delete(key)">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{key | capitalize }}&nbsp;
+                    <span *ngIf="attackPatternByPhaseMap.mobile[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap.mobile[key].length}}</span>
+                    <!--<span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>-->
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="example-container" *ngIf="attackPatternByPhaseMap.mobile !== undefined && attackPatternByPhaseMap.mobile[key] !== undefined  && openPanels.has(key)">
+                <stix-table [stixData]="attackPatternByPhaseMap.mobile[key]" (delete)="deletButtonClicked($event, key, 'mobile')"></stix-table>
+            </div>
+
+        </mat-expansion-panel>
+    </mat-accordion>
+<!-- <br> -->
+<!-- <p-accordion (onOpen)="onTabShow($event)">
+    <p-accordionTab header="{{key | capitalize }}" *ngFor="let key of phaseNameGroupKeys">
+        <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true"
+            (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
+            <ng-template let-attackPattern pTemplate="item">
+                <div class="row  collection-item grey.lighten-5">
+                    <div class="col-md-9">
+                        <a class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
+
+                        <md-chip-list *ngIf="attackPattern.attributes.external_references">
+                            <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
+                                <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                                <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                            </md-chip>
+                        </md-chip-list>
+
+
+                    </div>
+                    <div class="col-md-3">
+
+                        <button class="pull-right" md-raised-button (click)="deletButtonClicked(attackPattern, key)"><i class="material-icons">delete</i></button>
+
+                        <button class="pull-right" md-raised-button (click)="edit(attackPattern)"><i class="material-icons">create</i></button>
+
+                    </div>
+
+
+                </div>
+            </ng-template>
+        </p-dataList>
+
+    </p-accordionTab>
+
+</p-accordion> -->
+
+</div>

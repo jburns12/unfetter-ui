@@ -44,40 +44,51 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         let sub =  this.baseComponentService.get( encodeURI(url) ).subscribe(
         (data) => {
             this.relationships = data as Relationship[];
-            let uri = Constance.CONFIG_URL;
-            let subscription =  this.baseComponentService.get(uri).subscribe(
-            (res) => {
-                if (res && res.length) {
-                    for (let currRes of res) {
-                        if (currRes.attributes.configKey === 'tactics') {
-                            for  (let currTactic of currRes.attributes.configValue) {
-                                if (currTactic.phase === 'act') {
-                                    if (this.tacticsOrder.find((r) => r === currTactic.tactic) === undefined) {
-                                        this.tacticsOrder.push(currTactic.tactic);
+            let tactics_uri = Constance. X_MITRE_TACTIC_URL;
+            let matrices_uri = Constance. X_MITRE_MATRIX_URL;
+            let sub =  this.baseComponentService.get(tactics_uri).subscribe(
+                (data) => {
+                    let subscription =  this.baseComponentService.get(matrices_uri).subscribe(
+                    (matrices_data) => {
+                        for (let matrix of matrices_data) {
+                            for (let ref of matrix.attributes.tactic_refs) {
+                                let tactic = data.find((p) => (p.id === ref));
+                                if (this.tacticsOrder.find((r) => r[0] === tactic.attributes.x_mitre_shortname) === undefined) {
+                                    let domain = "Enterprise";
+                                    if (matrix.attributes.external_references[0].external_id == "mobile-attack") {
+                                        domain = "Mobile";
                                     }
+                                    else if (matrix.attributes.external_references[0].external_id == "pre-attack") {
+                                        domain = "PRE";
+                                    }
+                                    this.tacticsOrder.push([tactic.attributes.x_mitre_shortname, domain]);
                                 }
+                            }                                   
+                        }}, (error) => {
+                            console.log(error);
+                        }, () => {
+                            if (subscription) {
+                                subscription.unsubscribe();
                             }
                         }
+                    );
+                    }, (error) => {
+                        console.log(error);
+                    }, () => {
+                        if (sub) {
+                            sub.unsubscribe();
+                        }
                     }
-                }
-            }, (error) => {
-            // handle errors here
-            console.log('error ' + error);
-            }, () => {
-            // prevent memory links
-            if (subscription) {
-                subscription.unsubscribe();
-            }
-        });
-            this.relationships.forEach(
-                (relationship) => {
-                    if (filter['stix.source_ref']) {
-                        this.loadStixObject(relationship.attributes.target_ref, relationship.attributes.description);
-                    } else {
-                        this.loadStixObject(relationship.attributes.source_ref, relationship.attributes.description);
+                );
+                this.relationships.forEach(
+                    (relationship) => {
+                        if (filter['stix.source_ref']) {
+                            this.loadStixObject(relationship.attributes.target_ref, relationship.attributes.description);
+                        } else {
+                            this.loadStixObject(relationship.attributes.source_ref, relationship.attributes.description);
+                        }
                     }
-                }
-            );
+                );
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);

@@ -5,6 +5,11 @@
 <div class="pull-right">
         <span *ngIf="model" class="right-align"><b>Items: {{ model.length }}</b></span>
 </div>
+<div  *ngIf="!model" class="row loading">
+    <div class="col-md-12">
+        loading...
+    </div>
+</div>
 <div class="row" *ngIf="model">
         <div class="col-md-12">
             <div style="margin-top: 1%;">

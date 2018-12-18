@@ -41,6 +41,10 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         {'name': 'Mobile', 'val': false}
     ]
 
+    // set showing currently open panels, used by the UI to ngIf things which don't need to get drawn.
+    // cleared every time the domain changes
+    private openPanels: Set<string> = new Set();
+
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -133,6 +137,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 this.whichDomain[i].val = false;
             }
         }
+        this.openPanels.clear();
     }
     
     public draftsOnlyToggle(domain: string) {

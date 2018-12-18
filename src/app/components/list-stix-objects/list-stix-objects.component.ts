@@ -9,7 +9,9 @@ import { FormatHelpers } from '../../global/static/format-helpers';
 
 @Component({
   selector: 'list-stix-objects',
-  templateUrl: './list-stix-objects.component.html'
+  templateUrl: './list-stix-objects.component.html',
+  styleUrls: ['./list-stix-objects.component.scss']
+
 })
 export class ListStixObjectComponent extends BaseComponent implements OnInit {
 

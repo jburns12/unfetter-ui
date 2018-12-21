@@ -370,10 +370,12 @@ export class BaseStixComponent {
 
     public getHistory(pattern: any, historyArr: any[]): void {
         this.name = pattern.attributes.name;
+        let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
 
         if (pattern.attributes.external_references !== undefined) {
             for (let i in pattern.attributes.external_references) {
-                if (pattern.attributes.external_references[i].external_id !== undefined) {
+                let foundDomain = domains.find((h) => (h === pattern.attributes.external_references[i].source_name));
+                if (pattern.attributes.external_references[i].external_id !== undefined && foundDomain !== undefined) {
                     this.name = pattern.attributes.external_references[i].external_id;
                 }
             }
@@ -422,10 +424,12 @@ export class BaseStixComponent {
 
     public getRelHistory(pattern: any, relHistoryArr: any, relationships: any): void {
         this.name = pattern.attributes.name;
+        let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
 
         if (pattern.attributes.external_references !== undefined) {
             for (let i in pattern.attributes.external_references) {
-                if (pattern.attributes.external_references[i].external_id !== undefined) {
+                let foundDomain = domains.find((h) => (h === pattern.attributes.external_references[i].source_name));
+                if (pattern.attributes.external_references[i].external_id !== undefined && foundDomain !== undefined) {
                     this.name = pattern.attributes.external_references[i].external_id;
                 }
             }
@@ -491,6 +495,8 @@ export class BaseStixComponent {
 
     public getAllHistory(relationships: any, allObjects: any, allRelHistory: any): void {
         let dateArr = [];
+        let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
+
         for (let rel of relationships) {
             let relHash = {};
             relHash['date'] = rel.attributes.created;
@@ -506,7 +512,8 @@ export class BaseStixComponent {
 
             if (sourceObj.attributes.external_references !== undefined) {
                 for (let i in sourceObj.attributes.external_references) {
-                    if (sourceObj.attributes.external_references[i].external_id !== undefined) {
+                    let foundDomain = domains.find((h) => (h === sourceObj.attributes.external_references[i].source_name));
+                    if (sourceObj.attributes.external_references[i].external_id !== undefined && foundDomain !== undefined) {
                         relHash['source_ref'] = sourceObj.attributes.external_references[i].external_id;
                     }
                 }
@@ -514,7 +521,8 @@ export class BaseStixComponent {
 
             if (targetObj.attributes.external_references !== undefined) {
                 for (let i in targetObj.attributes.external_references) {
-                    if (targetObj.attributes.external_references[i].external_id !== undefined) {
+                    let foundDomain = domains.find((h) => (h === targetObj.attributes.external_references[i].source_name));
+                    if (targetObj.attributes.external_references[i].external_id !== undefined && foundDomain !== undefined) {
                         relHash['target_ref'] = targetObj.attributes.external_references[i].external_id;
                     }
                 }

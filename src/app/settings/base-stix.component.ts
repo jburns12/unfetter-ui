@@ -232,7 +232,7 @@ export class BaseStixComponent {
     }
 
     public matchCitations(inputStr: string): any {
-        let re = /\(Citation: ([^\]\]]*)\)/g;
+        let re = /\(Citation: ([^\]\]]*?)\)/g;
         let citationArr = [];
         let foundMatch;
 

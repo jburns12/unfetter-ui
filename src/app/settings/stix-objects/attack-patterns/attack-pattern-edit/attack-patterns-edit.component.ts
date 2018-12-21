@@ -653,6 +653,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             }
         }
         let citationArr = super.matchCitations(this.attackPattern.attributes.description).concat(super.matchCitations(this.attackPattern.attributes.x_mitre_detection));
+        console.log(citationArr);
         for (let name of citationArr) {
             let citation = this.allCitations.find((p) => p.source_name === name);
             if (citation !== undefined) {

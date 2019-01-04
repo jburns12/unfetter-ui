@@ -82,20 +82,6 @@ import {
   ReportNewComponent,
 } from './stix-objects/reports';
 import {
-  MalwareHomeComponent,
-  MalwareListComponent,
-  MalwareComponent,
-  MalwareEditComponent,
-  MalwareNewComponent
-} from './stix-objects/malwares';
-import {
-  ToolHomeComponent,
-  ToolListComponent,
-  ToolComponent,
-  ToolEditComponent,
-  ToolNewComponent
-} from './stix-objects/tools';
-import {
   SoftwareHomeComponent,
   SoftwareListComponent,
   SoftwareComponent,
@@ -386,48 +372,6 @@ const stixRoutes: Routes = [{
           {
             path: 'edit/:id',
             component: IdentityEditComponent
-          }
-        ]
-      },
-      {
-        path: 'malwares',
-        component: MalwareHomeComponent,
-        children: [{
-            path: '',
-            component: MalwareListComponent
-          },
-          {
-            path: 'new',
-            component: MalwareNewComponent
-          },
-          {
-            path: ':id',
-            component: MalwareComponent
-          },
-          {
-            path: 'edit/:id',
-            component: MalwareEditComponent
-          }
-        ]
-      },
-      {
-        path: 'tools',
-        component: ToolHomeComponent,
-        children: [{
-            path: '',
-            component: ToolListComponent
-          },
-          {
-            path: 'new',
-            component: ToolNewComponent
-          },
-          {
-            path: ':id',
-            component: ToolComponent
-          },
-          {
-            path: 'edit/:id',
-            component: ToolEditComponent
           }
         ]
       },

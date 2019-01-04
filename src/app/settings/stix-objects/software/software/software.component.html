@@ -112,4 +112,4 @@
 </div>
 
  <relationship-list *ngIf="malware.id" [model]="malware"></relationship-list>
-<div class="pull-right grey-text">{{malware.id}}</div>
+<div class="pull-right grey-text">{{malware.id}} v{{malware.attributes.x_mitre_version}}</div>

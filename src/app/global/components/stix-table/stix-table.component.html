@@ -6,9 +6,16 @@
             <mat-cell *matCellDef="let element">
                 <div class="flex flexItemsCenter">
                     <span class="flex1">
-                        <div *ngIf="!element.hasId" style="color:#FE6131"><small><b>*Draft</b></small></div>
+                        <!-- <div *ngIf="!element.hasId" style="color:#FE6131"><small><b>*Draft</b></small></div>
                         <div *ngIf="element.revoked" style="color:#FE6131"><small><b>******REVOKED******</b></small></div>
-                        <div *ngIf="element.x_mitre_deprecated" style="color:#FE6131"><small><b>******DEPRECATED******</b></small></div>
+                        <div *ngIf="element.x_mitre_deprecated" style="color:#FE6131"><small><b>******DEPRECATED******</b></small></div> -->
+                        <span *ngIf="element.x_mitre_deprecated || element.revoked || !element.hasId">
+                            <mat-icon style="color:#FE6131" 
+                                      class="material-icons"
+                                      [matTooltip]="getTooltip(element)">
+                                warning
+                            </mat-icon>&nbsp;
+                        </span>
                         <a routerLink="{{element.id}}">{{element.name}}</a>
                         <mat-chip-list *ngIf="element.external_references" class="inlineFlex">
                             <mat-chip *ngFor="let external_reference of element.external_references.slice(0,3)" class="chipListChip">

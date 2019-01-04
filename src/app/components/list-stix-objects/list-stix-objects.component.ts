@@ -39,7 +39,6 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
 
     public ngOnInit() {
         this.url = this.url ? this.url.replace('api', '') : '';
-
     }
 
     public draftsOnlyToggle() {
@@ -80,5 +79,21 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         this.isLastRow = this.index < this.model.length ? true : false;
         this.index = this.index + 1;
         return this.isLastRow;
+    }
+
+
+    private getTooltip(el) {
+        let tt = [];
+        if (el.x_mitre_deprecated) tt.push("deprecated");
+        if (el.revoked) tt.push("revoked")
+        if (!el.hasId) tt.push("draft")
+        return tt.length > 1? tt.join(", ") : tt[0];
+    }
+
+    /**
+     * Retrieve and return the mitre-attack, mitre-pre-attack or mitre-mobile-attack external reference for the given object
+     */
+    private get_mitre_external_id(data): string {
+        return data.attributes.external_references.filter((x) => x.external_id && ['mitre-attack', 'mitre-pre-attack', 'mitre-mobile-attack'].includes(x.source_name))[0].external_id
     }
 }

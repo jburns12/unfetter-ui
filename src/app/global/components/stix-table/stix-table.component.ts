@@ -46,4 +46,12 @@ export class StixTableComponent implements OnChanges {
     public visitExtRef(url): void {
         window.open(url, '_blank');
     }
+
+    private getTooltip(el) {
+        let tt = [];
+        if (el.x_mitre_deprecated) tt.push("deprecated");
+        if (el.revoked) tt.push("revoked")
+        if (!el.hasId) tt.push("draft")
+        return tt.length > 1? tt.join(", ") : tt[0];
+    }
 }

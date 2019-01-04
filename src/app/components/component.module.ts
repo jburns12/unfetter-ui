@@ -5,7 +5,7 @@ import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
 import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 'primeng/primeng';
 import { MatButtonModule, MatListModule, MatCardModule, MatFormFieldModule,
-  MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatCheckboxModule, MatIconModule } from '@angular/material';
+    MatTooltipModule, MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatCheckboxModule, MatIconModule } from '@angular/material';
 import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
 import { PageHeaderComponent } from './page/page-header.component';
 import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation-dialog.component';
@@ -63,6 +63,7 @@ import { PopoverModule } from 'ngx-popover';
     MatCardModule,
     MatFormFieldModule,
     MatChipsModule,
+    MatTooltipModule,
     DataListModule,
     CheckboxModule,
     MatCheckboxModule,

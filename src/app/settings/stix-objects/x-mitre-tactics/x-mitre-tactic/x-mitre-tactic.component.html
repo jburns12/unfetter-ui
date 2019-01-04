@@ -28,10 +28,18 @@
         <mat-card>
             <mat-card-content>
               <mat-card-header style="border-bottom: 1px solid lightgray;">
-                  <mat-card-title *ngIf="xMitreTactic.attributes.revoked == true"><small style="color:#FE6131"><b>******REVOKED******</b></small></mat-card-title>
-                  <mat-card-title *ngIf="xMitreTactic.attributes.x_mitre_deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small></mat-card-title>
-                  <mat-card-title *ngIf="mitreId !== undefined"><h3>{{ xMitreTactic.attributes.name }} - {{ mitreId.external_id }}</h3></mat-card-title>
-                  <mat-card-title *ngIf="mitreId === undefined"><h4 style="color:#FE6131">*Draft</h4><h3>{{ xMitreTactic.attributes.name }} </h3></mat-card-title>
+                  <!-- <mat-card-title *ngIf="xMitreTactic.attributes.revoked == true"><small style="color:#FE6131"><b>******REVOKED******</b></small></mat-card-title>
+                  <mat-card-title *ngIf="xMitreTactic.attributes.x_mitre_deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small></mat-card-title> -->
+                  
+                  <mat-card-title><h3>{{ xMitreTactic.attributes.name }}<span *ngIf="mitreId !== undefined"> - {{ mitreId.external_id }}</span></h3></mat-card-title>
+
+                  <mat-card-subtitle *ngIf="mitreId === undefined || xMitreTactic.attributes.revoked || xMitreTactic.attributes.x_mitre_deprecated">
+                        <mat-chip-list selectable="false">
+                            <mat-chip color="warn" selected="true" *ngIf="xMitreTactic.attributes.revoked"><mat-icon class="material-icons">warning</mat-icon>&nbsp; revoked</mat-chip>
+                            <mat-chip color="warn" selected="true" *ngIf="xMitreTactic.attributes.x_mitre_deprecated"><mat-icon class="material-icons">warning</mat-icon>&nbsp; deprecated</mat-chip>
+                            <mat-chip color="warn" selected="true" *ngIf="mitreId === undefined"><mat-icon class="material-icons">warning</mat-icon>&nbsp; draft</mat-chip>
+                        </mat-chip-list>
+                    </mat-card-subtitle>
               </mat-card-header>
                     <div class="row">
                         <div class="col-md-12">

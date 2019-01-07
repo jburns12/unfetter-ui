@@ -28,7 +28,7 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
         super.loadCourseOfAction();
     }
 
-    public saveCourceOfAction(): void {
+    public saveCourseOfAction(): void {
        this.addExtRefs();
        let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
@@ -62,5 +62,9 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
                 }
             }
         }
+    }
+
+    public isEnterprise(): boolean {
+        return super.isEnterprise();
     }
 }

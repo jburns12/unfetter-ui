@@ -65,7 +65,8 @@ export class TacticsHomeComponent extends BaseStixComponent implements OnInit {
                     const subscription = super.load(filter).subscribe(
                         (data) => {
                             this.attackPatterns = data as AttackPattern[];
-                            console.log(this.attackPatterns);
+                            this.attackPatterns.sort((a,b) => a.attributes.name.localeCompare(b.attributes.name))
+                            // console.log(this.attackPatterns);
                             
                         }, (error) => {
                             // handle errors here

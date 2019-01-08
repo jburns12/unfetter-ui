@@ -17,20 +17,18 @@
                     <ng-template let-data pTemplate="item">
                         <div class="row list-item-row">
                             <div class="col-lg-9 col-xs-12">
-                                <div *ngIf="!data.hasId && data.attributes.type !== 'x-mitre-matrix'" style="color:#FE6131"><small><b>*Draft</b></small><br>
-                                    <a class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
-                                </div>
-                                <div *ngIf="data.attributes.revoked == true">
-                                        <small style="color:#FE6131"><b>******REVOKED******</b></small><h3></h3>
-                                </div>
-                                <div *ngIf="data.attributes.x_mitre_deprecated == true">
-                                    <small style="color:#FE6131"><b>******DEPRECATED******</b></small><h3></h3>
-                                </div>
-                                <div *ngIf="data.hasId || data.attributes.type === 'x-mitre-matrix'">
-                                    <div *ngFor="let extRef of data.attributes.external_references">
-                                        <a *ngIf="extRef.external_id != undefined && extRef.source_name == 'mitre-attack' || extRef.source_name == 'mitre-pre-attack' || extRef.source_name == 'mitre-mobile-attack'" class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}} - {{extRef.external_id}}</a>
-                                    </div>
-                                </div>
+                                <span *ngIf="data.attributes.x_mitre_deprecated || data.attributes.revoked || (!data.hasId && data.attributes.type !== 'x-mitre-matrix')">
+                                    <mat-icon style="color:#FE6131" 
+                                              class="material-icons"
+                                              [matTooltip]="getTooltip(data.attributes)">
+                                        warning
+                                    </mat-icon>&nbsp;
+                                </span>
+                                <a *ngIf="!data.hasId && data.attributes.type !== 'x-mitre-matrix'" class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
+                                <a *ngIf="data.hasId || data.attributes.type === 'x-mitre-matrix'" class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >
+                                    {{data.attributes.name}} - 
+                                    {{get_mitre_external_id(data)}}
+                                </a>
                                 <div class="truncate">
                                     <small [innerHTML]="formatText(data.attributes.description)"></small>
                                 </div>

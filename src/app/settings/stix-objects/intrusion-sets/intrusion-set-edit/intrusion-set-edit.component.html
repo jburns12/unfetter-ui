@@ -48,6 +48,18 @@
             </div>
             <br>
         </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <mat-input-container class="full-width">
+                    <input matInput type="number" class="form-control" required placeholder="Version" value="{{intrusionSet.attributes.x_mitre_version}}"
+                            [(ngModel)]="intrusionSet.attributes.x_mitre_version">
+                </mat-input-container>
+            </div>
+        </div>
+    </div>
+</div>
 <mat-input-container class="full-width">
     <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="intrusionSet.attributes.description">{{intrusionSet.attributes.description}}</textarea>
 </mat-input-container>

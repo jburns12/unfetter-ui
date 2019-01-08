@@ -258,4 +258,8 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
     public formatText(inputString): string {
         return FormatHelpers.formatAll(inputString);
     }
+
+    public isEnterprise(): boolean {
+        return this.courseOfAction.attributes.external_references.filter((er)=> er.source_name == "mitre-attack").length > 0;
+    }
 }

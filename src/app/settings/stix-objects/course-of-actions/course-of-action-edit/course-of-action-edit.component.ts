@@ -28,7 +28,7 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
         super.loadCourseOfAction();
     }
 
-    public saveCourceOfAction(): void {
+    public saveCourseOfAction(): void {
        this.addExtRefs();
        let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
@@ -52,7 +52,7 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
     }
 
     public addExtRefs(): void {
-        this.courseOfAction.attributes.external_references = this.courseOfAction.attributes.external_references.filter((h) => h.source_name === "mitre-attack");
+        this.courseOfAction.attributes.external_references = this.courseOfAction.attributes.external_references.filter((h) => (h.source_name === "mitre-attack" || h.source_name === "mitre-mobile-attack"));
         let citationArr = super.matchCitations(this.courseOfAction.attributes.description);
         for (let name of citationArr) {
             let citation = this.allCitations.find((p) => p.source_name === name);
@@ -62,5 +62,9 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
                 }
             }
         }
+    }
+
+    public isEnterprise(): boolean {
+        return super.isEnterprise();
     }
 }

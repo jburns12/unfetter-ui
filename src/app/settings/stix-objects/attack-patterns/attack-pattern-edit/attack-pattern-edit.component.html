@@ -64,6 +64,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <mat-input-container class="full-width">
+                        <input matInput type="number" class="form-control" required placeholder="Version" value="{{attackPattern.attributes.x_mitre_version}}"
+                                [(ngModel)]="attackPattern.attributes.x_mitre_version">
+                    </mat-input-container>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-input-container class="full-width">
                         <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
                     </mat-input-container>
                 </div>

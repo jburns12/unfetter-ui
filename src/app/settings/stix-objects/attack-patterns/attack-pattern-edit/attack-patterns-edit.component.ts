@@ -87,6 +87,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
        let subscription = super.load(filter).subscribe(
            (data) => {
                this.attackPatterns = data as AttackPattern[];
+               console.log(this)
                this.getConfigs();
                this.getContributors();
                this.assignPerms();
@@ -98,6 +99,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                this.getDeprecated();
                this.getRevoked();
                this.getCapecIds();
+               this.getVersion();
            }, (error) => {
                // handle errors here
                console.log('error ' + error);
@@ -108,6 +110,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                }
            }
        );
+    }
+
+
+    public getVersion(): void {
+        // console.log(this.attackPatterns, this.attackPattern.id)
+        // let attack_pattern_data = this.attackPatterns.filter((a)=>a.)
     }
 
     public getCapecIds(): void {

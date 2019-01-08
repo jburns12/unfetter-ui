@@ -14,6 +14,13 @@
                 </mat-input-container>
             </div>
         </div>
+        <div class="row" *ngIf="!isEnterprise()">
+            <div class="col-md-12">
+                <mat-input-container class="full-width">
+                    <input type="number" matInput required placeholder="Version" [(ngModel)]="courseOfAction.attributes.x_mitre_version" value="{{courseOfAction.attributes.x_mitre_version}}">
+                </mat-input-container>
+            </div>
+        </div>
         <h4>External References</h4> 
         <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
         <external-reference [(model)]="courseOfAction" [(citations)]="allCitations"></external-reference>
@@ -22,7 +29,7 @@
             <div class="col-md-12">
                 <div class="button-row pull-right">
                         <button class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i>CANCEL</button>
-                        <button class=" " mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name || !courseOfAction.attributes.description"><i class="material-icons">save</i>SAVE & CLOSE</button>
+                        <button class=" " mat-raised-button (click)="saveCourseOfAction()" [disabled]="!courseOfAction.attributes.name || !courseOfAction.attributes.description"><i class="material-icons">save</i>SAVE & CLOSE</button>
 
                 </div>
             </div>

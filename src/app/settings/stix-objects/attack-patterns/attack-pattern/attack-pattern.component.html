@@ -30,10 +30,19 @@
             <mat-card>
                 <mat-card-content>
                       <mat-card-header style="border-bottom: 1px solid lightgray;">
-                          <mat-card-title *ngIf="revoked == true"><small style="color:#FE6131"><b>******REVOKED******</b></small></mat-card-title>
-                          <mat-card-title *ngIf="attackId != undefined && deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small><h3>{{ attackPattern.attributes.name }} - {{ attackId }}</h3></mat-card-title>
-                          <mat-card-title *ngIf="attackId != undefined && deprecated == false"><h3>{{ attackPattern.attributes.name }} - {{ attackId }}</h3></mat-card-title>
-                          <mat-card-title *ngIf="attackId == undefined"><small style="color:#FE6131"><b>*Draft</b></small><h3>{{ attackPattern.attributes.name }}</h3></mat-card-title>
+                          
+                          <mat-card-title><h3>
+                              {{ attackPattern.attributes.name }}
+                                <span *ngIf="attackId"> - {{ attackId }}</span>
+                          </h3></mat-card-title>
+                          <mat-card-subtitle *ngIf="revoked || (attackId != undefined && deprecated)">
+                              <mat-chip-list selectable="false">
+                                  <mat-chip color="warn" selected="true" *ngIf="revoked"><mat-icon class="material-icons">warning</mat-icon>&nbsp; revoked</mat-chip>
+                                  <mat-chip color="warn" selected="true" *ngIf="attackId != undefined && deprecated"><mat-icon class="material-icons">warning</mat-icon>&nbsp; deprecated</mat-chip>
+                              </mat-chip-list>
+                          </mat-card-subtitle>
+                          <!-- <mat-card-subtitle *ngIf="revoked"><small style="color:#FE6131"><b>******REVOKED******</b></small></mat-card-subtitle>
+                          <mat-card-subtitle *ngIf="attackId != undefined && deprecated"><small style="color:#FE6131"><b>******DEPRECATED******</b></small></mat-card-subtitle> -->
                       </mat-card-header>
                         <div class="row">
                            <div class="col-md-12">
@@ -218,4 +227,5 @@
     </div>
 
     <relationship-list *ngIf="attackPattern.id" [model]="attackPattern"></relationship-list>
-      <div class="pull-right grey-text">{{attackPattern.id}}</div>
+      <!-- <div class="pull-right grey-text">{{attackPattern.id}}</div> -->
+      <div class="pull-right grey-text">{{attackPattern.id}} v{{attackPattern.attributes.x_mitre_version}}</div>

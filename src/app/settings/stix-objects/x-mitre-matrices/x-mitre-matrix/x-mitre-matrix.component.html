@@ -27,10 +27,14 @@
                   </div>
         <mat-card>
             <mat-card-content>
+                <mat-card-title><h3>{{ xMitreMatrix.attributes.name }}</h3></mat-card-title>
               <mat-card-header style="border-bottom: 1px solid lightgray;">
-                  <mat-card-title *ngIf="xMitreMatrix.attributes.revoked == true"><small style="color:#FE6131"><b>******REVOKED******</b></small></mat-card-title>
-                  <mat-card-title *ngIf="xMitreMatrix.attributes.x_mitre_deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small></mat-card-title>
-                  <mat-card-title><h3>{{ xMitreMatrix.attributes.name }}</h3></mat-card-title>
+                  <mat-card-subtitle *ngIf="xMitreMatrix.attributes.x_mitre_deprecated || xMitreMatrix.attributes.revoked">
+                    <mat-chip-list selectable="false">
+                        <mat-chip color="warn" selected="true" *ngIf="xMitreMatrix.attributes.revoked"><mat-icon class="material-icons">warning</mat-icon>&nbsp; revoked</mat-chip>
+                        <mat-chip color="warn" selected="true" *ngIf="xMitreMatrix.attributes.x_mitre_deprecated"><mat-icon class="material-icons">warning</mat-icon>&nbsp; deprecated</mat-chip>
+                    </mat-chip-list>
+                </mat-card-subtitle>
               </mat-card-header>
                     <div class="row">
                         <div class="col-md-12">

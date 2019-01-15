@@ -75,6 +75,7 @@ export class AttackPatternPreNewComponent extends AttackPatternEditComponent imp
         for (let i in this.attackPattern.attributes.kill_chain_phases) {
             this.attackPattern.attributes.kill_chain_phases[i].kill_chain_name = 'mitre-pre-attack';
         }
+        this.attackPattern.attributes.x_mitre_version = "1.0";
         let sub = super.create(this.attackPattern).subscribe(
             (data) => {
                  this.location.back();

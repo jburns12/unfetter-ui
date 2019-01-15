@@ -124,7 +124,7 @@ export class AttackPatternMobileEditComponent extends AttackPatternEditComponent
         let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log(data);
-                this.saveCoursesOfAction(data.id, this.allCitations);
+                this.saveCoursesOfActionMobile(data.id, this.allCitations);
                 if (this.revoked) {
                     if (this.origTarget === '' || this.origTarget === this.revokedBy.id) {
                         this.saveRevoked(data.id, this.revokedBy.id);

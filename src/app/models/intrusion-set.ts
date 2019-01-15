@@ -30,6 +30,7 @@ export class IntrusionSet {
         kill_chain_phases: KillChainPhase[];
         x_mitre_collections: string[];
         x_mitre_deprecated: boolean;
+        x_mitre_version: string;
     };
 
     constructor(data?: IntrusionSet) {

@@ -32,7 +32,7 @@
                     <mat-card-title *ngIf="malware.attributes.x_mitre_deprecated == true"><small style="color:#FE6131"><b>******DEPRECATED******</b></small></mat-card-title> -->
 
                     <mat-card-title><h3>{{ malware.attributes.name }}<span  *ngIf="attackId != undefined"> - {{ attackId }}</span></h3></mat-card-title>
-                    <mat-card-subtitle *ngIf="revoked || malware.attributes.x_mitre_deprecated || attackId == undefined">
+                    <mat-card-subtitle *ngIf="malware.attributes.revoked || malware.attributes.x_mitre_deprecated || attackId == undefined">
                         <mat-chip-list selectable="false">
                             <mat-chip color="warn" selected="true" *ngIf="malware.attributes.revoked"><mat-icon class="material-icons">warning</mat-icon>&nbsp; revoked</mat-chip>
                             <mat-chip color="warn" selected="true" *ngIf="malware.attributes.x_mitre_deprecated"><mat-icon class="material-icons">warning</mat-icon>&nbsp; deprecated</mat-chip>

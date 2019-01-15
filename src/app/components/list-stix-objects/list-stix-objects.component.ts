@@ -86,9 +86,9 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
 
     private getTooltip(el) {
         let tt = [];
-        if (el.x_mitre_deprecated) tt.push("deprecated");
-        if (el.revoked) tt.push("revoked")
-        if (!el.hasId) tt.push("draft")
+        if (el.attributes.x_mitre_deprecated) tt.push("deprecated");
+        if (el.attributes.revoked) tt.push("revoked");
+        if (!el.hasId) tt.push("draft");
         return tt.length > 1? tt.join(", ") : tt[0];
     }
 

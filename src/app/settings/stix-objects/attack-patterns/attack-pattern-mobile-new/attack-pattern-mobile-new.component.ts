@@ -36,6 +36,7 @@ export class AttackPatternMobileNewComponent extends AttackPatternEditComponent 
               this.getConfigs('mobile-attack');
               this.getContributors();
               this.getId();
+              this.getMitId();
               this.assignCoaCitations();
               this.getCitations();
               this.getAllCoAs();
@@ -85,10 +86,11 @@ export class AttackPatternMobileNewComponent extends AttackPatternEditComponent 
         for (let i in this.attackPattern.attributes.kill_chain_phases) {
             this.attackPattern.attributes.kill_chain_phases[i].kill_chain_name = 'mitre-mobile-attack';
         }
+        this.attackPattern.attributes.x_mitre_version = "1.0";
         let sub = super.create(this.attackPattern).subscribe(
             (data) => {
                  this.location.back();
-                 this.saveCoursesOfAction(data[0].id, this.allCitations);
+                 this.saveCoursesOfActionMobile(data[0].id, this.allCitations);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

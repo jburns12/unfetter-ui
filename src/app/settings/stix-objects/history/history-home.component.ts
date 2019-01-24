@@ -148,6 +148,7 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
             this.filterHistoryArr = this.historyArr;
             this.filterRelHistoryArr = this.relHistoryArr;
         }
+        console.log(this.filterRelHistoryArr);
         this.displayArr = this.filterHistoryArr.concat(this.filterRelHistoryArr);
         this.displayArr = this.displayArr.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : new Date(a.date) > new Date(b.date) ? 1 : 0);
         for (let i in this.displayArr) {

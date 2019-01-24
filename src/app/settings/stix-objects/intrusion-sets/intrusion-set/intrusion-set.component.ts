@@ -164,6 +164,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 target.forEach((relationship: Relationship) => {
                     if (relationship.attributes.relationship_type === 'uses') {
                         if (technique) {
+                            let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
                             let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
                             if (tech.length > 0) {
                                 this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
@@ -172,7 +173,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                                 relCopy.attributes.name = tech[0].name;
                                 if (tech[0].extRefs !== undefined) {
                                     for (let i in tech[0].extRefs) {
-                                        if (tech[0].extRefs[i].external_id !== undefined) {
+                                        if (tech[0].extRefs[i].external_id !== undefined && domains.some(e => e === tech[0].extRefs[i].source_name)) {
                                             relCopy.attributes.name = tech[0].extRefs[i].external_id;
                                         }
                                     }

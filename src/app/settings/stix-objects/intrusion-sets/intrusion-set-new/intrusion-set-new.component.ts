@@ -44,6 +44,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         this.intrusionSet.attributes.external_references = [];
         this.addExtRefs();
         this.intrusionSet.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+        this.intrusionSet.attributes.x_mitre_version = "1.0";
         const observable = super.create(this.intrusionSet);
         const sub = observable
             .subscribe(

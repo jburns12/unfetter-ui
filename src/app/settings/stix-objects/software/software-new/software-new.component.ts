@@ -56,6 +56,7 @@ export class SoftwareNewComponent extends SoftwareEditComponent implements OnIni
             this.malware.url = Constance.TOOL_URL;
             this.stixService.url = Constance.TOOL_URL;
         }
+        this.malware.attributes.x_mitre_version = "1.0";
         let sub = super.create(this.malware).subscribe(
             (stixObject) => {
                 this.location.back();

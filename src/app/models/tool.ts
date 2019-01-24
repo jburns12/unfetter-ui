@@ -24,6 +24,7 @@ export class Tool {
         x_mitre_contributors: string[];
         x_mitre_collections: string[];
         x_mitre_deprecated: boolean;
+        x_mitre_version: string;
     };
 
     constructor(data?: Tool) {

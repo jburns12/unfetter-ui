@@ -237,6 +237,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 let target = data as Relationship[];
+                let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
                 target.forEach((relationship: Relationship) => {
                     let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
                     if (tech.length > 0) {
@@ -244,7 +245,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                         relCopy.attributes.name = tech[0].name;
                         if (tech[0].extRefs !== undefined) {
                             for (let i in tech[0].extRefs) {
-                                if (tech[0].extRefs[i].external_id !== undefined) {
+                                if (tech[0].extRefs[i].external_id !== undefined && domains.some(e => e === tech[0].extRefs[i].source_name)) {
                                     relCopy.attributes.name = tech[0].extRefs[i].external_id;
                                 }
                             }

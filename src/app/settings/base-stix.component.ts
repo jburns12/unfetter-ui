@@ -429,7 +429,7 @@ export class BaseStixComponent {
         if (pattern.attributes.external_references !== undefined) {
             for (let i in pattern.attributes.external_references) {
                 let foundDomain = domains.find((h) => (h === pattern.attributes.external_references[i].source_name));
-                if (pattern.attributes.external_references[i].external_id !== undefined && foundDomain !== undefined) {
+                if (pattern.attributes.external_references[i].external_id !== undefined && foundDomain !== undefined){
                     this.name = pattern.attributes.external_references[i].external_id;
                 }
             }
@@ -466,7 +466,6 @@ export class BaseStixComponent {
                 }
             }
         }
-
         for (let rel of relationships) {
             let relHash = {};
             relHash['date'] = rel.attributes.created;

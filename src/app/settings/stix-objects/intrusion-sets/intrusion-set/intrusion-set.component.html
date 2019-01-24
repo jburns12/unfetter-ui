@@ -50,7 +50,7 @@
                         <div class="col-md-12">
                             <label>Aliases</label>
                             <mat-chip-list>
-                                <mat-chip *ngFor="let alias of aliasesToDisplay"
+                                <mat-chip *ngFor="let alias of intrusionSet.attributes.aliases"
                                     selected="true">
                                     {{alias}}
                                 </mat-chip>

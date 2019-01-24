@@ -142,6 +142,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                 target.forEach((relationship: Relationship) => {
                     if (relationship.attributes.relationship_type === 'uses') {
                         let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
+                        let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
                         if (tech.length > 0) {
                             this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
                             this.origRels.push(relationship);
@@ -149,7 +150,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                             relCopy.attributes.name = tech[0].name;
                             if (tech[0].extRefs !== undefined) {
                                 for (let i in tech[0].extRefs) {
-                                    if (tech[0].extRefs[i].external_id !== undefined) {
+                                    if (tech[0].extRefs[i].external_id !== undefined && domains.some(e => e === tech[0].extRefs[i].source_name)) {
                                         relCopy.attributes.name = tech[0].extRefs[i].external_id;
                                     }
                                 }
@@ -287,7 +288,9 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                     }
                 }
             }
-            this.aliasesToDisplay = this.malware.attributes.x_mitre_aliases.filter((h) => h !== this.malware.attributes.name);
+            if (this.malware.attributes.x_mitre_aliases !== undefined) {
+                this.aliasesToDisplay = this.malware.attributes.x_mitre_aliases.filter((h) => h !== this.malware.attributes.name);
+            }
             this.getGroups();
             this.malwareLoaded = true;
           }, (error) => {

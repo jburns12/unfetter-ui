@@ -38,6 +38,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public origMitigations: any = [];
     public allMitigations: any;
     public allMitStatic: any = [];
+    public lastMobileMit: any;
 
     //track data loading progress
     private sourceRelsLoaded: boolean = false;
@@ -273,15 +274,48 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
+    public getMitId(): void {
+        let coaUri = Constance.COURSE_OF_ACTION_URL;
+        let coaSubscript = super.getByUrl(coaUri).subscribe(
+            (coaData) => {
+                let ids = [];
+                this.allMitigations = coaData as CourseOfAction[];
+                this.allMitigations.forEach((coa: CourseOfAction) => {
+                    if (coa.attributes.external_references[0] && coa.attributes.external_references[0].external_id && coa.attributes.external_references[0].source_name === "mitre-mobile-attack") {
+                        ids.push(coa.attributes.external_references[0].external_id);
+                    }
+                })
+                let allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                ).sort().filter(Boolean);
+                this.lastMobileMit = 'M' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
+            }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (coaSubscript) {
+                    coaSubscript.unsubscribe();
+                }
+            }
+        );
+    }
+
     public findCoA(): void {
         let coaUri = Constance.COURSE_OF_ACTION_URL;
         let coaSubscript = super.getByUrl(coaUri).subscribe(
             (coaData) => {
                 let mitigations = [];
+                let ids = [];
                 this.allMitigations = coaData as CourseOfAction[];
                 this.allMitigations.forEach((coa: CourseOfAction) => {
                     this.allMitStatic.push(coa);
+                    if (coa.attributes.external_references[0] && coa.attributes.external_references[0].external_id && coa.attributes.external_references[0].source_name === "mitre-mobile-attack") {
+                        ids.push(coa.attributes.external_references[0].external_id);
+                    }
                 })
+                let allIds = ids.filter((elem, index, self) => self.findIndex((t) => t === elem) === index
+                ).sort().filter(Boolean);
+                this.lastMobileMit = 'M' + (parseInt(allIds[allIds.length - 1].substr(1)) + 1);
                 let filter = { 'stix.target_ref': this.attackPattern.id };
                 let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter) + '&previousversions=true&metaproperties=true';
                 let subscription =  super.getByUrl(uri).subscribe(

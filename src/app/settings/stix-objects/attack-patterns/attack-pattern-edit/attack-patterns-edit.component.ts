@@ -672,6 +672,95 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
     }
 
+    public saveCoursesOfActionMobile(attackPatternId: string, citations: any): void {
+        for (let mitigation of this.mitigations) {
+            let foundMitigation = this.allMitStatic.find((p) => p.attributes.name === mitigation.name);
+            if (foundMitigation.attributes.description !== mitigation.description) {
+                foundMitigation.attributes.description = mitigation.description;
+                foundMitigation.attributes.external_references = [];
+                let citationArr = super.matchCitations(foundMitigation.attributes.description);
+                for (let name of citationArr) {
+                    let citation = citations.find((p) => p.source_name === name);
+                    if (citation !== undefined) {
+                        if (foundMitigation.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                            foundMitigation.attributes.external_references.push(citation);;
+                        }        
+                    }
+                }
+                this.stixService.url = Constance.COURSE_OF_ACTION_URL;
+                let subscription = super.save(foundMitigation).subscribe(
+                    (data) => {
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+            let origMit = this.origMitigations.find((p) => p.id === foundMitigation.id);
+            this.origMitigations = this.origMitigations.filter((p) => p.id !== foundMitigation.id);
+            if (origMit === undefined) {
+                this.saveRelationship(attackPatternId, foundMitigation.id);
+            }
+        }
+
+        for (let mitigation of this.origMitigations) {
+            let relationship = this.allRels.find((p) => p.attributes.source_ref === mitigation.id);
+            if (relationship !== undefined) {
+                relationship.url = Constance.RELATIONSHIPS_URL;
+                this.delete(relationship, false).subscribe(
+                    () => {
+        
+                    }
+                );
+            }
+        }
+
+        for (let mitigation of this.newMitigations) {
+            if (mitigation.name !== "" && mitigation.description !== "") {
+                let coa = new CourseOfAction;
+                coa.attributes.description = mitigation.description;
+                coa.attributes.name = mitigation.name;
+                coa.attributes.external_references = [];
+                let extRef = new ExternalReference();
+                extRef.source_name = "mitre-mobile-attack";
+                extRef.external_id = this.lastMobileMit;
+                extRef.url = "https://attack.mitre.org/mitigations/" + this.lastMobileMit;
+                this.lastMobileMit = 'M' + (parseInt(this.lastMobileMit.substr(1)) + 1);
+                coa.attributes.external_references.push(extRef);
+                let citationArr = super.matchCitations(coa.attributes.description);
+                for (let name of citationArr) {
+                    let citation = citations.find((p) => p.source_name === name);
+                    if (citation !== undefined) {
+                        if (coa.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                            coa.attributes.external_references.push(citation);;
+                        }   
+                    }
+                }
+                this.stixService.url = Constance.COURSE_OF_ACTION_URL;
+                coa.attributes.x_mitre_collections = ['2f669986-b40b-4423-b720-4396ca6a462b'];
+                coa.attributes.x_mitre_version = "1.0";
+                let subscription = super.create(coa).subscribe(
+                    (stixObject) => {
+                        this.saveRelationship(attackPatternId, stixObject[0].id);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
+        }
+    }
+
     public saveCoursesOfAction(attackPatternId: string, citations: any): void {
         for (let mitigation of this.mitigations) {
             let foundMitigation = this.allMitStatic.find((p) => p.attributes.name === mitigation.name);
@@ -721,34 +810,37 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         }
 
         for (let mitigation of this.newMitigations) {
-            let coa = new CourseOfAction;
-            coa.attributes.description = mitigation.description;
-            coa.attributes.name = mitigation.name;
-            coa.attributes.external_references = [];
-            let citationArr = super.matchCitations(coa.attributes.description);
-            for (let name of citationArr) {
-                let citation = citations.find((p) => p.source_name === name);
-                if (citation !== undefined) {
-                    if (coa.attributes.external_references.find((p) => p.source_name === name) === undefined) {
-                        coa.attributes.external_references.push(citation);;
-                    }   
-                }
-            }
-            this.stixService.url = Constance.COURSE_OF_ACTION_URL;
-            coa.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
-            let subscription = super.create(coa).subscribe(
-                (stixObject) => {
-                    this.saveRelationship(attackPatternId, stixObject[0].id);
-                }, (error) => {
-                    // handle errors here
-                     console.log('error ' + error);
-                }, () => {
-                    // prevent memory links
-                    if (subscription) {
-                        subscription.unsubscribe();
+            if (mitigation.name !== "" && mitigation.description !== "") {
+                let coa = new CourseOfAction;
+                coa.attributes.description = mitigation.description;
+                coa.attributes.name = mitigation.name;
+                coa.attributes.external_references = [];
+                let citationArr = super.matchCitations(coa.attributes.description);
+                for (let name of citationArr) {
+                    let citation = citations.find((p) => p.source_name === name);
+                    if (citation !== undefined) {
+                        if (coa.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                            coa.attributes.external_references.push(citation);;
+                        }   
                     }
                 }
-            );
+                this.stixService.url = Constance.COURSE_OF_ACTION_URL;
+                coa.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
+                coa.attributes.x_mitre_version = "1.0";
+                let subscription = super.create(coa).subscribe(
+                    (stixObject) => {
+                        this.saveRelationship(attackPatternId, stixObject[0].id);
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+            }
         }
     }
 

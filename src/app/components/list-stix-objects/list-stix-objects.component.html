@@ -20,7 +20,7 @@
                                 <span *ngIf="data.attributes.x_mitre_deprecated || data.attributes.revoked || (!data.hasId && data.attributes.type !== 'x-mitre-matrix')">
                                     <mat-icon style="color:#FE6131" 
                                               class="material-icons"
-                                              [matTooltip]="getTooltip(data.attributes)">
+                                              [matTooltip]="getTooltip(data)">
                                         warning
                                     </mat-icon>&nbsp;
                                 </span>

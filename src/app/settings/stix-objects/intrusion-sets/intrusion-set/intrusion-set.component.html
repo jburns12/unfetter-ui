@@ -3,7 +3,7 @@
 
                 <a class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
                 <a class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
-                <button *ngIf="!history" class="mat-primary" mat-raised-button (click)="historyButtonClicked()">SHOW HISTORY</button>
+                <button *ngIf="!history" class="mat-primary" mat-raised-button [disabled]="!allDataLoaded()" (click)="historyButtonClicked()">SHOW HISTORY</button>
                 <button *ngIf="history" class="mat-primary" mat-raised-button (click)="historyButtonClicked()">HIDE HISTORY</button>
                 <!-- <button md-raised-button routerLink="/relationships/intrusion-uses-attack/{{intrusionSet.id}}">Intrusion Set</button> -->
 

@@ -34,6 +34,11 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
    public attackId: string;
    public origAliasDescription: string = "";
 
+   private malwareLoaded: boolean = false;
+   private groupsLoaded: boolean = false;
+   private techniquesLoaded: boolean = false;
+   private relationshipsLoaded: boolean = false;
+
    constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -69,6 +74,10 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
     }
 
     public historyButtonClicked(): void {
+        if (!this.allDataLoaded()) {
+            console.warn("cannot show history until data is loaded");
+            return;
+        }
         if (!this.historyFound) {
             let uri = this.stixService.url + '/' + this.malware.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
@@ -110,6 +119,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                     this.groups.push({'name': intrusionSet.attributes.name, 'id': intrusionSet.id, 'extRefs': intrusionSet.attributes.external_references});
                 });
                 this.getTechniques(false);
+                this.groupsLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -158,6 +168,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                         }
                     }
                   });
+                  this.relationshipsLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -210,7 +221,8 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                 if (!create) {
                     this.findRelationships();
                 }
-                console.log(this.techniques);
+                // console.log(this.techniques);
+                this.techniquesLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -280,6 +292,7 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                 this.aliasesToDisplay = this.malware.attributes.x_mitre_aliases.filter((h) => h !== this.malware.attributes.name);
             }
             this.getGroups();
+            this.malwareLoaded = true;
           }, (error) => {
                   // handle errors here
                    console.log('error ' + error);
@@ -298,5 +311,9 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
 
     public visitExtRef(url): void {
         window.open(url, '_blank');
+    }
+
+    public allDataLoaded(): boolean { 
+        return this.malwareLoaded && this.groupsLoaded && this.techniquesLoaded && this.relationshipsLoaded;
     }
 }

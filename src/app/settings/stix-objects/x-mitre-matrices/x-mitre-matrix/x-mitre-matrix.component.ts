@@ -27,6 +27,9 @@ export class XMitreMatrixComponent extends BaseStixComponent implements OnInit {
     public tactics: XMitreTactic[] = [];
     public tactic_refs: XMitreTactic[] = [];
 
+    private tacticsLoaded: boolean = false;
+    private matrixLoaded: boolean = false;
+
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -81,6 +84,10 @@ export class XMitreMatrixComponent extends BaseStixComponent implements OnInit {
     }
 
     public historyButtonClicked(): void {
+        if (!this.allDataLoaded()) {
+            console.warn("cannot show history until all data is loaded")
+            return;
+        }
         if (!this.historyFound) {
             let uri = this.stixService.url + '/' + this.xMitreMatrix.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
@@ -121,6 +128,7 @@ export class XMitreMatrixComponent extends BaseStixComponent implements OnInit {
                 });
                 console.log(this.tactics);
                 console.log(this.tactic_refs);
+                this.tacticsLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -149,6 +157,7 @@ export class XMitreMatrixComponent extends BaseStixComponent implements OnInit {
                 this.getAllTactics();
                 this.getDeprecated();
                 this.getRevoked();
+                this.matrixLoaded = true;
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -175,5 +184,9 @@ export class XMitreMatrixComponent extends BaseStixComponent implements OnInit {
 
     public formatText(inputString): string {
         return FormatHelpers.formatAll(inputString);
+    }
+
+    public allDataLoaded(): boolean {
+        return this.tacticsLoaded && this.matrixLoaded;
     }
 }

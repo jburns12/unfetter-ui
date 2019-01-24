@@ -27,6 +27,9 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
     public hasId: boolean = false;
     public techniques: any = [];
 
+    private techniquesLoaded: boolean = false;
+    private citationsLoaded: boolean = false;
+
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -63,6 +66,10 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
     }
 
     public historyButtonClicked(): void {
+        if (!this.allDataLoaded()) {
+            console.warn("cannot show history before data has loaded");
+            return;
+        }
         if (!this.historyFound) {
             let uri = this.stixService.url + '/' + this.courseOfAction.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
@@ -148,6 +155,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                         }
                         extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                         this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                        this.citationsLoaded = true;
                     }, (error) => {
                         // handle errors here
                          console.log('error ' + error);
@@ -189,7 +197,8 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                 });
                 this.techniques = this.techniques.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                 this.findRelationships();
-                console.log(this.techniques);
+                // console.log(this.techniques);
+                this.techniquesLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -262,5 +271,9 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
 
     public isEnterprise(): boolean {
         return this.courseOfAction.attributes.external_references.filter((er)=> er.source_name == "mitre-attack").length > 0;
+    }
+
+    public allDataLoaded(): boolean { 
+        return this.techniquesLoaded && this.citationsLoaded;
     }
 }

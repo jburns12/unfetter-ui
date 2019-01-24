@@ -40,6 +40,12 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public allMitStatic: any = [];
     public lastMobileMit: any;
 
+    //track data loading progress
+    private sourceRelsLoaded: boolean = false;
+    private attackPatternLoaded: boolean = false;
+    private coALoaded: boolean = false;
+
+
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
           { id : 2, value: '2 - Practicioner' },
@@ -91,6 +97,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public historyButtonClicked(): void {
+        if (!this.allDataLoaded()) { 
+            console.warn("cannot show history until all data is loaded");
+            return;
+        }
         if (!this.historyFound) {
             let uri = this.stixService.url + '/' + this.attackPattern.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
@@ -143,7 +153,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             );
         }
     }
-
     public loadAttackPattern(): void {
          let subscription =  super.get().subscribe(
             (data) => {
@@ -162,6 +171,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     this.revoked = this.attackPattern.attributes.revoked;
                 }
                 this.attackPattern.attributes.external_references.reverse();
+                this.attackPatternLoaded = true;
                 this.findSourceRels();
                 this.findCoA();
             }, (error) => {
@@ -312,6 +322,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     (data) => {
                         this.stixService.url = Constance.ATTACK_PATTERN_URL;
                         this.target = data as Relationship[];
+                        let unresolved = this.target.length;
+                        if (unresolved == 0) { this.coALoaded = true; }
                         this.target.forEach((relationship: Relationship) => {
                             if (relationship.attributes.relationship_type === 'mitigates') {
                                 mitigations.push(relationship.attributes.source_ref);
@@ -330,9 +342,11 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                                         }
                                     }
                                     this.allRels.push(relationship);
+                                    if (--unresolved == 0) { this.coALoaded = true; }
                                 }, (error) => {
                                     // handle errors here
                                     console.log('error ' + error);
+                                    if (--unresolved == 0) { this.coALoaded = true; }
                                 }, () => {
                                     // prevent memory links
                                     if (subscript) {
@@ -376,6 +390,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         let subscription =  super.getByUrl(uri).subscribe(
             (data) => {
                 this.target = data as Relationship;
+                let unresolved = this.target.length;
+                if (unresolved == 0) { this.sourceRelsLoaded = true; }
                 this.target.forEach((relationship: Relationship) => {
                   let relFilter = { 'stix.id': relationship.attributes.target_ref };
                   let multiplesUri = Constance.MULTIPLES_URL + '?filter=' + JSON.stringify(relFilter);
@@ -383,6 +399,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                       (multiplesData) => {
                             relationship.attributes.name = multiplesData[0].attributes.name;
                             this.allRels.push(relationship);
+                            if (--unresolved == 0) { this.sourceRelsLoaded = true; }
                          }, (error) => {
                           // handle errors here
                            console.log('error ' + error);
@@ -432,5 +449,12 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
 
     public visitExtRef(url): void {
         window.open(url, '_blank');
+    }
+    /**
+     * Return whether all the data for this attack pattern is loaded
+     * @returns {boolean} true if everything is loaded, false otherwise
+     */
+    public allDataLoaded(): boolean { 
+        return this.coALoaded && this.attackPatternLoaded && this.sourceRelsLoaded;
     }
 }

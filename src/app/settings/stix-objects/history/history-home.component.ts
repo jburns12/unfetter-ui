@@ -51,30 +51,20 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
         this.endDate.setSeconds(0, 0);
     }
 
+    private allObjectsLoaded: boolean = false;
     public getAllObjects(): void {
+        let unresolved = this.urls.length + 1;
         for (let currUrl of this.urls) {
             let uri = currUrl + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
                 (data) => {
                     this.allObjects = this.allObjects.concat(data);
-                    let uri = Constance.RELATIONSHIPS_URL;
-                    let sub =  super.getByUrl(uri).subscribe(
-                        (currData) => {
-                            this.relationships = this.relationships.concat(currData);
-                        }, (error) => {
-                            // handle errors here
-                            console.log('error ' + error);
-                        }, () => {
-                            // prevent memory links
-                            if (sub) {
-                                sub.unsubscribe();
-                            }
-                        }
-                    );
+                    if (--unresolved == 0) this.allObjectsLoaded = true;
                    }, (error) => {
                     // handle errors here
+                    if (--unresolved == 0) this.allObjectsLoaded = true;
                      console.log('error ' + error);
-                }, () => {
+                }, () => { 
                     // prevent memory links
                     if (subscription) {
                         subscription.unsubscribe();
@@ -82,6 +72,22 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
                 }
             );
         }
+        let uri = Constance.RELATIONSHIPS_URL;
+        let subscription =  super.getByUrl(uri).subscribe(
+            (data) => {
+                this.relationships = this.relationships.concat(data);
+                if (--unresolved == 0) this.allObjectsLoaded = true;
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+                 if (--unresolved == 0) this.allObjectsLoaded = true;
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
     }
 
     public searchHistory(): void {
@@ -105,6 +111,10 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
         this.startDate = new Date("05/31/2017");
     }
     public getFromTo(): void {
+        if (!this.allObjectsLoaded) {
+            console.warn("cannot show history before everything is loaded");
+            return;
+        }
         this.getHistoryFromTo = true;
     }
 
@@ -113,6 +123,10 @@ export class HistoryHomeComponent extends BaseStixComponent implements OnInit {
     }
 
     public showAll(start: Date, end: Date): void {
+        if (!this.allObjectsLoaded) { 
+            console.warn("cannot show history before everything is loaded");
+            return;
+        }
         if(!this.historyFound) {
             let allRelHistory = [];
             for (let pattern of this.allObjects) {

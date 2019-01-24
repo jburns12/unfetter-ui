@@ -39,6 +39,12 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     public revoked: boolean = false;
     public origAliasDescription: string = "";
 
+    private techniquesLoaded: boolean = false;
+    private citationsAndContributorsLoaded: boolean = false;
+    private softwareLoaded: boolean = false;
+    private relationshipsLoaded: boolean = false;
+    private toolsLoaded: boolean = false;
+
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -93,6 +99,10 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     }
 
     public historyButtonClicked(): void {
+        if (!this.allDataLoaded()) { 
+            console.warn("cannot show history until all data is loaded");
+            return;
+        }
         if (!this.historyFound) {
             let uri = this.stixService.url + '/' + this.intrusionSet.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
@@ -207,6 +217,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                         }
                     }
                 });
+                this.relationshipsLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -230,7 +241,8 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 if (!create) {
                     this.findRelationships(true);
                 }
-                console.log(this.techniques);
+                // console.log(this.techniques);
+                this.techniquesLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -251,6 +263,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                     this.softwares.push({'name': malware.attributes.name, 'id': malware.id, 'extRefs': malware.attributes.external_references});
                 });
                 this.getTools(create);
+                this.softwareLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -274,6 +287,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                 if (!create) {
                     this.findRelationships(false);
                 }
+                this.toolsLoaded = true;
                }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -314,6 +328,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
                         }
                         extRefs = extRefs.sort((a, b) => a.source_name.toLowerCase() < b.source_name.toLowerCase() ? -1 : a.source_name.toLowerCase() > b.source_name.toLowerCase() ? 1 : 0);
                         this.allCitations = extRefs.filter((citation, index, self) => self.findIndex((t) => t.source_name === citation.source_name) === index);
+                        this.citationsAndContributorsLoaded = true;
                     }, (error) => {
                         // handle errors here
                          console.log('error ' + error);
@@ -439,5 +454,13 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
 
     public formatText(inputString): string {
         return FormatHelpers.formatAll(inputString);
+    }
+
+    public allDataLoaded(): boolean { 
+        return this.techniquesLoaded && 
+               this.citationsAndContributorsLoaded && 
+               this.softwareLoaded && 
+               this.relationshipsLoaded && 
+               this.toolsLoaded;
     }
 }

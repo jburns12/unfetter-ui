@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-md-12">
             <div *ngIf="!getHistoryFromTo" class="button-row">
-                    <a class=" " mat-raised-button (click)="getFromTo()"><i class="material-icons">add</i> GET HISTORY FROM-TO</a>
+                    <a class=" " mat-raised-button [disabled]="!allObjectsLoaded" (click)="getFromTo()"><i class="material-icons">add</i> GET HISTORY FROM-TO</a>
               </div>
                     <mat-card *ngIf="getHistoryFromTo" style="margin: 10px 0px;">
                           <mat-card-content>
@@ -29,11 +29,11 @@
                 </div>
                 <div *ngIf="!showAllHistory && !getHistoryFromTo" class="button-row">
                         <br>
-                        <a class=" " mat-raised-button (click)="showAll(undefined, undefined)"><i class="material-icons">add</i> SHOW FULL HISTORY</a>
+                        <a class=" " mat-raised-button [disabled]="!allObjectsLoaded" (click)="showAll(undefined, undefined)"><i class="material-icons">add</i> SHOW FULL HISTORY</a>
                   </div>
                   <div *ngIf="showAllHistory" class="button-row">
                         <br>
-                        <a *ngIf="!getHistoryFromTo" class=" " mat-raised-button (click)="hideShowAllButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> HIDE HISTORY</a>
+                        <a *ngIf="!getHistoryFromTo" class=" " mat-raised-button (click)="hideShowAllButtonClicked()"><i class="material-icons">remove</i> HIDE HISTORY</a>
                         <br><br>
                         <mat-card>
                                 <mat-card-header style="border-bottom: 1px solid lightgray;">

@@ -25,6 +25,9 @@ export class XMitreTacticComponent extends BaseStixComponent implements OnInit {
     public revoked: boolean = false;
     public tactics: XMitreTactic[];
 
+    private idLoaded: boolean = false;
+    private tacticLoaded: boolean = false;
+
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -79,6 +82,10 @@ export class XMitreTacticComponent extends BaseStixComponent implements OnInit {
     }
 
     public historyButtonClicked(): void {
+        if (!this.allDataLoaded()) {
+            console.warn("cannot show history until all data has been loaded");
+            return;
+        }
         if (!this.historyFound) {
             let uri = this.stixService.url + '/' + this.xMitreTactic.id + '?previousversions=true&metaproperties=true';
             let subscription =  super.getByUrl(uri).subscribe(
@@ -130,6 +137,7 @@ export class XMitreTacticComponent extends BaseStixComponent implements OnInit {
     public getId(): void {
         if (this.mitreId !== undefined && this.mitreId !== '') {
             this.id = this.mitreId.external_id;
+            this.idLoaded = true;
         } else {
             let subscription = super.load().subscribe(
                 (data) => {
@@ -147,6 +155,7 @@ export class XMitreTacticComponent extends BaseStixComponent implements OnInit {
                         ).sort().filter(Boolean);
                     this.id = this.getIdString(allIds);
                     console.log(this.id);
+                    this.idLoaded = true;
                 }, (error) => {
                     // handle errors here
                     console.log('error ' + error);
@@ -168,6 +177,7 @@ export class XMitreTacticComponent extends BaseStixComponent implements OnInit {
                 this.getId();
                 this.getDeprecated();
                 this.getRevoked();
+                this.tacticLoaded = true;
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -194,5 +204,9 @@ export class XMitreTacticComponent extends BaseStixComponent implements OnInit {
 
     public formatText(inputString): string {
         return FormatHelpers.formatAll(inputString);
+    }
+
+    public allDataLoaded(): boolean {
+        return this.idLoaded && this.tacticLoaded;
     }
 }

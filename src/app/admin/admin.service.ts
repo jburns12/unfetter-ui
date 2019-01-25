@@ -35,6 +35,10 @@ export class AdminService {
         return this.genericApi.get(`${this.authUrl}/push`);
     }
     
+    public pushDevAttack(): Observable<any> {
+        return this.genericApi.get(`${this.authUrl}/push-dev`);
+    }
+
     public getWebsiteVisitsGraph(numDays: number): Observable<any> {
         return this.genericApi.get(`${this.adminUrl}/site-visits-graph/${numDays}`);
     }

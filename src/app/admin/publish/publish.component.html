@@ -13,3 +13,9 @@
         <button type="submit"  class="mat-primary" mat-raised-button (click)="pushButton()"><i class="material-icons">save</i> PUBLISH TO MITRE/CTI</button>
     </div>
 </div>
+<div id="push-dev" class="row">
+    <div *ngIf="message == 'Successfully generated!'" class="col-xs-12">
+        <h3>Generate the dev version of the ATT&CK Website at http://attackguidev.mitre.org:</h3>
+        <button type="submit"  class="mat-primary" mat-raised-button (click)="pushDevButton()"><i class="material-icons">save</i> CREATE DEV SITE</button>
+    </div>
+</div>

@@ -52,4 +52,23 @@ export class PublishComponent implements OnInit {
             }
             );
     }
+
+    public pushDevButton() {
+        this.message = "Building the ATT&CK dev website...this may take a few minutes. Please do not refresh page.";
+        let pushAttack$ = this.adminService
+            .pushDevAttack()
+            .subscribe(
+            (res) => {
+                console.log(res);
+                this.message = res.attributes;
+            },
+            (err) => {
+                console.log(err);
+                this.message = 'Unable to build dev website.';
+            },
+            () => {
+                pushAttack$.unsubscribe();
+            }
+            );
+    }
 }

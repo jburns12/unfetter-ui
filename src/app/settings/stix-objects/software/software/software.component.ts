@@ -144,24 +144,22 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
                         let tech = this.techniques.filter((h) => h.id === relationship.attributes.target_ref);
                         let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
                         if (tech.length > 0) {
-                            this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id});
+                            this.addedTechniques.push({'name': tech[0].name, 'description': relationship.attributes.description, 'relationship': relationship.id, 'attackId': tech[0].attackId});
                             this.origRels.push(relationship);
                             let relCopy = Object.assign({}, relationship);
                             relCopy.attributes.name = tech[0].name;
-                            if (tech[0].extRefs !== undefined) {
-                                for (let i in tech[0].extRefs) {
-                                    if (tech[0].extRefs[i].external_id !== undefined && domains.some(e => e === tech[0].extRefs[i].source_name)) {
-                                        relCopy.attributes.name = tech[0].extRefs[i].external_id;
-                                    }
-                                }
+                            if (tech[0].attackId !== "") {
+                                relCopy.attributes.name = tech[0].attackId;
                             }
                             this.allRels.push(relCopy);
                             this.currTechniques[i] = this.techniques;
                             for (let index in this.currTechniques) {
                                 for (let j in this.addedTechniques) {
-                                   if (j !== index) {
-                                       this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
-                                   }
+                                    if (j !== index) {
+                                        if (this.currTechniques[index].attackId !== ""){
+                                            this.currTechniques[index] = this.currTechniques[index].filter((h) => h.attackId !== this.addedTechniques[j].attackId)
+                                        }
+                                    }
                                 }
                             }
                             i += 1;
@@ -211,11 +209,16 @@ export class SoftwareComponent extends BaseStixComponent implements OnInit {
     }
 
     public getTechniques(create: boolean): void {
+        let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
         let subscription =  super.getByUrl(Constance.ATTACK_PATTERN_URL).subscribe(
             (data) => {
                 let target = data as AttackPattern[];
                 target.forEach((attackPattern: AttackPattern) => {
-                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id, 'extRefs': attackPattern.attributes.external_references});
+                    let attackId = '';
+                    if (attackPattern.attributes.external_references[0].external_id !== undefined && domains.some(e => e === attackPattern.attributes.external_references[0].source_name)) {
+                        attackId = attackPattern.attributes.external_references[0].external_id;
+                    }
+                    this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id, 'extRefs': attackPattern.attributes.external_references, 'attackId': attackId});
                 });
                 this.techniques = this.techniques.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                 if (!create) {

@@ -127,7 +127,7 @@
                                       <mat-form-field class="full-width">
                                           <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
                                             <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
-                                                  <span>{{ technique.name }}</span>
+                                                <span>{{ technique.name }} - {{ technique.attackId }}</span>
                                             </mat-option>
                                           </mat-select>
                                       </mat-form-field><br>

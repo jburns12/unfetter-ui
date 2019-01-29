@@ -757,10 +757,16 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
         currTechnique['name'] = '';
         currTechnique['description'] = '';
         currTechnique['relationship'] = '';
+        currTechnique['attackId'] = '';
         this.addedTechniques.unshift(currTechnique);
         this.currTechniques.unshift(this.techniques);
         for (let i in this.addedTechniques) {
-            this.currTechniques[0] = this.currTechniques[0].filter((h) => h.name !== this.addedTechniques[i].name);
+            if (this.addedTechniques[i].attackId !== ""){
+                this.currTechniques[0] = this.currTechniques[0].filter((h) => h.attackId !== this.addedTechniques[i].attackId)
+            }
+            else{
+                this.currTechniques[0] = this.currTechniques[0].filter((h) => h.name !== this.addedTechniques[i].name)
+            }
         }
         console.log(this.currTechniques);
     }
@@ -772,7 +778,13 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
             this.currTechniques[index] = this.techniques;
             for (let j in this.addedTechniques) {
                 if (j !== index) {
-                    this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
+                    if (this.addedTechniques[j].attackId !== ""){
+                        this.currTechniques[index] = this.currTechniques[index].filter((h) => h.attackId !== this.addedTechniques[j].attackId)
+                    }
+                    else {
+                        this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[j].name)
+
+                    }
                 }
             }
         }
@@ -783,11 +795,15 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
             this.currTechniques[index] = this.techniques;
             for (let i in this.addedTechniques) {
                 if (i !== index) {
-                    this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[i].name)
+                    if (this.addedTechniques[i].attackId !== ""){
+                        this.currTechniques[index] = this.currTechniques[index].filter((h) => h.attackId !== this.addedTechniques[i].attackId);
+                    }
+                    else{
+                        this.currTechniques[index] = this.currTechniques[index].filter((h) => h.name !== this.addedTechniques[i].name);
+                    }
                 }
             }
         }
-        console.log(this.currTechniques);
     }
 
     public found(list: any[], object: any): any {

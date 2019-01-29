@@ -142,9 +142,10 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                         <mat-form-field class="full-width">
-                                            <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
+                                            <mat-select name="allTechniques" [(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
                                                 <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
-                                                    <span>{{ technique.name }}</span>
+                                                    <span *ngIf="technique.extRefs[0].hasOwnProperty('external_id')">{{ technique.name }} - {{ technique.extRefs[0].external_id }}</span>
+                                                    <span *ngIf="!technique.extRefs[0].hasOwnProperty('external_id')">{{ technique.name }}</span>
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field><br>

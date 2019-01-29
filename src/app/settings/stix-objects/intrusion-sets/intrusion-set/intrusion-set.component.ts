@@ -229,13 +229,12 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     }
 
     public getTechniques(create: boolean): void {
-        let domains = ["mitre-attack", "mitre-pre-attack", "mitre-mobile-attack"];
         let subscription =  super.getByUrl(Constance.ATTACK_PATTERN_URL).subscribe(
             (data) => {
                 let target = data as AttackPattern[];
                 target.forEach((attackPattern: AttackPattern) => {
                     let attackId = '';
-                    if (attackPattern.attributes.external_references[0].external_id !== undefined && domains.some(e => e === attackPattern.attributes.external_references[0].source_name)) {
+                    if (attackPattern.attributes.external_references[0].external_id !== undefined ) {
                         attackId = attackPattern.attributes.external_references[0].external_id;
                     }
                     this.techniques.push({'name': attackPattern.attributes.name, 'id': attackPattern.id, 'extRefs': attackPattern.attributes.external_references, 'attackId': attackId});

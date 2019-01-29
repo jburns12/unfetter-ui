@@ -22,7 +22,7 @@
 <div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
-            <input matInput placeholder="Description" required [(ngModel)]="intrusionSet.attributes.description" value="">
+            <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="intrusionSet.attributes.description">{{intrusionSet.attributes.description}}</textarea>
         </mat-input-container>
     </div>
 </div>

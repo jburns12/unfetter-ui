@@ -152,11 +152,32 @@
             </div>
             <div *ngIf="tacticBools['defEvas']" class="row">
                 <div class="col-md-12">
-                    <mat-input-container class="full-width">
-                        <textarea matInput [(ngModel)]="attackPattern.attributes.x_mitre_defense_bypassed"  placeholder="Defense Bypassed">{{attackPattern.attributes.x_mitre_defense_bypasseds}}</textarea>
-                    </mat-input-container>
-                </div>
-            </div>
+                    <h4>Defense Bypassed</h4>
+                          <div class="button-row">
+                                <a class=" " mat-raised-button (click)="addDefenseBypassed()"><i class="material-icons">add</i> ADD</a>
+                          </div>
+                      </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-md-12">
+                                 <mat-card *ngFor="let defense of attackPattern.attributes.x_mitre_defense_bypassed; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                        <mat-card-content>
+                                            <div class="row">
+                                              <div class="col-md-6">
+                                                      <mat-input-container class="full-width">
+                                                          <input matInput placeholder="Defense Bypassed" [(ngModel)]="attackPattern.attributes.x_mitre_defense_bypassed[i]">
+                                                      </mat-input-container>
+                                              </div>
+                                            </div>
+                                        </mat-card-content>
+                                        <mat-card-actions>
+                                            <div class="button-row">
+                                                <a class="" mat-raised-button (click)="removeDefenseBypassed(attackPattern.attributes.x_mitre_defense_bypassed[i])"><i class="material-icons">delete</i> REMOVE</a>
+                                            </div>
+                                        </mat-card-actions>
+                                </mat-card>
+                        </div>
+            </div><br>
             <div class="row">
                 <div class="col-md-12">
                   <h4>Platforms

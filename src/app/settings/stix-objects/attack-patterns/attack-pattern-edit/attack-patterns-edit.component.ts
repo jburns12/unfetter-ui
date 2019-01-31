@@ -592,6 +592,18 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
         this.attackPattern.attributes.x_mitre_contributors.unshift(contributorName);
     }
 
+    public addDefenseBypassed(): void {
+        if (!('x_mitre_defense_bypassed' in this.attackPattern.attributes)) {
+            this.attackPattern.attributes.x_mitre_defense_bypassed = [];
+        }
+        let defense = '';
+        this.attackPattern.attributes.x_mitre_defense_bypassed.unshift(defense);
+    }
+
+    public removeDefenseBypassed(defense): void {
+        this.attackPattern.attributes.x_mitre_defense_bypassed = this.attackPattern.attributes.x_mitre_defense_bypassed.filter((h) => h !== defense);
+    }
+
     public removeContributor(contributor): void {
         this.attackPattern.attributes.x_mitre_contributors = this.attackPattern.attributes.x_mitre_contributors.filter((h) => h !== contributor);
     }
@@ -601,6 +613,12 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             this.removeContributor('');
             if (this.attackPattern.attributes.x_mitre_contributors.length === 0) {
                 delete this.attackPattern.attributes['x_mitre_contributors'];
+            }
+        }
+        if ('x_mitre_defense_bypassed' in this.attackPattern.attributes) {
+            this.attackPattern.attributes.x_mitre_defense_bypassed = this.attackPattern.attributes.x_mitre_defense_bypassed.filter((h) => h !== '');
+            if (this.attackPattern.attributes.x_mitre_defense_bypassed.length === 0) {
+                delete this.attackPattern.attributes['x_mitre_defense_bypassed'];
             }
         }
         if ('x_mitre_data_sources' in this.attackPattern.attributes) {

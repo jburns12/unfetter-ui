@@ -26,7 +26,7 @@ export class AttackPattern {
         x_mitre_platforms: string[];
         x_mitre_system_requirements: string;
         x_mitre_effective_permissions: string[];
-        x_mitre_defense_bypassed: string;
+        x_mitre_defense_bypassed: string[];
         x_mitre_remote_support: boolean;
         x_mitre_detection: string;
         x_mitre_permissions_required: string[];

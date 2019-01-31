@@ -785,6 +785,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
             if (foundMitigation.attributes.description !== mitigation.description) {
                 foundMitigation.attributes.description = mitigation.description;
                 foundMitigation.attributes.external_references = [];
+                foundMitigation.attributes.external_references.push(this.mitreId);
                 let citationArr = super.matchCitations(foundMitigation.attributes.description);
                 for (let name of citationArr) {
                     let citation = citations.find((p) => p.source_name === name);
@@ -833,6 +834,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
                 coa.attributes.description = mitigation.description;
                 coa.attributes.name = mitigation.name;
                 coa.attributes.external_references = [];
+                coa.attributes.external_references.push(this.mitreId);
                 let citationArr = super.matchCitations(coa.attributes.description);
                 for (let name of citationArr) {
                     let citation = citations.find((p) => p.source_name === name);

@@ -14,10 +14,10 @@
                 </mat-input-container>
             </div>
         </div>
-        <div class="row" *ngIf="!isEnterprise()">
+        <div class="row">
             <div class="col-md-12">
                 <mat-input-container class="full-width">
-                    <input type="number" matInput required placeholder="Version" [(ngModel)]="courseOfAction.attributes.x_mitre_version" value="{{courseOfAction.attributes.x_mitre_version}}">
+                    <input type="string" matInput required placeholder="Version" [(ngModel)]="courseOfAction.attributes.x_mitre_version" value="{{courseOfAction.attributes.x_mitre_version}}">
                 </mat-input-container>
             </div>
         </div>

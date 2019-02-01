@@ -72,6 +72,14 @@
             </div>
         </div>
         <div class="row">
+                <div class="col-md-12">
+                    <mat-input-container class="full-width">
+                        <input matInput type="text" class="form-control" required placeholder="Version" value="{{attackPattern.attributes.x_mitre_version}}"
+                                [(ngModel)]="attackPattern.attributes.x_mitre_version">
+                    </mat-input-container>
+                </div>
+            </div>
+        <div class="row">
             <div class="col-md-12">
                 <mat-input-container class="full-width">
                     <textarea matInput required [(ngModel)]="attackPattern.attributes.description"  placeholder="Description"></textarea>

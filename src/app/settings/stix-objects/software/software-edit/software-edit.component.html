@@ -1,9 +1,10 @@
 <mat-accordion>
     <mat-expansion-panel (opened)="openPanels.add('info')"
-                         (closed)="openPanels.delete('info')">
+                         (closed)="openPanels.delete('info')"
+                         [expanded]="true">
         <mat-expansion-panel-header>
                 <mat-panel-title>software information</mat-panel-title>
-                <mat-panel-description>type, status, id, version</mat-panel-description>
+                <mat-panel-description>type, status, id, version, description</mat-panel-description>
         </mat-expansion-panel-header>
         <div *ngIf="openPanels.has('info')">
             <div cla>
@@ -16,7 +17,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-            </div><br>
+            </div>
             <div class="col-md-12">
                 <div class="row" *ngIf="mitreId == undefined || mitreId == ''">
                     <div class="col-md-12">
@@ -28,23 +29,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <mat-checkbox class="identity-margin" [(ngModel)]="deprecated">Deprecate?</mat-checkbox>
-                            </div>
+                        <div class="col-md-4">
+                            <mat-checkbox class="identity-margin" [(ngModel)]="deprecated">Deprecate?</mat-checkbox>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <mat-checkbox class="identity-margin" [(ngModel)]="revoked">Revoke?</mat-checkbox>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <mat-checkbox class="identity-margin" [(ngModel)]="revoked">Revoke?</mat-checkbox>
                         </div>
                     </div>
-                </div>
                 <div *ngIf="revoked" class="row">
                     <div class="col-md-6">
                         <mat-form-field class="full-width">
@@ -62,18 +55,23 @@
                             <input matInput placeholder="ID" [(ngModel)]="id">
                         </mat-input-container>
                     </div>
-                    <div class="button-row col-md-12">
+                    <div class="button-row col-md-6">
                         <a class="" mat-raised-button [ngxClipboard]="copyId"> Copy</a>
+                            <input class="" #copyId value="{{idLink}}{{id}}}}">
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-md-12">
                         <mat-input-container class="full-width">
-                            <input matInput class="" #copyId value="{{idLink}}{{id}}}}">
+                            <input matInput type="text" class="form-control" required placeholder="Version" value="{{malware.attributes.x_mitre_version}}"
+                                    [(ngModel)]="malware.attributes.x_mitre_version">
                         </mat-input-container>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <mat-input-container class="full-width">
-                            <input matInput type="text" class="form-control" required placeholder="Version" value="{{malware.attributes.x_mitre_version}}"
-                                    [(ngModel)]="malware.attributes.x_mitre_version">
+                            <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="malware.attributes.description">{{malware.attributes.description}}</textarea>
                         </mat-input-container>
                     </div>
                 </div>
@@ -87,13 +85,6 @@
             <mat-panel-description>primary and additional aliases</mat-panel-description>
         </mat-expansion-panel-header>
         <div *ngIf="openPanels.has('aliases')">
-            <div class="row">
-                <div class="col-md-12">
-                    <mat-input-container class="full-width">
-                        <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="malware.attributes.description">{{malware.attributes.description}}</textarea>
-                    </mat-input-container>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-md-12">
                     <mat-input-container class="full-width">

@@ -1,3 +1,23 @@
 .radio-button {
     margin: 10px;
 }
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row {
+    box-sizing: content-box;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+select {
+    width: 100%;
+}

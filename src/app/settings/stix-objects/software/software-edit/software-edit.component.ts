@@ -42,6 +42,9 @@ export class SoftwareEditComponent extends SoftwareComponent implements OnInit {
     public relationship: Relationship = new Relationship();
     public target: any;
 
+    //which expansion panels are open currently
+    private openPanels: Set<string> = new Set();
+
    constructor(
         public stixService: StixService,
         public route: ActivatedRoute,

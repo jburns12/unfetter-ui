@@ -25,6 +25,7 @@ import { Constance } from '../../../../utils/constance';
 @Component({
   selector: 'intrusion-set-edit',
   templateUrl: './intrusion-set-edit.component.html',
+  styleUrls: ['./intrusion-set-edit.component.scss']
 })
 export class IntrusionSetEditComponent extends IntrusionSetComponent implements OnInit {
     public motivations = new Set(Motivation.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
@@ -60,6 +61,9 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public revokedBy: any = '';
     public foundRevoked: string = '';
     public origTarget: string = '';
+
+    //which expansion panels are open currently
+    private openPanels: Set<string> = new Set();
 
    constructor(
         public stixService: StixService,

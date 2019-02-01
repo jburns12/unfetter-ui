@@ -1,143 +1,174 @@
-<div class="row" *ngIf="mitreId == undefined || mitreId == ''">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-4">
-                        <mat-checkbox class="identity-margin" (change)="addRemoveId()">Assign ID?</mat-checkbox>
+<mat-accordion>
+    <mat-expansion-panel (opened)="openPanels.add('info')" 
+                         (closed)="openPanels.delete('info')">
+        <mat-expansion-panel-header>
+            <mat-panel-title>group information</mat-panel-title>
+            <mat-panel-description>id, status, version</mat-panel-description>
+        </mat-expansion-panel-header>
+        <div *ngIf="openPanels.has('info')">  <!-- lazily rendered only when panel is open -->
+            <div class="row" *ngIf="mitreId == undefined || mitreId == ''">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                    <mat-checkbox class="identity-margin" (change)="addRemoveId()">Assign ID?</mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-4">
-                    <mat-checkbox class="identity-margin" [(ngModel)]="deprecated">Deprecate?</mat-checkbox>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-            <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-4">
-                        <mat-checkbox class="identity-margin" [(ngModel)]="revoked">Revoke?</mat-checkbox>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-checkbox class="identity-margin" [(ngModel)]="deprecated">Deprecate?</mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-checkbox class="identity-margin" [(ngModel)]="revoked">Revoke?</mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="revoked" class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="full-width">
+                            <mat-select name="intrusionSets" [(ngModel)]="revokedBy" placeholder="Revoked by:" class="full-width">
+                                <mat-option *ngFor="let currGroup of intrusionSets" [value]="currGroup">
+                                <span>{{ currGroup.attributes.name }}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field><br>
+                    </div>
+                </div>
+                <div class="row" *ngIf="addId || (mitreId !== undefined && mitreId !== '')">
+                    <div class="col-md-12">
+                        <mat-input-container class="full-width">
+                            <input matInput type="text" placeholder="ID" [(ngModel)]="id">
+                        </mat-input-container>
+                    </div>
+                    <div class="button-row col-md-12">
+                        <a class="" mat-raised-button [ngxClipboard]="copyId"> Copy</a>
+                        <mat-input-container class="full-width">
+                            <input matInput class="" #copyId value="{{idLink}}{{id}}}}">
+                        </mat-input-container>
+                    </div>
+                    <br>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-input-container class="full-width">
+                                    <input matInput type="text" class="form-control" required placeholder="Version" value="{{intrusionSet.attributes.x_mitre_version}}"
+                                            [(ngModel)]="intrusionSet.attributes.x_mitre_version">
+                                </mat-input-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="openPanels.add('aliases')" 
+                         (closed)="openPanels.delete('aliases')">
+        <mat-expansion-panel-header>
+            <mat-panel-title>aliases</mat-panel-title>
+            <mat-panel-description>primary and additional aliases</mat-panel-description>
+        </mat-expansion-panel-header>
+        <div *ngIf="openPanels.has('aliases')">  <!-- lazily rendered only when panel is open -->
+            <mat-input-container class="full-width">
+                <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="intrusionSet.attributes.description">{{intrusionSet.attributes.description}}</textarea>
+            </mat-input-container>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-input-container class="full-width">
+                        <input matInput placeholder="Alias" required [(ngModel)]="intrusionSet.attributes.name" value="">
+                    </mat-input-container>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-input-container class="full-width">
+                        <textarea matInput matTextareaAutosize placeholder="Alias Description" [(ngModel)]="origAliasDescription"></textarea>
+                    </mat-input-container>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Other Aliases</h4>
+                    <div class="button-row">
+                            <a class=" " mat-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
                     </div>
                 </div>
             </div>
-        </div>
-        <div *ngIf="revoked" class="row">
-            <div class="col-md-6">
-                <mat-form-field class="full-width">
-                    <mat-select name="intrusionSets" [(ngModel)]="revokedBy" placeholder="Revoked by:" class="full-width">
-                      <mat-option *ngFor="let currGroup of intrusionSets" [value]="currGroup">
-                        <span>{{ currGroup.attributes.name }}</span>
-                      </mat-option>
-                    </mat-select>
-                </mat-form-field><br>
-            </div>
-          </div>
-    <div class="row" *ngIf="addId || (mitreId !== undefined && mitreId !== '')">
-            <div class="col-md-12">
-                <mat-input-container class="full-width">
-                    <input matInput placeholder="ID" [(ngModel)]="id">
-                </mat-input-container>
-            </div>
-            <div class="button-row">
-                <a class="" mat-raised-button [ngxClipboard]="copyId"> Copy</a>
-                <input class="" size="100" #copyId value="{{idLink}}{{id}}}}">
-            </div>
-            <br>
-        </div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-4">
-                <mat-input-container class="full-width">
-                    <input matInput type="text" class="form-control" required placeholder="Version" value="{{intrusionSet.attributes.x_mitre_version}}"
-                            [(ngModel)]="intrusionSet.attributes.x_mitre_version">
-                </mat-input-container>
-            </div>
-        </div>
-    </div>
-</div>
-<mat-input-container class="full-width">
-    <textarea matInput matTextareaAutosize required placeholder="Description" [(ngModel)]="intrusionSet.attributes.description">{{intrusionSet.attributes.description}}</textarea>
-</mat-input-container>
-<div class="row">
-    <div class="col-md-12">
-        <mat-input-container class="full-width">
-            <input matInput placeholder="Alias" required [(ngModel)]="intrusionSet.attributes.name" value="">
-        </mat-input-container>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <mat-input-container class="full-width">
-            <textarea matInput matTextareaAutosize placeholder="Alias Description" [(ngModel)]="origAliasDescription"></textarea>
-        </mat-input-container>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <h4>Other Aliases</h4>
-              <div class="button-row">
-                    <a class=" " mat-raised-button (click)="addAlias()"><i class="material-icons">add</i> ADD</a>
-              </div>
-          </div>
-        </div>
-         <div class="row">
-            <div class="col-md-12">
-                     <mat-card *ngFor="let alias of aliases; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                            <mat-card-content>
-                                <div class="row">
-                                  <div class="col-md-4">
-                                          <mat-input-container class="full-width">
-                                              <input matInput placeholder="Alias" [(ngModel)]="aliases[i].name">
-                                          </mat-input-container>
-                                  </div>
-                                  <div class="col-md-12">
-                                        <mat-input-container class="full-width">
-                                            <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="aliases[i].description"></textarea>
-                                        </mat-input-container>
-                                </div>
-                                </div>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <div class="button-row">
-                                    <a class="" mat-raised-button (click)="removeAlias(aliases[i].name)"><i class="material-icons">delete</i> REMOVE</a>
-                                </div>
-                            </mat-card-actions>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-card *ngFor="let alias of aliases; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                        <mat-card-content>
+                            <div class="row">
+                            <div class="col-md-4">
+                                    <mat-input-container class="full-width">
+                                        <input matInput placeholder="Alias" [(ngModel)]="aliases[i].name">
+                                    </mat-input-container>
+                            </div>
+                            <div class="col-md-12">
+                                    <mat-input-container class="full-width">
+                                        <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="aliases[i].description"></textarea>
+                                    </mat-input-container>
+                            </div>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <div class="button-row">
+                                <a class="" mat-raised-button (click)="removeAlias(aliases[i].name)"><i class="material-icons">delete</i> REMOVE</a>
+                            </div>
+                        </mat-card-actions>
                     </mat-card>
-            </div>
-</div><br>
-<div class="row">
-    <div class="col-md-12">
-        <h4>Techniques</h4>
-              <div class="button-row">
-                    <a class=" " mat-raised-button (click)="addTechnique()"><i class="material-icons">add</i> ADD</a>
-              </div>
-          </div>
+                </div>
+            </div><br>
         </div>
-         <div class="row">
-            <div class="col-md-12">
-                     <mat-card *ngFor="let addedTechnique of addedTechniques; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="openPanels.add('techniques')" 
+                         (closed)="openPanels.delete('techniques')">
+        <mat-expansion-panel-header>
+            <mat-panel-title>techniques</mat-panel-title>
+            <mat-panel-description>techniques associated with this group</mat-panel-description>
+        </mat-expansion-panel-header>
+        <div *ngIf="openPanels.has('techniques')">  <!-- lazily rendered only when panel is open -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- <h4>Techniques</h4> -->
+                    <div class="button-row">
+                            <a class=" " mat-raised-button (click)="addTechnique()"><i class="material-icons">add</i> ADD</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-card *ngFor="let addedTechnique of addedTechniques; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
                             <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-6">
-                                      <mat-form-field class="full-width">
-                                          <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
+                                        <select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique">
+                                            <option *ngFor="let technique of currTechniques[i]" [value]="technique.name">{{ technique.name }} - {{ technique.attackId }}</option>
+                                        </select>
+                                    <!-- <mat-form-field class="full-width">
+                                        <mat-select name="allTechniques"[(ngModel)]="addedTechniques[i].name" (ngModelChange)="checkAddedTechniques()" placeholder="Technique" class="full-width">
                                             <mat-option *ngFor="let technique of currTechniques[i]" [value]="technique.name">
                                                 <span>{{ technique.name }} - {{ technique.attackId }}</span>
                                             </mat-option>
-                                          </mat-select>
-                                      </mat-form-field><br>
+                                        </mat-select>
+                                    </mat-form-field><br> -->
                                     </div>
                                     <div class="col-md-12">
                                             <mat-input-container class="full-width">
                                                 <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="addedTechniques[i].description"></textarea>
                                             </mat-input-container>
                                     </div>
-                                  </div>
+                                </div>
                             </mat-card-content>
                             <mat-card-actions>
                                 <div class="button-row">
@@ -145,78 +176,103 @@
                                 </div>
                             </mat-card-actions>
                     </mat-card>
-            </div>
-</div><br>
-<div class="row">
-    <div class="col-md-12">
-        <h4>Software</h4>
-              <div class="button-row">
-                    <a class=" " mat-raised-button (click)="addSoftware()"><i class="material-icons">add</i> ADD</a>
-              </div>
-          </div>
+                </div>
+            </div><br>
         </div>
-         <div class="row">
-            <div class="col-md-12">
-                     <mat-card *ngFor="let addedSoftware of addedSoftwares; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                            <mat-card-content>
-                               <div class="row">
-                                   <div class="col-md-6">
-                                       <mat-form-field class="full-width">
-                                           <mat-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
-                                             <mat-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
-                                                   <span>{{ software.name }}</span>
-                                             </mat-option>
-                                           </mat-select>
-                                       </mat-form-field><br>
-                                   </div>
-                                   <div class="col-md-12">
-                                           <mat-input-container class="full-width">
-                                               <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="addedSoftwares[i].description"></textarea>
-                                           </mat-input-container>
-                                   </div>
-                                 </div>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <div class="button-row">
-                                    <a class="" mat-raised-button (click)="removeSoftware(addedSoftwares[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
-                                </div>
-                            </mat-card-actions>
-                    </mat-card>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="openPanels.add('software')" 
+                         (closed)="openPanels.delete('software')">
+        <mat-expansion-panel-header>
+            <mat-panel-title>software</mat-panel-title>
+            <mat-panel-description>software associated with this group</mat-panel-description>
+        </mat-expansion-panel-header>
+        <div *ngIf="openPanels.has('software')">  <!-- lazily rendered only when panel is open -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Software</h4>
+                        <div class="button-row">
+                                <a class=" " mat-raised-button (click)="addSoftware()"><i class="material-icons">add</i> ADD</a>
+                        </div>
+                </div>
             </div>
-</div><br>
-<div class="row">
-    <div class="col-md-12">
-        <h4>Contributors</h4>
-              <div class="button-row">
-                    <a class=" " mat-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
-              </div>
-          </div>
+            <div class="row">
+                <div class="col-md-12">
+                        <mat-card *ngFor="let addedSoftware of addedSoftwares; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                                <mat-card-content>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- This select is so much faster because angular-material is veeerrryyy slloooowwww -->
+                                        <select name="allSoftwares" [(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software">
+                                            <option *ngFor="let software of currSoftwares[i]" [value]="software.name">{{software.name}}</option>
+                                        </select>
+                                        <!-- <mat-form-field class="full-width">
+                                            <mat-select name="allSoftwares"[(ngModel)]="addedSoftwares[i].name" (ngModelChange)="checkAddedSoftwares()" placeholder="Software" class="full-width">
+                                                <mat-option *ngFor="let software of currSoftwares[i]" [value]="software.name">
+                                                    <span>{{ software.name }}</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field><br> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <mat-input-container class="full-width">
+                                            <textarea matInput matTextareaAutosize placeholder="Description" [(ngModel)]="addedSoftwares[i].description"></textarea>
+                                        </mat-input-container>
+                                    </div>
+                                    </div>
+                                </mat-card-content>
+                                <mat-card-actions>
+                                    <div class="button-row">
+                                        <a class="" mat-raised-button (click)="removeSoftware(addedSoftwares[i].name, i)"><i class="material-icons">delete</i> REMOVE</a>
+                                    </div>
+                                </mat-card-actions>
+                        </mat-card>
+                </div>
+            </div><br>
         </div>
-         <div class="row">
-            <div class="col-md-12">
-                     <mat-card *ngFor="let contributor of intrusionSet.attributes.x_mitre_contributors; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
-                       <mat-card-content>
-                           <div class="row">
-                             <div class="col-md-6">
-                               <mat-input-container class="full-width">
-                                   <input matInput placeholder="Contributor Name" [(ngModel)]="intrusionSet.attributes.x_mitre_contributors[i]" [matAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(intrusionSet.attributes.x_mitre_contributors[i], contributors)">
-                               </mat-input-container>
-                               <mat-autocomplete name="auto" #auto="matAutocomplete" >
-                               <mat-option *ngFor="let contributor of currContributors" [value]="contributor">
-                                   <span>{{ contributor }}</span>
-                               </mat-option>
-                               </mat-autocomplete>
-                             </div>
-                           </div>
-                       </mat-card-content>
-                            <mat-card-actions>
-                                <div class="button-row">
-                                    <a class="" mat-raised-button (click)="removeContributor(contributor)"><i class="material-icons">delete</i> REMOVE</a>
-                                </div>
-                            </mat-card-actions>
-                    </mat-card>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="openPanels.add('contributors')" 
+                         (closed)="openPanels.delete('contributors')">
+        <mat-expansion-panel-header>
+            <mat-panel-title>contributors</mat-panel-title>
+            <mat-panel-description>contributors associated with this group</mat-panel-description>
+        </mat-expansion-panel-header>
+        <div *ngIf="openPanels.has('contributors')">  <!-- lazily rendered only when panel is open -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Contributors</h4>
+                    <div class="button-row">
+                            <a class=" " mat-raised-button (click)="addContributor()"><i class="material-icons">add</i> ADD</a>
+                    </div>
+                </div>
             </div>
-</div><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-card *ngFor="let contributor of intrusionSet.attributes.x_mitre_contributors; let i = index trackBy:trackByFunction" style="margin: 10px 0px;">
+                        <mat-card-content>
+                            <div class="row">
+                                <div class="col-md-6">
+                                <mat-input-container class="full-width">
+                                    <input matInput placeholder="Contributor Name" [(ngModel)]="intrusionSet.attributes.x_mitre_contributors[i]" [matAutocomplete]="auto" (ngModelChange)="currContributors = filterOptions(intrusionSet.attributes.x_mitre_contributors[i], contributors)">
+                                </mat-input-container>
+                                <mat-autocomplete name="auto" #auto="matAutocomplete" >
+                                <mat-option *ngFor="let contributor of currContributors" [value]="contributor">
+                                    <span>{{ contributor }}</span>
+                                </mat-option>
+                                </mat-autocomplete>
+                                </div>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <div class="button-row">
+                                <a class="" mat-raised-button (click)="removeContributor(contributor)"><i class="material-icons">delete</i> REMOVE</a>
+                            </div>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            </div><br>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>
 <h4>External References</h4> 
 <citations [(createNewOnly)]="createNewOnly" (createdNew)="getNewCitation($event)"></citations>
 <external-reference [(model)]="intrusionSet" [(citations)]="allCitations"></external-reference>

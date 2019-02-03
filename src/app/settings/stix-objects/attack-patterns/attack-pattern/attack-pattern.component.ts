@@ -39,6 +39,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public allMitigations: any;
     public allMitStatic: any = [];
     public lastMobileMit: any;
+    public allCitations: any = [];
+    public extRefsLen: any;
 
     //track data loading progress
     private sourceRelsLoaded: boolean = false;
@@ -153,14 +155,16 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
             );
         }
     }
-    public loadAttackPattern(): void {
+    public loadAttackPattern(domain: string = 'enterprise-attack'): void {
          let subscription =  super.get().subscribe(
             (data) => {
+                let domain = '';
                 this.attackPattern = data as AttackPattern;
                 if (this.attackPattern.attributes.external_references !== undefined) {
                     for (let ref of this.attackPattern.attributes.external_references) {
                         if (ref.source_name == 'mitre-attack' || ref.source_name == 'mitre-pre-attack' || ref.source_name == 'mitre-mobile-attack') {
                             this.attackId = ref.external_id;
+                            domain = ref.source_name;
                         }
                     }
                 }
@@ -171,9 +175,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     this.revoked = this.attackPattern.attributes.revoked;
                 }
                 this.attackPattern.attributes.external_references.reverse();
+                this.extRefsLen = this.attackPattern.attributes.external_references.length;
                 this.attackPatternLoaded = true;
                 this.findSourceRels();
-                this.findCoA();
+                this.findCoA(domain);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -300,7 +305,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    public findCoA(): void {
+    public findCoA(domain: string): void {
         let coaUri = Constance.COURSE_OF_ACTION_URL;
         let coaSubscript = super.getByUrl(coaUri).subscribe(
             (coaData) => {
@@ -326,7 +331,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                         if (unresolved == 0) { this.coALoaded = true; }
                         this.target.forEach((relationship: Relationship) => {
                             if (relationship.attributes.relationship_type === 'mitigates') {
-                                mitigations.push(relationship.attributes.source_ref);
+                                mitigations.push(relationship);
                             }
 
                             let relFilter = { 'stix.id': relationship.attributes.source_ref };
@@ -355,11 +360,20 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                                 }
                             );
                         });
-                        mitigations.forEach((mitigation: string) => {
-                            let currMitigation = this.allMitigations.find((p) => (p.id === mitigation));
+                        mitigations.forEach((mitigation: any) => {
+                            let currMitigation = this.allMitigations.find((p) => (p.id === mitigation.attributes.source_ref));
                             if (currMitigation !== undefined) {
                                 this.origMitigations.push({'id': currMitigation.id});
-                                this.mitigations.push({'id': currMitigation.id, 'name': currMitigation.attributes.name, 'description': currMitigation.attributes.description});
+                                let description = currMitigation.attributes.description;
+                                if (domain == 'mitre-mobile-attack'){
+                                    if ('description' in mitigation.attributes) {
+                                        description = mitigation.attributes.description;
+                                    }
+                                    else {
+                                        description = '';
+                                    }
+                                }
+                                this.mitigations.push({'id': currMitigation.id, 'name': currMitigation.attributes.name, 'description': description, 'rel_id': mitigation.id});
                             }
                         });
                     }, (error) => {
@@ -423,12 +437,50 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    public saveRelationship(attackPatternId: string, coaId: string): void {
+    public saveRelationship(attackPatternId: string, coaId: string, description: string = ''): void {
         this.relationship.attributes.source_ref = coaId;
         this.relationship.attributes.target_ref = attackPatternId;
         this.relationship.attributes.relationship_type = 'mitigates';
+        if (description !== ''){
+            this.relationship.attributes.description = description;
+        }
         this.relationship.attributes.x_mitre_collections = ['95ecc380-afe9-11e4-9b6c-751b66dd541e'];
         let subscription = super.create(this.relationship).subscribe(
+            (data) => {
+                console.log(data);
+            }, (error) => {
+                // handle errors here
+                console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
+    }
+
+    public saveRevisedRelationship(attackPatternId: string, coaId: string, description: string = '', rel_id: string): void {
+        let rel = new Relationship();
+        rel.attributes.source_ref = coaId;
+        rel.attributes.target_ref = attackPatternId;
+        rel.id = rel_id;
+        rel.attributes.external_references = [];
+        if (description != ''){
+            rel.attributes.description = description;
+            let citationArr = super.matchCitations(rel.attributes.description);
+            for (let name of citationArr) {
+                let citation = this.allCitations.find((p) => p.source_name === name);
+                if (citation !== undefined) {
+                    if (rel.attributes.external_references.find((p) => p.source_name === name) === undefined) {
+                        rel.attributes.external_references.push(citation);
+                    }
+                }
+            }
+        }
+        this.stixService.url = Constance.RELATIONSHIPS_URL;
+    
+        let subscription = super.save(rel).subscribe(
             (data) => {
                 console.log(data);
             }, (error) => {

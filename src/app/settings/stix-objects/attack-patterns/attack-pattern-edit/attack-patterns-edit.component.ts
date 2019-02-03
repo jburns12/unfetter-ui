@@ -20,7 +20,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public dataSources: string[] = [];
     public id: string;
     public idLink: string = "{{LinkById|";
-    public allCitations: any = [];
     public attackPatterns: AttackPattern[];
     public tacticConfig: string[] = [];
     public tacticBools: any = {'privEsc': false, 'execution': false, 'defEvas': false, 'exFil': false};
@@ -693,36 +692,13 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     public saveCoursesOfActionMobile(attackPatternId: string, citations: any): void {
         for (let mitigation of this.mitigations) {
             let foundMitigation = this.allMitStatic.find((p) => p.attributes.name === mitigation.name);
-            if (foundMitigation.attributes.description !== mitigation.description) {
-                foundMitigation.attributes.description = mitigation.description;
-                foundMitigation.attributes.external_references = [];
-                let citationArr = super.matchCitations(foundMitigation.attributes.description);
-                for (let name of citationArr) {
-                    let citation = citations.find((p) => p.source_name === name);
-                    if (citation !== undefined) {
-                        if (foundMitigation.attributes.external_references.find((p) => p.source_name === name) === undefined) {
-                            foundMitigation.attributes.external_references.push(citation);;
-                        }        
-                    }
-                }
-                this.stixService.url = Constance.COURSE_OF_ACTION_URL;
-                let subscription = super.save(foundMitigation).subscribe(
-                    (data) => {
-                    }, (error) => {
-                        // handle errors here
-                        console.log('error ' + error);
-                    }, () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
-                    }
-                );
-            }
             let origMit = this.origMitigations.find((p) => p.id === foundMitigation.id);
             this.origMitigations = this.origMitigations.filter((p) => p.id !== foundMitigation.id);
             if (origMit === undefined) {
-                this.saveRelationship(attackPatternId, foundMitigation.id);
+                this.saveRelationship(attackPatternId, foundMitigation.id, mitigation.description);
+            }
+            else {
+                this.saveRevisedRelationship(attackPatternId, foundMitigation.id, mitigation.description, mitigation.rel_id);
             }
         }
 

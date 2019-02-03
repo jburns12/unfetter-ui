@@ -87,6 +87,13 @@
             </div>
         </div>
         <kill-chain-phases [(model)]="attackPattern" [(tactics)]="tactics" (onTacticAdd)="tacticChange($event)" [(tacticBools)]="tacticBools"></kill-chain-phases>
+        <div class="row">
+                <div class="col-md-12">
+                    <mat-input-container class="full-width">
+                        <textarea matInput matTextareaAutosize [(ngModel)]="attackPattern.attributes.x_mitre_detection"  placeholder="Detection">{{attackPattern.attributes.x_mitre_detection}}</textarea>
+                    </mat-input-container>
+                </div>
+            </div>
         <br><div class="row">
                 <div class="col-md-12">
                         <h4>Mitigations</h4>

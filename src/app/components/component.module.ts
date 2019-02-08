@@ -7,6 +7,7 @@ import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 
 import { MatButtonModule, MatListModule, MatCardModule, MatFormFieldModule,
     MatTooltipModule, MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatCheckboxModule, MatIconModule } from '@angular/material';
 import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
+import { HelpPageComponent } from './help-page/help-page.component';
 import { PageHeaderComponent } from './page/page-header.component';
 import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation-dialog.component';
 import { IndicatorPatternFieldComponent } from './indicator-pattern-field/indicator-pattern-field.component';
@@ -34,6 +35,7 @@ import { PopoverModule } from 'ngx-popover';
     // Components / Directives/ Pipes
     PageHeaderComponent,
     HeaderNavigationComponent,
+    HelpPageComponent,
     ConfirmationDialogComponent,
     IndicatorPatternFieldComponent,
     SelectSearchFieldComponent,
@@ -77,6 +79,7 @@ import { PopoverModule } from 'ngx-popover';
     PageHeaderComponent,
     ConfirmationDialogComponent,
     HeaderNavigationComponent,
+    HelpPageComponent,
     IndicatorPatternFieldComponent,
     SelectSearchFieldComponent,
     ExternalReferenceComponent,

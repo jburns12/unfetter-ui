@@ -15,6 +15,7 @@ import { WebAnalyticsService } from './global/services/web-analytics.service';
 export class AppComponent implements OnInit {
   public showBanner = false;
   public securityMarkingLabel = '';
+  public showHelp = true;
 
   constructor(
     public authService: AuthService,
@@ -37,5 +38,15 @@ export class AppComponent implements OnInit {
       console.log('Running application in DEMO mode');      
     }
 
+  }
+  public helpBackgroundClick(event) { 
+      if (event.target !== event.currentTarget) return;
+      else this.closeHelp();
+  }
+  public closeHelp() {
+      this.showHelp = false;
+  }
+  public openHelp() { 
+      this.showHelp = true;
   }
 }

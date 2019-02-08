@@ -1,7 +1,7 @@
 <div class="banner security-marking-label" *ngIf="showBanner">
     <span class="banner-text strong">{{securityMarkingLabel}}</span>
   </div>
- <header-navigation></header-navigation>
+ <header-navigation (openHelp)="openHelp()"></header-navigation>
 
 
 <div id="routerWrapper">
@@ -25,3 +25,8 @@
 
   </div>
 </footer>
+
+<!-- help page overlay -->
+<div *ngIf="showHelp" class="help-wrapper" (click)="helpBackgroundClick($event)">
+    <help-page (closeEvent)="closeHelp()"></help-page>
+</div>

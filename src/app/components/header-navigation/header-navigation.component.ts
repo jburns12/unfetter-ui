@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, EventEmitter, Output } from '@angular/core';
 import { BaseComponentService } from '../base-service.component';
 import { Router } from '@angular/router';
 import { Navigation } from '../../models/navigation';
@@ -12,6 +12,7 @@ import { Constance } from '../../utils/constance';
   templateUrl: './header-navigation.component.html'
 })
 export class HeaderNavigationComponent implements OnInit {
+  @Output() openHelp = new EventEmitter<boolean>();
 
   public navigations: Navigation[] = [
     { url: 'stix/attack-patterns', label: 'Techniques' },
